@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toot/presentation/screens/chat_screen.dart';
 import 'package:toot/presentation/screens/orders_screen.dart';
 import 'package:toot/presentation/screens/profile_screen.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
@@ -47,6 +48,10 @@ class SettingsScreen extends StatelessWidget {
               SettingsItem(
                 title: 'محادثات',
                 image: 'assets/images/add card  (4).png',
+                function: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (_) => ChatScreen()));
+                },
               ),
               SettingsItem(
                 title: 'نقاطي',

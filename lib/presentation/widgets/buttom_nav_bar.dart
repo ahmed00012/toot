@@ -20,7 +20,6 @@ class _BottomNavBarState extends State<BottomNavBar>
   late CurvedAnimation curve;
   PageController _pageController = PageController();
   int currentTab = 0;
-  bool isSupportedCheck = false;
 
   final iconList = [
     'assets/images/cdf.png',
@@ -88,7 +87,7 @@ class _BottomNavBarState extends State<BottomNavBar>
           if (index == 2) {
             return FittedBox(
               child: Padding(
-                padding: const EdgeInsets.all(9.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Container(
                   height: 0.16.sw,
                   width: 0.16.sw,
@@ -96,7 +95,7 @@ class _BottomNavBarState extends State<BottomNavBar>
                       color: Colors.white, shape: BoxShape.circle),
                   child: Image.asset(
                     iconList[index],
-                    scale: 0.7,
+                    scale: 0.8,
                   ),
                 ),
               ),

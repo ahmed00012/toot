@@ -12,6 +12,7 @@ class SingleItemScreen extends StatefulWidget {
 
 class _SingleItemScreenState extends State<SingleItemScreen> {
   bool isAdded = false;
+  bool isFav = false;
   int number = 1;
   String? kindDropdownValue;
   List<String> kindsList = ['استرالي      SR 0.85', 'العربي        SR 0.80'];
@@ -35,6 +36,19 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
             Navigator.of(context).pop();
           },
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              isFav ? Icons.favorite : Icons.favorite_border_outlined,
+              color: Colors.red,
+            ),
+            onPressed: () {
+              setState(() {
+                isFav = !isFav;
+              });
+            },
+          )
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 0.06.sw),

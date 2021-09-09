@@ -32,8 +32,10 @@ class MyApp extends StatelessWidget {
         locale: context.locale,
         title: 'Toot',
         debugShowCheckedModeBanner: false,
-        theme:
-            ThemeData(primarySwatch: Colors.indigo, canvasColor: Colors.white),
+        theme: ThemeData(
+            primarySwatch: Colors.indigo,
+            canvasColor: Colors.white,
+            fontFamily: 'Tajawal'),
         home: SplashScreen(),
       ),
     );

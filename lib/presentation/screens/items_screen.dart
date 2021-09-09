@@ -134,7 +134,7 @@ class BuildItem extends StatelessWidget {
                     Text(
                       '3.50 RS',
                       style: TextStyle(
-                          color: Colors.grey,
+                          color: Colors.grey.shade400,
                           fontSize: 16.sp,
                           decoration: TextDecoration.lineThrough),
                     )
