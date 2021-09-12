@@ -18,7 +18,7 @@ class _BottomNavBarState extends State<BottomNavBar>
   late AnimationController _animationController;
   Animation<double>? animation;
   late CurvedAnimation curve;
-  PageController _pageController = PageController();
+  PageController _pageController = PageController(initialPage: 2);
   int currentTab = 0;
 
   final iconList = [

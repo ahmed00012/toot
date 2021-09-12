@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../constants.dart';
 
@@ -62,6 +63,31 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                   child: Image.asset('assets/images/broccoli.png'),
                 ),
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "9.45"
+                        " RS ",
+                        style: TextStyle(
+                            fontSize: 30.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff4A4B4D)),
+                      ),
+                      Text(' لكل كيلو  /',
+                          style: TextStyle(
+                            color: Color(0xff4A4B4D),
+                          )),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
               DropdownButtonHideUnderline(
                 child: DropdownButtonFormField<String>(
                   decoration: InputDecoration(
@@ -113,6 +139,14 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                     setState(() {
                       isAdded = true;
                     });
+                    Fluttertoast.showToast(
+                        msg: "تمت اضافة 3 منتجات الى سلتك",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 3,
+                        backgroundColor: Colors.green,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
                   },
                   child: Container(
                     height: 0.09.sh,

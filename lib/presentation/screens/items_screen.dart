@@ -100,8 +100,6 @@ class _ItemsScreenState extends State<ItemsScreen> {
 class BuildItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    bool isAdded = false;
-    int number = 1;
     return GestureDetector(
       onTap: () {
         Navigator.of(context)
@@ -151,71 +149,20 @@ class BuildItem extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isAdded = true;
-                    });
-                    Fluttertoast.showToast(
-                        msg: "تمت اضافة 3 منتجات الى سلتك",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 3,
-                        backgroundColor: Colors.green,
-                        textColor: Colors.white,
-                        fontSize: 16.0);
-                  },
-                  child: Container(
-                    height: 0.06.sh,
-                    decoration: BoxDecoration(
-                        color: !isAdded
-                            ? Color(Constants.mainColor)
-                            : Color(0xffF0F4F8),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: !isAdded
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Image.asset('assets/images/addToCart.png'),
-                              Text(
-                                'سلة للشراء',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 15.sp),
-                              )
-                            ],
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              IconButton(
-                                splashRadius: 1,
-                                icon: Icon(Icons.add),
-                                onPressed: () {
-                                  setState(() {
-                                    number++;
-                                  });
-                                },
-                              ),
-                              Text(
-                                number.toString(),
-                                style: TextStyle(
-                                    color: Color(0xffBB9265), fontSize: 22),
-                              ),
-                              IconButton(
-                                splashRadius: 1,
-                                icon: Icon(Icons.remove),
-                                onPressed: () {
-                                  if (number == 1) {
-                                    return;
-                                  } else {
-                                    setState(() {
-                                      number--;
-                                    });
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
+                Container(
+                  height: 0.06.sh,
+                  decoration: BoxDecoration(
+                      color: Color(Constants.mainColor),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Image.asset('assets/images/addToCart.png'),
+                      Text(
+                        'سلة للشراء',
+                        style: TextStyle(color: Colors.white, fontSize: 15.sp),
+                      )
+                    ],
                   ),
                 )
               ],
@@ -226,3 +173,12 @@ class BuildItem extends StatelessWidget {
     );
   }
 }
+
+// Fluttertoast.showToast(
+//     msg: "تمت اضافة 3 منتجات الى سلتك",
+//     toastLength: Toast.LENGTH_SHORT,
+//     gravity: ToastGravity.BOTTOM,
+//     timeInSecForIosWeb: 3,
+//     backgroundColor: Colors.green,
+//     textColor: Colors.white,
+//     fontSize: 16.0);

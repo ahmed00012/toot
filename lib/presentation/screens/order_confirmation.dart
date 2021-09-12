@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:toot/presentation/screens/orders_details._screen.dart';
 import '../../constants.dart';
 
 class OrderConfirmationScreen extends StatelessWidget {
@@ -29,13 +30,19 @@ class OrderConfirmationScreen extends StatelessWidget {
                 'Your order number is',
                 style: TextStyle(fontSize: 24.sp, color: Colors.grey.shade600),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  '#5678',
-                  style: TextStyle(
-                    fontSize: 30.sp,
-                    color: Color(Constants.mainColor),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => OrdersDetailsScreen()));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    '#5678',
+                    style: TextStyle(
+                      fontSize: 30.sp,
+                      color: Color(Constants.mainColor),
+                    ),
                   ),
                 ),
               ),
