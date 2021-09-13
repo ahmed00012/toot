@@ -1,11 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:toot/presentation/screens/login_screen.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 import 'package:toot/presentation/widgets/text_button.dart';
-
 import '../../constants.dart';
-import 'buttom_nav_bar.dart';
 
 class ImagesSlider extends StatefulWidget {
   final List<String> imagesPreview;
@@ -43,9 +42,8 @@ class _ImagesSliderState extends State<ImagesSlider> {
                 itemCount: widget.imagesPreview.length,
                 options: CarouselOptions(
                     height: 0.62.sh,
-                    viewportFraction: 1,
                     enlargeCenterPage: true,
-                    autoPlayInterval: Duration(seconds: 3),
+                    enableInfiniteScroll: false,
                     onPageChanged: (index, reason) {
                       setState(() {
                         _current = index;
@@ -117,13 +115,13 @@ class _ImagesSliderState extends State<ImagesSlider> {
                 title: 'البدء',
                 function: () {
                   Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => BottomNavBar()));
+                      .push(MaterialPageRoute(builder: (_) => LoginScreen()));
                 })
             : BuildTextButton(
                 title: 'تخطي',
                 onPressed: () {
                   Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => BottomNavBar()));
+                      .push(MaterialPageRoute(builder: (_) => LoginScreen()));
                 })
       ],
     );

@@ -12,7 +12,7 @@ class OrdersScreen extends StatelessWidget {
     return Scaffold(
       appBar: BuildAppBar(
         title: 'طلباتك',
-        isLeading: false,
+        isBack: false,
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 0.05.sw),
@@ -184,6 +184,7 @@ class _OrderItemState extends State<OrderItem> {
                                   Text(
                                     'Shipped',
                                     style: TextStyle(
+                                        decoration: TextDecoration.underline,
                                         color: Colors.lightGreen,
                                         fontSize: 20.sp),
                                   ),

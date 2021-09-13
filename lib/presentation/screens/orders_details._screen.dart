@@ -3,6 +3,8 @@ import 'package:im_stepper/stepper.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../constants.dart';
+
 class OrdersDetailsScreen extends StatefulWidget {
   @override
   _OrdersDetailsScreenState createState() => _OrdersDetailsScreenState();
@@ -12,9 +14,10 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: BuildAppBar(
         title: 'حالة الطلب',
-        isLeading: false,
+        isBack: false,
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 0.04.sw),
@@ -33,26 +36,27 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
               children: [
                 Container(
                   width: 0.2.sw,
-                  height: 0.38.sh,
+                  height: 0.40.sh,
                   child: IconStepper(
                     enableStepTapping: false,
-                    stepColor: Colors.yellow,
+                    stepColor: Colors.grey.shade200,
                     lineColor: Color(0xff748A9D),
+                    lineLength: 55,
                     scrollingDisabled: true,
                     direction: Axis.vertical,
                     enableNextPreviousButtons: false,
                     icons: [
                       Icon(
                         Icons.shopping_cart,
-                        color: Colors.lightGreen,
+                        color: Color(Constants.mainColor),
                       ),
                       Icon(
                         Icons.settings,
-                        color: Colors.lightGreen,
+                        color: Color(Constants.mainColor),
                       ),
                       Icon(
                         Icons.delivery_dining,
-                        color: Colors.lightGreen,
+                        color: Color(Constants.mainColor),
                       ),
                     ],
                     activeStep: 3,
@@ -66,6 +70,9 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          SizedBox(
+                            height: 15,
+                          ),
                           Text('تم ارسال الطلب بنجاح'),
                           Text('152625#    10.20   13/12/2021')
                         ],

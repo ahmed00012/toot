@@ -12,8 +12,7 @@ class SingleNotificationScreen extends StatelessWidget {
     return Scaffold(
       appBar: BuildAppBar(
         title: 'تنبيه جديد',
-        isSearch: false,
-        isLeading: false,
+        isBack: false,
       ),
       body: SingleChildScrollView(
         child: Padding(

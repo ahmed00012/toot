@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
             primarySwatch: Colors.indigo,
-            canvasColor: Colors.white,
+            canvasColor: Colors.grey.shade50,
             fontFamily: 'Tajawal'),
         home: SplashScreen(),
       ),

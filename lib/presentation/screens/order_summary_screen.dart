@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toot/constants.dart';
-import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
+import 'package:toot/presentation/widgets/cart_item.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 import 'package:toot/presentation/widgets/delivery_app_bar.dart';
-
 import 'order_confirmation.dart';
 
 class OrderSummaryScreen extends StatelessWidget {
@@ -17,7 +16,7 @@ class OrderSummaryScreen extends StatelessWidget {
       },
       child: Scaffold(
         appBar: BuildDeliveryBar(
-          title: 'طريقة الدفع',
+          title: 'ملخص الطلب',
           isSummary: true,
         ),
         body: SingleChildScrollView(
@@ -158,99 +157,6 @@ class OrderSummaryScreen extends StatelessWidget {
             ],
           ),
         )),
-      ),
-    );
-  }
-}
-
-class CartItem extends StatelessWidget {
-  final String image;
-  final String title;
-  final double price;
-  CartItem({required this.image, required this.title, required this.price});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
-      child: Dismissible(
-        key: UniqueKey(),
-        background: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              width: 0.2.sw,
-              decoration: BoxDecoration(
-                  color: Color(0xffA6BCD0),
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(12),
-                      bottomRight: Radius.circular(12))),
-              child: Icon(
-                Icons.delete_outline,
-                color: Colors.white,
-                size: 30,
-              ),
-              alignment: Alignment.centerRight,
-              padding: EdgeInsets.only(right: 20),
-            ),
-            Container(
-              width: 0.2.sw,
-              color: Color(0xffDBE2ED),
-              child: Center(
-                child: Icon(
-                  Icons.edit,
-                  color: Colors.white,
-                  size: 30,
-                ),
-              ),
-              // alignment: Alignment.centerRight,
-              // padding: EdgeInsets.only(right: 20),
-            ),
-          ],
-        ),
-        direction: DismissDirection.startToEnd,
-        child: Container(
-          margin: EdgeInsets.zero,
-          padding: EdgeInsets.symmetric(horizontal: 15),
-          height: 0.1.sh,
-          decoration: BoxDecoration(
-              color: Color(0xffF0F4F8),
-              borderRadius: BorderRadius.circular(12)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '${price.toString()} RS',
-                    style: TextStyle(fontSize: 22),
-                  ),
-                  Text(
-                    '2 : Piece',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  )
-                ],
-              ),
-              Row(
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Image.asset(
-                    image,
-                    width: 60.w,
-                    height: 60.w,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

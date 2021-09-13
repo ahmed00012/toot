@@ -10,7 +10,6 @@ class NotificationScreen extends StatelessWidget {
     return Scaffold(
       appBar: BuildAppBar(
         title: 'تنبيهات',
-        isSearch: false,
       ),
       body: ListView(
         shrinkWrap: true,
@@ -48,7 +47,7 @@ class BuildNotificationItem extends StatelessWidget {
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),
-        height: 0.42.sh,
+        height: 0.4.sh,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Colors.grey.shade100),

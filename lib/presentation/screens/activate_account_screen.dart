@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 import 'package:toot/presentation/widgets/default_text_field.dart';
 import 'package:toot/presentation/widgets/text_button.dart';
@@ -51,7 +52,7 @@ class ActivateAccountScreen extends StatelessWidget {
                   title: 'دخول',
                   function: () {
                     Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => OnboardingScreen()));
+                        MaterialPageRoute(builder: (_) => BottomNavBar()));
                   },
                 ),
               ),

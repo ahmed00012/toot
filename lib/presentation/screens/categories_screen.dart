@@ -29,6 +29,7 @@ class CategoriesScreen extends StatelessWidget {
                     icon: Icon(
                       Icons.arrow_back,
                       size: 25,
+                      color: Color(Constants.mainColor),
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -37,7 +38,10 @@ class CategoriesScreen extends StatelessWidget {
                   Center(
                     child: Text(
                       'الاقسام',
-                      style: TextStyle(fontWeight: FontWeight.w400),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        color: Color(Constants.mainColor),
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -51,20 +55,23 @@ class CategoriesScreen extends StatelessWidget {
               TextField(
                 style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                    isDense: true,
-                    contentPadding: EdgeInsets.zero,
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: Colors.white,
-                      size: 25,
-                    ),
-                    hintText: 'بحث سريع',
-                    hintStyle: TextStyle(color: Colors.white, fontSize: 18.sp),
-                    filled: true,
-                    fillColor: Color(0xff6C29B9),
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(20))),
+                  isDense: true,
+                  contentPadding: EdgeInsets.zero,
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Color(Constants.mainColor),
+                    size: 25,
+                  ),
+                  hintText: 'بحث سريع',
+                  hintStyle: TextStyle(
+                      color: Color(Constants.mainColor), fontSize: 18.sp),
+                  filled: true,
+                  fillColor: Colors.grey.shade100,
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
               ),
               SizedBox(
                 height: 10,
@@ -74,7 +81,7 @@ class CategoriesScreen extends StatelessWidget {
           automaticallyImplyLeading: false,
           centerTitle: true,
           toolbarHeight: 0.18.sh,
-          backgroundColor: Color(Constants.mainColor),
+          backgroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(25))),
@@ -129,7 +136,7 @@ class CategoryItem extends StatelessWidget {
                   color: Color(
                     Constants.mainColor,
                   ),
-                  fontSize: 16.sp),
+                  fontSize: 18.sp),
             )
           ],
         ),

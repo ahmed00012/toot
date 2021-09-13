@@ -1,12 +1,14 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toot/presentation/screens/cart_screen.dart';
 import 'package:toot/presentation/screens/favorites_screen.dart';
 import 'package:toot/presentation/screens/home_screen.dart';
 import 'package:toot/presentation/screens/notifications_screen.dart';
 import 'package:toot/presentation/screens/settings_screen.dart';
+
 import '../../constants.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BottomNavBar extends StatefulWidget {
   @override
@@ -18,22 +20,28 @@ class _BottomNavBarState extends State<BottomNavBar>
   late AnimationController _animationController;
   Animation<double>? animation;
   late CurvedAnimation curve;
-  PageController _pageController = PageController(initialPage: 2);
+  PageController _pageController = PageController(initialPage: 0);
   int currentTab = 0;
+  final autoSizeGroup = AutoSizeGroup();
 
-  final iconList = [
-    'assets/images/cdf.png',
-    'assets/images/Group.png',
-    'assets/images/icon-store.png',
-    'assets/images/icon-cart.png',
-    'assets/images/icon-settings.png',
+  final List<IconData> iconList = [
+    FontAwesomeIcons.home,
+    FontAwesomeIcons.solidHeart,
+    FontAwesomeIcons.solidBell,
+    FontAwesomeIcons.userCog,
+  ];
+
+  final iconTitlesAR = <String>[
+    'الرئيسية',
+    'المفضلة',
+    'التنبيهات',
+    'الاعدادات',
   ];
 
   List<Widget> _screens = [
+    HomeScreen(),
     FavoritesScreen(),
     NotificationScreen(),
-    HomeScreen(),
-    CartScreen(),
     SettingsScreen()
   ];
 
@@ -73,48 +81,72 @@ class _BottomNavBarState extends State<BottomNavBar>
       body: PageView(
         controller: _pageController,
         children: _screens,
+        physics: NeverScrollableScrollPhysics(),
         onPageChanged: (index) {
           setState(() {
             currentTab = index;
           });
         },
-        // physics: NeverScrollableScrollPhysics(),
       ),
+      floatingActionButton: ScaleTransition(
+        scale: animation!,
+        child: FittedBox(
+          child: FloatingActionButton(
+            elevation: 0,
+            backgroundColor: Color(Constants.mainColor),
+            child: Icon(
+              Icons.shopping_cart,
+              color: Colors.white,
+              size: 25,
+            ),
+            onPressed: () async {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => CartScreen()),
+              );
+            },
+          ),
+        ),
+      ),
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.miniCenterDocked,
       bottomNavigationBar: AnimatedBottomNavigationBar.builder(
         itemCount: iconList.length,
         tabBuilder: (int index, bool isActive) {
-          final color = isActive ? Colors.amber : Colors.white;
-          if (index == 2) {
-            return FittedBox(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  height: 0.16.sw,
-                  width: 0.16.sw,
-                  decoration: BoxDecoration(
-                      color: Colors.white, shape: BoxShape.circle),
-                  child: Image.asset(
-                    iconList[index],
-                    scale: 0.8,
-                  ),
+          final color = isActive ? Color(Constants.mainColor) : Colors.grey;
+          return Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FaIcon(
+                  iconList[index],
+                  color: color,
                 ),
-              ),
-            );
-          }
-          return Image.asset(
-            iconList[index],
-            color: color,
-            scale: 0.9,
+                SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: AutoSizeText(
+                    // Localizations.localeOf(context).languageCode == "ar"
+                    //     ? iconTitlesAr[index]
+                    iconTitlesAR[index],
+                    maxLines: 1,
+                    style: TextStyle(color: color, fontSize: 12),
+                    group: autoSizeGroup,
+                  ),
+                )
+              ],
+            ),
           );
         },
-        backgroundColor: Color(Constants.mainColor),
+        backgroundColor: Colors.white,
         activeIndex: currentTab,
-        gapLocation: GapLocation.none,
         splashColor: Colors.green.shade700,
         notchAndCornersAnimation: animation,
         splashSpeedInMilliseconds: 300,
         notchSmoothness: NotchSmoothness.softEdge,
-        height: MediaQuery.of(context).size.height * 0.12,
+        gapLocation: GapLocation.center,
+        height: MediaQuery.of(context).size.height * 0.1,
+        // leftCornerRadius: 32,
+        // rightCornerRadius: 32,
         onTap: (index) => setState(() => this._onItemTapped(index)),
       ),
     );

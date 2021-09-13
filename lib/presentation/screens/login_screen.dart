@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:toot/constants.dart';
 import 'package:toot/presentation/screens/registration_screen.dart';
+import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 import 'package:toot/presentation/widgets/text_button.dart';
 import 'package:toot/presentation/widgets/default_text_field.dart';
-import 'onboarding_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -66,8 +66,8 @@ class LoginScreen extends StatelessWidget {
                     BuildIndigoButton(
                       title: 'دخول',
                       function: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => OnboardingScreen()));
+                        Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => BottomNavBar()));
                       },
                     )
                   ],

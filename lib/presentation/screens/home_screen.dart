@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:toot/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,14 +11,22 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final List<String> imagesBannerList = [
+    'assets/images/main_pic.png',
+    'assets/images/main_pic.png',
+    'assets/images/main_pic.png',
+  ];
+
   final List<String> imagesList1 = [
-    'assets/images/s.png',
-    'assets/images/zdf.png',
+    'assets/images/fruits ss.jpg',
+    'assets/images/fruits ss.jpg',
+    'assets/images/fruits ss.jpg',
   ];
 
   final List<String> imagesList2 = [
-    'assets/images/card-tropical.png',
-    'assets/images/card-berries.png',
+    'assets/images/meat.png',
+    'assets/images/meat.png',
+    'assets/images/meat.png',
   ];
 
   int current = 0;
@@ -34,38 +43,64 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Center(
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 25.w),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: Image.asset(
-                      'assets/images/main_pic.png',
-                      fit: BoxFit.contain,
-                      width: 0.95.sw,
-                    )),
+                padding: EdgeInsets.symmetric(vertical: 8.w),
+                child: CarouselSlider.builder(
+                  itemCount: imagesBannerList.length,
+                  options: CarouselOptions(
+                      height: 0.25.sh,
+                      autoPlay: true,
+                      autoPlayInterval: Duration(seconds: 4),
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          current = index;
+                        });
+                      }),
+                  itemBuilder: (ctx, index, _) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.asset(
+                            imagesBannerList[index],
+                            fit: BoxFit.contain,
+                            width: 0.8.sw,
+                          )),
+                    );
+                  },
+                ),
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 0.06.sw),
+              padding: EdgeInsets.symmetric(horizontal: 0.06.sw, vertical: 10),
               child: Text(
-                'محلات الخضراوات',
+                'محلات الفاكهة',
                 style: TextStyle(
                     color: Color(Constants.mainColor),
-                    fontSize: 22.sp,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w300),
               ),
             ),
-            BuildShopsListView(imagesList: imagesList1),
+            BuildShopsListView(
+              imagesList: imagesList1,
+              width: 0.6.sw,
+            ),
+            SizedBox(
+              height: 0.02.sh,
+            ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 0.06.sw),
+              padding: EdgeInsets.symmetric(horizontal: 0.06.sw, vertical: 10),
               child: Text(
                 'محلات اللحوم',
                 style: TextStyle(
                     color: Color(Constants.mainColor),
-                    fontSize: 22.sp,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w300),
               ),
             ),
-            BuildShopsListView(imagesList: imagesList2),
+            BuildShopsListView(
+              imagesList: imagesList2,
+              width: 0.6.sw,
+            ),
           ],
         ),
       ),
@@ -74,17 +109,18 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class BuildShopsListView extends StatelessWidget {
-  const BuildShopsListView({
-    Key? key,
-    required this.imagesList,
-  }) : super(key: key);
+  const BuildShopsListView(
+      {Key? key, required this.imagesList, required this.width})
+      : super(key: key);
+
+  final double width;
 
   final List<String> imagesList;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 0.3.sh,
+      height: 0.18.sh,
       child: ListView.builder(
           itemCount: imagesList.length,
           shrinkWrap: true,
@@ -94,14 +130,16 @@ class BuildShopsListView extends StatelessWidget {
                   Navigator.of(context).push(
                       MaterialPageRoute(builder: (_) => CategoriesScreen()));
                 },
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
-                    child: Image.asset(
-                      imagesList[0],
-                      fit: BoxFit.cover,
-                      width: 0.8.sw,
-                      height: 0.32.sh,
-                    )),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15.0),
+                      child: Image.asset(
+                        imagesList[0],
+                        fit: BoxFit.fill,
+                        width: width,
+                      )),
+                ),
               )),
     );
   }

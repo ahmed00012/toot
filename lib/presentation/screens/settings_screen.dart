@@ -11,7 +11,6 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: BuildAppBar(
         title: 'الاعدادات',
-        isSearch: false,
       ),
       body: SingleChildScrollView(
         child: Padding(

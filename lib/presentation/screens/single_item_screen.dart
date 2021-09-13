@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
 import '../../constants.dart';
 
 class SingleItemScreen extends StatefulWidget {
@@ -12,7 +10,6 @@ class SingleItemScreen extends StatefulWidget {
 }
 
 class _SingleItemScreenState extends State<SingleItemScreen> {
-  bool isAdded = false;
   bool isFav = false;
   int number = 1;
   String? kindDropdownValue;
@@ -27,7 +24,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
           style: TextStyle(
               color: Color(Constants.mainColor), fontWeight: FontWeight.w300),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.grey.shade50,
         centerTitle: true,
         elevation: 0,
         leading: IconButton(
@@ -85,125 +82,127 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                   ),
                 ],
               ),
-              SizedBox(
-                height: 10,
-              ),
-              DropdownButtonHideUnderline(
-                child: DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Color(0xffF0F4F8),
-                      contentPadding:
-                          EdgeInsets.only(left: 0.06.sw, right: 0.02.sw),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6),
-                          borderSide: BorderSide.none),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none)),
-                  validator: (value) =>
-                      value == null ? 'Please select Language' : null,
-                  isExpanded: true,
-                  value: kindDropdownValue,
-                  hint: Text(
-                    'اختار النوع',
-                    style: TextStyle(fontSize: 17, color: Color(0xff4A4B4D)),
-                  ),
-                  icon: Icon(
-                    Icons.keyboard_arrow_down,
-                    size: 28,
-                    color: Colors.grey.shade500,
-                  ),
-                  iconSize: 24,
-                  elevation: 4,
-                  style: TextStyle(
-                      color: Color(Constants.mainColor), fontSize: 16),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      kindDropdownValue = newValue;
-                    });
-                  },
-                  items:
-                      kindsList.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-              ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 0.04.sh),
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isAdded = true;
-                    });
-                    Fluttertoast.showToast(
-                        msg: "تمت اضافة 3 منتجات الى سلتك",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 3,
-                        backgroundColor: Colors.green,
-                        textColor: Colors.white,
-                        fontSize: 16.0);
-                  },
-                  child: Container(
-                    height: 0.09.sh,
-                    decoration: BoxDecoration(
-                        color: !isAdded
-                            ? Color(Constants.mainColor)
-                            : Color(0xffF0F4F8),
-                        borderRadius: BorderRadius.circular(30)),
-                    child: !isAdded
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset('assets/images/addToCart.png'),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                'اضافة الي السلة',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 18.sp),
-                              )
-                            ],
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              IconButton(
-                                splashRadius: 1,
-                                icon: Icon(Icons.add),
-                                onPressed: () {
-                                  setState(() {
-                                    number++;
-                                  });
-                                },
-                              ),
-                              Text(
-                                number.toString(),
-                                style: TextStyle(
-                                    color: Color(0xffBB9265), fontSize: 22),
-                              ),
-                              IconButton(
-                                splashRadius: 1,
-                                icon: Icon(Icons.remove),
-                                onPressed: () {
-                                  if (number == 1) {
-                                    return;
-                                  } else {
-                                    setState(() {
-                                      number--;
-                                    });
-                                  }
-                                },
-                              ),
-                            ],
+                padding: EdgeInsets.symmetric(vertical: 0.03.sh),
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: 0.45.sw,
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Color(0xffF0F4F8),
+                                contentPadding: EdgeInsets.only(
+                                    left: 0.06.sw, right: 0.02.sw),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: BorderSide.none),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide.none)),
+                            validator: (value) =>
+                                value == null ? 'Please select Language' : null,
+                            isExpanded: true,
+                            value: kindDropdownValue,
+                            hint: Text(
+                              'اختار النوع',
+                              style: TextStyle(
+                                  fontSize: 16, color: Color(0xff4A4B4D)),
+                            ),
+                            icon: Icon(
+                              Icons.keyboard_arrow_down,
+                              size: 28,
+                              color: Color(Constants.mainColor),
+                            ),
+                            iconSize: 24,
+                            elevation: 4,
+                            style: TextStyle(
+                                color: Color(Constants.mainColor),
+                                fontSize: 16),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                kindDropdownValue = newValue;
+                              });
+                            },
+                            items: kindsList
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
                           ),
+                        ),
+                      ),
+                      Container(
+                        width: 0.35.sw,
+                        decoration: BoxDecoration(
+                            color: Color(0xffF0F4F8),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            IconButton(
+                              splashRadius: 1,
+                              icon: Icon(
+                                Icons.add,
+                                size: 20,
+                                color: Color(Constants.mainColor),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  number++;
+                                });
+                              },
+                            ),
+                            Text(
+                              number.toString(),
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            IconButton(
+                              splashRadius: 1,
+                              icon: Icon(
+                                Icons.remove,
+                                size: 20,
+                                color: Color(Constants.mainColor),
+                              ),
+                              onPressed: () {
+                                if (number == 1) {
+                                  return;
+                                } else {
+                                  setState(() {
+                                    number--;
+                                  });
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 12),
+                width: 1.sw,
+                height: 0.06.sh,
+                child: ElevatedButton.icon(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(Constants.mainColor),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    icon: Icon(
+                      Icons.add_shopping_cart,
+                      color: Colors.white,
+                    ),
+                    label: Text('اضافة الي السله')),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12.0),

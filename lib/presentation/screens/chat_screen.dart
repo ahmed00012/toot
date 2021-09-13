@@ -14,7 +14,7 @@ class ChatScreen extends StatelessWidget {
       child: Scaffold(
         appBar: BuildAppBar(
           title: 'محادثة مع فريق العمل',
-          isLeading: false,
+          isBack: false,
         ),
         bottomSheet: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10),

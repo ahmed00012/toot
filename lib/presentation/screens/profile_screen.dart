@@ -19,7 +19,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: BuildAppBar(
         title: 'حسابي',
-        isLeading: false,
+        isBack: false,
       ),
       body: SingleChildScrollView(
         child: Padding(

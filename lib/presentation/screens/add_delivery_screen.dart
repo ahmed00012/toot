@@ -29,7 +29,7 @@ class AddDeliveryScreen extends StatelessWidget {
           ),
           centerTitle: true,
           elevation: 0,
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.grey.shade50,
         ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 0.05.sh),
@@ -48,6 +48,8 @@ class AddDeliveryScreen extends StatelessWidget {
                 TextField(
                   decoration: InputDecoration(
                     isDense: true,
+                    fillColor: Colors.white,
+                    filled: true,
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                         borderSide: BorderSide(
@@ -74,6 +76,8 @@ class AddDeliveryScreen extends StatelessWidget {
                   maxLines: 4,
                   decoration: InputDecoration(
                     isDense: true,
+                    fillColor: Colors.white,
+                    filled: true,
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                         borderSide: BorderSide(
