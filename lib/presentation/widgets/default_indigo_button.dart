@@ -10,13 +10,16 @@ class BuildIndigoButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 0.09.sh,
-      width: 0.8.sw,
+      height: 0.06.sh,
+      width: 0.85.sw,
       child: ElevatedButton.icon(
         onPressed: () {
           return function();
         },
-        icon: Icon(Icons.arrow_forward),
+        icon: Icon(
+          Icons.arrow_forward,
+          size: 20,
+        ),
         label: Text(
           title,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:toot/constants.dart';
-import 'package:toot/presentation/screens/orders_details._screen.dart';
+import 'package:toot/presentation/screens/orders_details_screen.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

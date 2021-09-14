@@ -129,23 +129,27 @@ class BuildItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5), color: Colors.white),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isFav = !isFav;
-                            });
-                          },
-                          icon: Icon(
-                            isFav
-                                ? Icons.favorite
-                                : Icons.favorite_border_outlined,
-                            color: Colors.red,
-                          ))
-                    ],
+                  Container(
+                    height: 25.h,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                isFav = !isFav;
+                              });
+                            },
+                            icon: Icon(
+                              isFav
+                                  ? Icons.favorite
+                                  : Icons.favorite_border_outlined,
+                              color: Colors.red,
+                            ))
+                      ],
+                    ),
                   ),
                   ClipRRect(
                       borderRadius: BorderRadius.circular(10),
@@ -159,7 +163,8 @@ class BuildItem extends StatelessWidget {
                     children: [
                       Text(
                         '2.50 RS',
-                        style: TextStyle(color: Colors.red, fontSize: 16.sp),
+                        style: TextStyle(
+                            color: Color(Constants.mainColor), fontSize: 16.sp),
                       ),
                       SizedBox(
                         width: 10,

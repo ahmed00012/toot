@@ -5,6 +5,7 @@ import 'package:toot/constants.dart';
 import 'package:toot/presentation/widgets/cart_item.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 import 'package:toot/presentation/widgets/delivery_app_bar.dart';
+import 'package:toot/presentation/widgets/indigo_elevated_button.dart';
 import 'order_confirmation.dart';
 
 class OrderSummaryScreen extends StatelessWidget {
@@ -56,33 +57,63 @@ class OrderSummaryScreen extends StatelessWidget {
               SizedBox(
                 height: 18,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: TextField(
-                  style: TextStyle(fontSize: 20.sp),
-                  decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                    isDense: true,
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(12)),
-                    filled: true,
-                    fillColor: Color(0xffF0F4F8),
-                    hintText: 'اضافة رمز ترويجي',
-                    prefixIcon: Icon(
-                      FontAwesomeIcons.gift,
-                      size: 25,
-                      color: Color(Constants.mainColor),
-                    ),
-                    hintStyle: TextStyle(
-                        fontSize: 16.sp, color: Color(Constants.mainColor)),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(12),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 0.55.sw,
+                    height: 0.12.sh,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: TextField(
+                        style: TextStyle(fontSize: 20.sp),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 20),
+                          isDense: true,
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(12)),
+                          filled: true,
+                          fillColor: Color(0xffF0F4F8),
+                          hintText: 'اضافة رمز ترويجي',
+                          prefixIcon: Icon(
+                            FontAwesomeIcons.gift,
+                            size: 25,
+                            color: Color(Constants.mainColor),
+                          ),
+                          hintStyle: TextStyle(
+                              fontSize: 16.sp,
+                              color: Color(Constants.mainColor)),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  SizedBox(
+                    width: 0.04.sw,
+                  ),
+                  Container(
+                    height: 0.08.sh,
+                    width: 0.28.sw,
+                    child: TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        'تطبيق',
+                        style: TextStyle(fontSize: 18.sp),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: BorderSide(
+                                width: 0.8, color: Color(Constants.mainColor))),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -94,7 +125,25 @@ class OrderSummaryScreen extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 16.sp, color: Colors.blueGrey.shade400),
                     ),
-                    Text('£9.30',
+                    Text('SR  9.30',
+                        style: TextStyle(
+                            fontSize: 16.sp,
+                            color: Colors.blueGrey.shade400,
+                            fontWeight: FontWeight.w600))
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'ضرائب',
+                      style: TextStyle(
+                          fontSize: 16.sp, color: Colors.blueGrey.shade400),
+                    ),
+                    Text('SR  9.30',
                         style: TextStyle(
                             fontSize: 16.sp,
                             color: Colors.blueGrey.shade400,
@@ -112,7 +161,7 @@ class OrderSummaryScreen extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 16.sp, color: Colors.blueGrey.shade400),
                     ),
-                    Text('£1.30',
+                    Text('SR  1.30',
                         style: TextStyle(
                             fontSize: 16.sp,
                             color: Colors.blueGrey.shade400,
@@ -129,13 +178,13 @@ class OrderSummaryScreen extends StatelessWidget {
                       'المجموع',
                       style: TextStyle(
                         fontSize: 22.sp,
-                        color: Colors.blueGrey.shade400,
+                        color: Color(Constants.mainColor),
                       ),
                     ),
-                    Text('£9.30',
+                    Text('SR  9.30',
                         style: TextStyle(
                             fontSize: 22.sp,
-                            color: Colors.blueGrey.shade400,
+                            color: Color(Constants.mainColor),
                             fontWeight: FontWeight.w800)),
                   ],
                 ),

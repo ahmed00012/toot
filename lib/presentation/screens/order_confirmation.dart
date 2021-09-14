@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:toot/presentation/screens/orders_details._screen.dart';
+import 'package:toot/presentation/screens/orders_details_screen.dart';
+import 'package:toot/presentation/screens/orders_screen.dart';
+import 'package:toot/presentation/widgets/indigo_elevated_button.dart';
 import '../../constants.dart';
 
 class OrderConfirmationScreen extends StatelessWidget {
@@ -23,11 +25,7 @@ class OrderConfirmationScreen extends StatelessWidget {
                 height: 0.07.sh,
               ),
               Text(
-                'Order placed.',
-                style: TextStyle(fontSize: 24.sp, color: Colors.grey.shade600),
-              ),
-              Text(
-                'Your order number is',
+                ' تم تنفيذ الطلب رقم طلبك هو',
                 style: TextStyle(fontSize: 24.sp, color: Colors.grey.shade600),
               ),
               GestureDetector(
@@ -46,6 +44,28 @@ class OrderConfirmationScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 12,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  BuildElevatedButton(
+                    title: 'حالة الطلب الحالي',
+                    function: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => OrdersDetailsScreen()));
+                    },
+                  ),
+                  BuildElevatedButton(
+                    title: 'طلباتي',
+                    function: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => OrdersScreen()));
+                    },
+                  )
+                ],
+              )
             ],
           ),
         ),

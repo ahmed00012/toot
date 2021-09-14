@@ -4,6 +4,7 @@ import 'package:toot/presentation/widgets/cart_item.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 
+import '../../constants.dart';
 import 'delivery_screen.dart';
 
 class CartScreen extends StatelessWidget {
@@ -16,7 +17,7 @@ class CartScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
           child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 0.06.sw),
+        padding: EdgeInsets.only(right: 0.06.sw, left: 0.06.sw, top: 0.02.sh),
         child: Column(
           children: [
             ListView(
@@ -58,7 +59,25 @@ class CartScreen extends StatelessWidget {
                     style: TextStyle(
                         fontSize: 16.sp, color: Colors.blueGrey.shade400),
                   ),
-                  Text('£9.30',
+                  Text('SR 9.30',
+                      style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Colors.blueGrey.shade400,
+                          fontWeight: FontWeight.w600))
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'ضرائب',
+                    style: TextStyle(
+                        fontSize: 16.sp, color: Colors.blueGrey.shade400),
+                  ),
+                  Text('SR 9.30',
                       style: TextStyle(
                           fontSize: 16.sp,
                           color: Colors.blueGrey.shade400,
@@ -76,7 +95,7 @@ class CartScreen extends StatelessWidget {
                     style: TextStyle(
                         fontSize: 16.sp, color: Colors.blueGrey.shade400),
                   ),
-                  Text('£1.30',
+                  Text('SR 1.30',
                       style: TextStyle(
                           fontSize: 16.sp,
                           color: Colors.blueGrey.shade400,
@@ -93,13 +112,13 @@ class CartScreen extends StatelessWidget {
                     'المجموع',
                     style: TextStyle(
                       fontSize: 22.sp,
-                      color: Colors.blueGrey.shade400,
+                      color: Color(Constants.mainColor),
                     ),
                   ),
-                  Text('£9.30',
+                  Text('SR 9.30',
                       style: TextStyle(
                           fontSize: 22.sp,
-                          color: Colors.blueGrey.shade400,
+                          color: Color(Constants.mainColor),
                           fontWeight: FontWeight.w800)),
                 ],
               ),

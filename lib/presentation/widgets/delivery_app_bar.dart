@@ -41,7 +41,7 @@ class BuildDeliveryBar extends StatelessWidget with PreferredSizeWidget {
             height: 0.1.sh,
             decoration: BoxDecoration(
               color: Color(Constants.mainColor),
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
+              // borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -50,63 +50,85 @@ class BuildDeliveryBar extends StatelessWidget with PreferredSizeWidget {
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                      color: isSummary! ? Colors.white : Colors.transparent),
+                      shape: BoxShape.circle,
+                      border: Border.all(width: 0.5, color: Colors.white),
+                      color: isSummary!
+                          ? Colors.grey.shade200
+                          : Colors.transparent),
                   child: Icon(
                     FontAwesomeIcons.list,
-                    color:
-                        isSummary! ? Color(Constants.mainColor) : Colors.white,
+                    color: isSummary!
+                        ? Color(Constants.mainColor)
+                        : Colors.grey.shade200,
                     size: 20,
                   ),
                 ),
-                Icon(
-                  Icons.forward,
-                  size: 15,
-                  color: Colors.white,
+                Text(
+                  '.........',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w800),
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                      color: isPayment! ? Colors.white : Colors.transparent),
+                      shape: BoxShape.circle,
+                      border: Border.all(width: 0.5, color: Colors.white),
+                      color: isPayment!
+                          ? Colors.grey.shade200
+                          : Colors.transparent),
                   child: Icon(
                     FontAwesomeIcons.creditCard,
-                    color:
-                        isPayment! ? Color(Constants.mainColor) : Colors.white,
+                    color: isPayment!
+                        ? Color(Constants.mainColor)
+                        : Colors.grey.shade200,
                     size: 20,
                   ),
                 ),
-                Icon(
-                  Icons.forward,
-                  size: 15,
-                  color: Colors.white,
+                Text(
+                  '.........',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w800),
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                      color: isDelivery! ? Colors.white : Colors.transparent),
+                      shape: BoxShape.circle,
+                      border: Border.all(width: 0.5, color: Colors.white),
+                      color: isDelivery!
+                          ? Colors.grey.shade200
+                          : Colors.transparent),
                   child: Icon(
-                    FontAwesomeIcons.truck,
-                    color:
-                        isDelivery! ? Color(Constants.mainColor) : Colors.white,
+                    FontAwesomeIcons.truckLoading,
+                    color: isDelivery!
+                        ? Color(Constants.mainColor)
+                        : Colors.grey.shade200,
                     size: 20,
                   ),
                 ),
-                Icon(
-                  Icons.forward,
-                  size: 15,
-                  color: Colors.white,
+                Text(
+                  '.........',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w800),
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                      color: isLocation! ? Colors.white : Colors.transparent),
+                      shape: BoxShape.circle,
+                      border: Border.all(width: 0.5, color: Colors.white),
+                      color: isLocation!
+                          ? Colors.grey.shade200
+                          : Colors.transparent),
                   child: Icon(
                     FontAwesomeIcons.mapMarkerAlt,
-                    color:
-                        isLocation! ? Color(Constants.mainColor) : Colors.white,
+                    color: isLocation!
+                        ? Color(Constants.mainColor)
+                        : Colors.grey.shade200,
                     size: 20,
                   ),
                 ),

@@ -35,52 +35,59 @@ class _SingleChoicePaymentState extends State<SingleChoicePayment> {
           widget.function(selected, widget.index);
         });
       },
-      child: Row(
-        children: [
-          Icon(
-            widget.icon,
-            size: 20,
-            color: widget.choicesList[widget.index] == true
-                ? Color(Constants.mainColor)
-                : Colors.grey.shade600,
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (_) => AddVisaScreen()));
-            },
-            child: Text(
-              widget.title,
-              style: TextStyle(
-                  color: widget.choicesList[widget.index] == true
-                      ? Color(Constants.mainColor)
-                      : Colors.grey.shade600,
-                  fontSize: 18.sp,
-                  decoration: widget.isVisa!
-                      ? TextDecoration.underline
-                      : TextDecoration.none),
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        decoration: BoxDecoration(
+            color: Colors.grey.shade200,
+            borderRadius: BorderRadius.circular(8)),
+        child: Row(
+          children: [
+            Icon(
+              widget.icon,
+              size: 20,
+              color: widget.choicesList[widget.index] == true
+                  ? Color(Constants.mainColor)
+                  : Colors.grey.shade600,
             ),
-          ),
-          Spacer(),
-          Center(
-              child: Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: widget.choicesList[widget.index] == true
-                ? Icon(
-                    FontAwesomeIcons.solidCheckCircle,
-                    size: 25.0,
-                    color: Color(Constants.mainColor),
-                  )
-                : Icon(
-                    FontAwesomeIcons.solidCircle,
-                    size: 25.0,
-                    color: Colors.grey.shade300,
-                  ),
-          )),
-        ],
+            SizedBox(
+              width: 10,
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => AddVisaScreen()));
+              },
+              child: Text(
+                widget.title,
+                style: TextStyle(
+                    color: widget.choicesList[widget.index] == true
+                        ? Color(Constants.mainColor)
+                        : Colors.grey.shade600,
+                    fontSize: 18.sp,
+                    decoration: widget.isVisa!
+                        ? TextDecoration.underline
+                        : TextDecoration.none),
+              ),
+            ),
+            Spacer(),
+            Center(
+                child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: widget.choicesList[widget.index] == true
+                  ? Icon(
+                      FontAwesomeIcons.solidCheckCircle,
+                      size: 25.0,
+                      color: Color(Constants.mainColor),
+                    )
+                  : Icon(
+                      FontAwesomeIcons.solidCircle,
+                      size: 25.0,
+                      color: Colors.grey.shade300,
+                    ),
+            )),
+          ],
+        ),
       ),
     );
   }

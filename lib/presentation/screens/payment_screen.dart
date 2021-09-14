@@ -36,36 +36,28 @@ class _PaymentScreenState extends State<PaymentScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 12, vertical: 0.04.sh),
-            padding: const EdgeInsets.all(8.0),
-            width: 0.95.sw,
-            height: 0.15.sh,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              children: [
-                SingleChoicePayment(
-                  function: singleSelection,
-                  choicesList: selections,
-                  index: 0,
-                  title: "الدفع عن طريق الفيزا",
-                  icon: Icons.payment,
-                  isVisa: true,
-                ),
-                Divider(),
-                SingleChoicePayment(
-                  function: singleSelection,
-                  choicesList: selections,
-                  index: 1,
-                  title: "الدفع عند الاستلام",
-                  icon: Icons.attach_money,
-                  isVisa: false,
-                ),
-              ],
-            ),
+          Column(
+            children: [
+              SizedBox(
+                height: 10,
+              ),
+              SingleChoicePayment(
+                function: singleSelection,
+                choicesList: selections,
+                index: 0,
+                title: "الدفع عن طريق الفيزا",
+                icon: Icons.payment,
+                isVisa: true,
+              ),
+              SingleChoicePayment(
+                function: singleSelection,
+                choicesList: selections,
+                index: 1,
+                title: "الدفع عند الاستلام",
+                icon: Icons.attach_money,
+                isVisa: false,
+              ),
+            ],
           ),
           SizedBox(
             height: 0.45.sh,

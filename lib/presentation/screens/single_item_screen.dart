@@ -70,7 +70,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                         "9.45"
                         " RS ",
                         style: TextStyle(
-                            fontSize: 30.sp,
+                            fontSize: 26.sp,
                             fontWeight: FontWeight.bold,
                             color: Color(0xff4A4B4D)),
                       ),

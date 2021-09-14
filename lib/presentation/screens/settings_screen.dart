@@ -86,7 +86,7 @@ class SettingsItem extends StatelessWidget {
       },
       child: Container(
         height: 0.09.sh,
-        margin: EdgeInsets.symmetric(vertical: 10),
+        margin: EdgeInsets.symmetric(vertical: 4),
         padding: EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
           color: Color(0xffDBE2ED),

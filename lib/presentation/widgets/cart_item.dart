@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:toot/constants.dart';
 
 class CartItem extends StatelessWidget {
   final String image;
@@ -11,14 +12,15 @@ class CartItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12.0),
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
         child: Slidable(
           key: UniqueKey(),
           actionPane: SlidableDrawerActionPane(),
           actionExtentRatio: 0.25,
           child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(8)),
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-            color: Colors.white,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -58,7 +60,7 @@ class CartItem extends StatelessWidget {
           secondaryActions: <Widget>[
             IconSlideAction(
               caption: 'تعديل',
-              color: Colors.blue,
+              color: Color(Constants.mainColor),
               icon: Icons.edit,
             ),
             IconSlideAction(

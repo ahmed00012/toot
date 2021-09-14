@@ -37,7 +37,7 @@ class _SingleChoiceDeliveryState extends State<SingleChoiceDelivery> {
         width: 0.42.sw,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: Color(0xffF0F4F8),
+          color: Colors.white,
         ),
         child: Center(
           child: Column(
@@ -45,11 +45,11 @@ class _SingleChoiceDeliveryState extends State<SingleChoiceDelivery> {
             children: [
               Image.asset(
                 widget.image!,
-                scale: 0.9,
+                height: 0.1.sh,
               ),
               Text(
                 widget.title,
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 20.sp),
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 18.sp),
               ),
               Center(
                   child: Padding(
@@ -57,13 +57,13 @@ class _SingleChoiceDeliveryState extends State<SingleChoiceDelivery> {
                 child: widget.choicesList[widget.index] == true
                     ? Icon(
                         FontAwesomeIcons.solidCheckCircle,
-                        size: 25.0,
+                        size: 20.0,
                         color: Color(Constants.mainColor),
                       )
                     : Icon(
                         FontAwesomeIcons.solidCircle,
-                        size: 25.0,
-                        color: Colors.grey.shade300,
+                        size: 20.0,
+                        color: Colors.grey.shade100,
                       ),
               )),
             ],

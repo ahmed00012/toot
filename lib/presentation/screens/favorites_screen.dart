@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
 
+import '../../constants.dart';
+
 class FavoritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -11,7 +13,7 @@ class FavoritesScreen extends StatelessWidget {
           title: 'المفضلة',
         ),
         body: ListView.builder(
-          padding: EdgeInsets.symmetric(vertical: 0.03.sh, horizontal: 0.03.sw),
+          padding: EdgeInsets.symmetric(vertical: 0.01.sh, horizontal: 0.05.sw),
           physics: BouncingScrollPhysics(),
           shrinkWrap: true,
           itemBuilder: (context, index) => FavoriteItem(
@@ -73,25 +75,34 @@ class _FavoriteItemState extends State<FavoriteItem> {
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
                     widget.name,
-                    style: TextStyle(fontSize: 18.sp, color: Color(0xffB09B87)),
+                    style: TextStyle(fontSize: 16.sp, color: Color(0xffB09B87)),
                   ),
                 ),
                 Text(
                   '${widget.price}  SAR',
                   style: TextStyle(color: Color(0xff80392C), fontSize: 16.sp),
                 ),
-                SizedBox(
-                  height: 18,
-                ),
-                GestureDetector(
-                  onTap: () {},
-                  child: Text(
-                    'الاضافة الي السلة',
-                    style: TextStyle(
-                        fontSize: 16.sp,
-                        color: Colors.brown,
-                        fontWeight: FontWeight.w800),
-                  ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 6),
+                  width: 0.35.sw,
+                  height: 0.04.sh,
+                  child: ElevatedButton.icon(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        primary: Color(Constants.mainColor),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: Icon(
+                        Icons.add_shopping_cart,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                      label: Text(
+                        'اضافة الي السله',
+                        style: TextStyle(fontSize: 12.sp),
+                      )),
                 ),
               ],
             ),

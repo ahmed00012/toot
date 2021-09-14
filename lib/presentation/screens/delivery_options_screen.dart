@@ -45,7 +45,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
               Text(
                 'اختيار السرعة',
                 style: TextStyle(
-                    fontSize: 22.sp,
+                    fontSize: 18.sp,
                     color: Colors.grey.shade500,
                     fontWeight: FontWeight.w100),
               ),
@@ -60,27 +60,31 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                     choicesList: selections,
                     index: 0,
                     title: "توصيل الان",
-                    image: 'assets/images/icon-fast-delivery.png',
+                    image: 'assets/images/delivery now.gif',
                   ),
                   SingleChoiceDelivery(
                     function: singleSelection,
                     choicesList: selections,
                     index: 1,
                     title: "توصيل لاحقا",
-                    image: 'assets/images/icon-delivery.png',
+                    image: 'assets/images/delivery later.gif',
                   ),
                 ],
               ),
+              SizedBox(
+                height: 0.025.sh,
+              ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
                 child: Text(
                   'اختيار التاريخ',
                   style:
-                      TextStyle(fontSize: 24.sp, color: Colors.grey.shade500),
+                      TextStyle(fontSize: 18.sp, color: Colors.grey.shade500),
                 ),
               ),
               Container(
-                height: 0.1.sh,
+                height: 0.06.sh,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
@@ -92,16 +96,20 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                   ],
                 ),
               ),
+              SizedBox(
+                height: 0.02.sh,
+              ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10),
                 child: Text(
                   'اختيار الوقت',
                   style:
-                      TextStyle(fontSize: 24.sp, color: Colors.grey.shade500),
+                      TextStyle(fontSize: 18.sp, color: Colors.grey.shade500),
                 ),
               ),
               Container(
-                height: 0.1.sh,
+                height: 0.06.sh,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
@@ -138,7 +146,6 @@ class BuildDayItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
-      height: 0.08.sh,
       width: 0.26.sw,
       decoration: BoxDecoration(
           color: Color(0xffF0F4F8), borderRadius: BorderRadius.circular(15)),
@@ -146,7 +153,7 @@ class BuildDayItem extends StatelessWidget {
           child: Text(
         day,
         style: TextStyle(
-            fontSize: 20.sp,
+            fontSize: 16.sp,
             color: Colors.grey.shade600,
             fontWeight: FontWeight.w300),
       )),
