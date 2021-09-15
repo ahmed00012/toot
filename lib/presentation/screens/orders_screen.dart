@@ -65,7 +65,7 @@ class _OrderItemState extends State<OrderItem> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Order #5678',
+                    'طلب #5678',
                     style:
                         TextStyle(fontSize: 18.sp, color: Colors.grey.shade600),
                   ),

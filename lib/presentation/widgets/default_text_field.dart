@@ -9,20 +9,25 @@ class BuildTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        style: TextStyle(fontSize: 20.sp),
-        decoration: InputDecoration(
-            isDense: true,
-            filled: true,
-            fillColor: Color(0xffF0F4F8),
-            hintText: hint,
-            prefixIcon: Image.asset(
-              icon,
-            ),
-            hintStyle: TextStyle(fontSize: 18.sp, color: Color(0xffA6BCD0)),
-            border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(12))),
+      child: Container(
+        height: 0.12.sh,
+        child: TextField(
+          style: TextStyle(fontSize: 20.sp),
+          decoration: InputDecoration(
+              isDense: true,
+              filled: true,
+              fillColor: Color(0xffF0F4F8),
+              hintText: hint,
+              prefixIcon: Image.asset(
+                icon,
+                height: 50,
+                width: 50,
+              ),
+              hintStyle: TextStyle(fontSize: 18.sp, color: Color(0xffA6BCD0)),
+              border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(8))),
+        ),
       ),
     );
   }
