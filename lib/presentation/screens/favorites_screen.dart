@@ -75,33 +75,27 @@ class _FavoriteItemState extends State<FavoriteItem> {
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
                     widget.name,
-                    style: TextStyle(fontSize: 16.sp, color: Color(0xffB09B87)),
+                    style: TextStyle(fontSize: 16.sp, color: Color(Constants.mainColor)),
                   ),
                 ),
                 Text(
                   '${widget.price}  SAR',
-                  style: TextStyle(color: Color(0xff80392C), fontSize: 16.sp),
+                  style: TextStyle(color: Colors.black87, fontSize: 16.sp),
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 6),
                   width: 0.35.sw,
-                  height: 0.04.sh,
-                  child: ElevatedButton.icon(
+                  height: 0.042.sh,
+                  child: TextButton.icon(
                       onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        primary: Color(Constants.mainColor),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
                       icon: Icon(
                         Icons.add_shopping_cart,
-                        color: Colors.white,
+                        color:Color(Constants.mainColor),
                         size: 18,
                       ),
                       label: Text(
                         'اضافة الي السله',
-                        style: TextStyle(fontSize: 12.sp),
+                        style: TextStyle(fontSize: 14.sp),
                       )),
                 ),
               ],

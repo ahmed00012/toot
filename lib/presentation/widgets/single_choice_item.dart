@@ -34,7 +34,7 @@ class _SingleChoiceItemState extends State<SingleChoiceItem> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 0.06.sw),
         margin: EdgeInsets.symmetric(vertical: 5),
-        height: 0.1.sh,
+        height: 0.07.sh,
         decoration: BoxDecoration(
           color: widget.choicesList[widget.index] == true
               ? Color(Constants.mainColor)

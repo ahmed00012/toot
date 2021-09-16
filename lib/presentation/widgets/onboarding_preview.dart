@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:toot/presentation/screens/login_screen.dart';
+import 'package:toot/presentation/screens/auth_screen.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 import 'package:toot/presentation/widgets/text_button.dart';
 import '../../constants.dart';
@@ -115,13 +115,13 @@ class _ImagesSliderState extends State<ImagesSlider> {
                 title: 'البدء',
                 function: () {
                   Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => LoginScreen()));
+                      .push(MaterialPageRoute(builder: (_) => AuthScreen ()));
                 })
             : BuildTextButton(
                 title: 'تخطي',
                 onPressed: () {
                   Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => LoginScreen()));
+                      .push(MaterialPageRoute(builder: (_) => AuthScreen()));
                 })
       ],
     );

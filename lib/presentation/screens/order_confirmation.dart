@@ -51,7 +51,7 @@ class OrderConfirmationScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   BuildElevatedButton(
-                    title: 'حالة الطلب الحالي',
+                    title: 'حالة الطلب',
                     function: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (_) => OrdersDetailsScreen()));

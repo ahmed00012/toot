@@ -29,11 +29,11 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
               Center(
                   child: Image.asset(
                 'assets/images/order status.gif',
-                height: 0.32.sh,
+                height: 0.26.sh,
                 fit: BoxFit.fill,
               )),
               SizedBox(
-                height: 0.08.sh,
+                height: 0.01.sh,
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,11 +60,11 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                         ),
                         Icon(
                           Icons.settings,
-                          color: Color(Constants.mainColor),
+                          color: Colors.grey.shade400,
                         ),
                         Icon(
                           Icons.delivery_dining,
-                          color: Color(Constants.mainColor),
+                          color: Colors.grey.shade400,
                         ),
                       ],
                     ),
@@ -110,7 +110,7 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                 ],
               ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 0.08.sh),
+                padding: EdgeInsets.symmetric(vertical: 0.05.sh),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [

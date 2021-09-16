@@ -73,7 +73,7 @@ class CartScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'ضرائب',
+                    'الضريبة',
                     style: TextStyle(
                         fontSize: 16.sp, color: Colors.blueGrey.shade400),
                   ),

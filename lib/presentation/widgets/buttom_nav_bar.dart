@@ -120,6 +120,7 @@ class _BottomNavBarState extends State<BottomNavBar>
                 FaIcon(
                   iconList[index],
                   color: color,
+                  size: 20,
                 ),
                 SizedBox(height: 4),
                 Padding(
@@ -129,7 +130,7 @@ class _BottomNavBarState extends State<BottomNavBar>
                     //     ? iconTitlesAr[index]
                     iconTitlesAR[index],
                     maxLines: 1,
-                    style: TextStyle(color: color, fontSize: 12),
+                    style: TextStyle(color: color, fontSize: 8),
                     group: autoSizeGroup,
                   ),
                 )
@@ -139,7 +140,7 @@ class _BottomNavBarState extends State<BottomNavBar>
         },
         backgroundColor: Colors.white,
         activeIndex: currentTab,
-        splashColor: Colors.green.shade700,
+        splashColor: Color(Constants.mainColor),
         notchAndCornersAnimation: animation,
         splashSpeedInMilliseconds: 300,
         notchSmoothness: NotchSmoothness.softEdge,

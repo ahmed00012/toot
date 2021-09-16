@@ -12,7 +12,7 @@ class AddVisaScreen extends StatelessWidget {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(
+              appBar: AppBar(
           title: Text(
             'اضافة فيزا',
             style: TextStyle(
@@ -32,6 +32,7 @@ class AddVisaScreen extends StatelessWidget {
           elevation: 0,
           backgroundColor: Colors.white,
         ),
+        backgroundColor: Colors.white,
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 0.06.sw, vertical: 0.03.sh),
           child: SingleChildScrollView(

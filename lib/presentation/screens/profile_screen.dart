@@ -28,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
+                padding: EdgeInsets.symmetric(vertical: 15.0),
                 child: Text(
                   'معلوماتك',
                   style:
@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Container(
                   padding: EdgeInsets.symmetric(
                       horizontal: 0.04.sw, vertical: 0.02.sh),
-                  height: 0.55.sh,
+                  height: 0.43.sh,
                   width: 0.85.sw,
                   decoration: BoxDecoration(
                       color: Color(0xffF0F4F8),
@@ -68,8 +68,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
+              SizedBox(height: 0.03.sh,),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
+                padding: EdgeInsets.symmetric(vertical: 12.0),
                 child: Text(
                   'اعداداتك',
                   style:
@@ -109,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             color: Color(0xFF00D2B8),
                           ),
                           inactiveSwitchBorder: Border.all(
-                            color: Color(0xFF29B6F6),
+                            color: Color(Constants.mainColor),
                           ),
                           inactiveColor: Colors.white,
                           activeColor: Colors.white,
@@ -153,7 +154,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             color: Color(0xFF00D2B8),
                           ),
                           inactiveSwitchBorder: Border.all(
-                            color: Color(0xFF29B6F6),
+                            color: Color(Constants.mainColor),
                           ),
                           inactiveColor: Colors.white,
                           activeColor: Colors.white,
@@ -189,9 +190,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 class BuildInfoItem extends StatelessWidget {
   final TextStyle titleStyle =
-      TextStyle(fontSize: 20.sp, color: Colors.grey.shade700);
+      TextStyle(fontSize: 18.sp, color: Colors.grey.shade700);
   final TextStyle detailStyle =
-      TextStyle(fontSize: 20.sp, color: Colors.grey.shade500);
+      TextStyle(fontSize: 16.sp, color: Colors.grey.shade500);
   final String title;
   final String detail;
   BuildInfoItem({required this.title, required this.detail});

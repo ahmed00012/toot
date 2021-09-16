@@ -57,14 +57,14 @@ class OrderSummaryScreen extends StatelessWidget {
               SizedBox(
                 height: 18,
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 0.55.sw,
-                    height: 0.12.sh,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical:0.02.sh),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 0.55.sw,
+                      height: 0.088.sh,
                       child: TextField(
                         style: TextStyle(fontSize: 20.sp),
                         decoration: InputDecoration(
@@ -92,28 +92,28 @@ class OrderSummaryScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 0.04.sw,
-                  ),
-                  Container(
-                    height: 0.08.sh,
-                    width: 0.28.sw,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'تطبيق',
-                        style: TextStyle(fontSize: 18.sp),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            side: BorderSide(
-                                width: 0.8, color: Color(Constants.mainColor))),
+                    SizedBox(
+                      width: 0.04.sw,
+                    ),
+                    Container(
+                      height: 0.08.sh,
+                      width: 0.28.sw,
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          'ارسال',
+                          style: TextStyle(fontSize: 16.sp,color: Colors.grey.shade500),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(
+                                  width: 0.8, color: Color(Constants.mainColor))),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -139,7 +139,7 @@ class OrderSummaryScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'ضرائب',
+                      'الضريبة',
                       style: TextStyle(
                           fontSize: 16.sp, color: Colors.blueGrey.shade400),
                     ),

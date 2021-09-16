@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:toot/presentation/screens/chat_screen.dart';
 import 'package:toot/presentation/screens/orders_screen.dart';
+import 'package:toot/presentation/screens/points_screen.dart';
 import 'package:toot/presentation/screens/profile_screen.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SettingsScreen extends StatelessWidget {
   @override
@@ -55,6 +56,10 @@ class SettingsScreen extends StatelessWidget {
               SettingsItem(
                 title: 'نقاطي',
                 image: 'assets/images/cdf.png',
+                function: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (_) => PointsScreen()));
+                },
               ),
               SettingsItem(
                 title: 'اتصل بنا',
@@ -85,8 +90,8 @@ class SettingsItem extends StatelessWidget {
         return function!();
       },
       child: Container(
-        height: 0.09.sh,
-        margin: EdgeInsets.symmetric(vertical: 4),
+        height: 0.075.sh,
+        margin: EdgeInsets.symmetric(vertical: 5),
         padding: EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
           color: Color(0xffDBE2ED),
