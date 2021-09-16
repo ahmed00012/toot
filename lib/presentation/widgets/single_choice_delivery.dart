@@ -8,14 +8,13 @@ class SingleChoiceDelivery extends StatefulWidget {
   final int index;
   final Function function;
   final List<bool> choicesList;
-  final String? image;
 
-  SingleChoiceDelivery(
-      {required this.title,
-      required this.index,
-      required this.function,
-      required this.choicesList,
-      this.image});
+  SingleChoiceDelivery({
+    required this.title,
+    required this.index,
+    required this.function,
+    required this.choicesList,
+  });
 
   @override
   _SingleChoiceDeliveryState createState() => _SingleChoiceDeliveryState();
@@ -32,21 +31,18 @@ class _SingleChoiceDeliveryState extends State<SingleChoiceDelivery> {
           widget.function(selected, widget.index);
         });
       },
-      child: Container(
-        height: 0.28.sh,
-        width: 0.42.sw,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white,
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          height: 0.08.sh,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.white,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset(
-                widget.image!,
-                height: 0.1.sh,
-              ),
               Text(
                 widget.title,
                 style: TextStyle(color: Colors.grey.shade600, fontSize: 18.sp),

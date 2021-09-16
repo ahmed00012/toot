@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toot/constants.dart';
 import 'package:toot/presentation/widgets/cart_item.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 import 'package:toot/presentation/widgets/delivery_app_bar.dart';
-import 'package:toot/presentation/widgets/indigo_elevated_button.dart';
+import 'package:toot/presentation/widgets/discount_modal_bottom_sheet.dart';
+
 import 'order_confirmation.dart';
 
 class OrderSummaryScreen extends StatelessWidget {
@@ -58,62 +58,23 @@ class OrderSummaryScreen extends StatelessWidget {
                 height: 18,
               ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical:0.02.sh),
+                padding: const EdgeInsets.symmetric(vertical: 12.0),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      width: 0.55.sw,
-                      height: 0.088.sh,
-                      child: TextField(
-                        style: TextStyle(fontSize: 20.sp),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 20),
-                          isDense: true,
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(12)),
-                          filled: true,
-                          fillColor: Color(0xffF0F4F8),
-                          hintText: 'اضافة رمز ترويجي',
-                          prefixIcon: Icon(
-                            FontAwesomeIcons.gift,
-                            size: 25,
-                            color: Color(Constants.mainColor),
-                          ),
-                          hintStyle: TextStyle(
-                              fontSize: 16.sp,
-                              color: Color(Constants.mainColor)),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
+                    Text('احصل علي خصم مع طلبك'),
+                    GestureDetector(
+                      onTap: () => discountModalBottomSheetMenu(context),
+                      child: Text(
+                        'اضافة رمز ترويجي',
+                        style: TextStyle(color: Color(Constants.mainColor)),
                       ),
-                    ),
-                    SizedBox(
-                      width: 0.04.sw,
-                    ),
-                    Container(
-                      height: 0.08.sh,
-                      width: 0.28.sw,
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          'ارسال',
-                          style: TextStyle(fontSize: 16.sp,color: Colors.grey.shade500),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              side: BorderSide(
-                                  width: 0.8, color: Color(Constants.mainColor))),
-                        ),
-                      ),
-                    ),
+                    )
                   ],
                 ),
+              ),
+              SizedBox(
+                height: 12,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),

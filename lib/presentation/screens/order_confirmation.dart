@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:toot/presentation/screens/orders_details_screen.dart';
 import 'package:toot/presentation/screens/orders_screen.dart';
 import 'package:toot/presentation/widgets/indigo_elevated_button.dart';
+
 import '../../constants.dart';
 
 class OrderConfirmationScreen extends StatelessWidget {
@@ -17,8 +18,8 @@ class OrderConfirmationScreen extends StatelessWidget {
             children: [
               Image.asset(
                 'assets/images/graphic-confirmation.png',
-                height: 0.65.sw,
-                width: 0.65.sw,
+                height: 0.45.sw,
+                width: 0.45.sw,
                 fit: BoxFit.cover,
               ),
               SizedBox(

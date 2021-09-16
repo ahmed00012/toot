@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:toot/presentation/screens/auth_screen.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 import 'package:toot/presentation/widgets/text_button.dart';
+
 import '../../constants.dart';
 
 class ImagesSlider extends StatefulWidget {
@@ -115,7 +116,7 @@ class _ImagesSliderState extends State<ImagesSlider> {
                 title: 'البدء',
                 function: () {
                   Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => AuthScreen ()));
+                      .push(MaterialPageRoute(builder: (_) => AuthScreen()));
                 })
             : BuildTextButton(
                 title: 'تخطي',

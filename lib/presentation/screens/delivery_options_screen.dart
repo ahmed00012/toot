@@ -12,6 +12,7 @@ class DeliveryOptionsScreen extends StatefulWidget {
 
 class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
   List<bool> selections = List<bool>.filled(2, false, growable: false);
+  bool isExpanded = false;
 
   List<bool> singleSelection(bool selection, int index) {
     if (selections.contains(true)) {
@@ -21,7 +22,13 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
     } else {
       selections[index] = selection;
     }
-    setState(() {});
+    setState(() {
+      if (index == 1) {
+        isExpanded = true;
+      } else {
+        isExpanded = false;
+      }
+    });
     print(selections);
     return selections;
   }
@@ -43,7 +50,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                 height: 0.05.sh,
               ),
               Text(
-                'اختيار السرعة',
+                'موعد التوصيل',
                 style: TextStyle(
                     fontSize: 18.sp,
                     color: Colors.grey.shade500,
@@ -52,7 +59,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
               SizedBox(
                 height: 10,
               ),
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SingleChoiceDelivery(
@@ -60,67 +67,74 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                     choicesList: selections,
                     index: 0,
                     title: "توصيل الان",
-                    image: 'assets/images/delivery now.gif',
                   ),
                   SingleChoiceDelivery(
                     function: singleSelection,
                     choicesList: selections,
                     index: 1,
                     title: "توصيل لاحقا",
-                    image: 'assets/images/delivery later.gif',
                   ),
                 ],
               ),
               SizedBox(
                 height: 0.025.sh,
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-                child: Text(
-                  'اختيار التاريخ',
-                  style:
-                      TextStyle(fontSize: 18.sp, color: Colors.grey.shade500),
-                ),
-              ),
-              Container(
-                height: 0.06.sh,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  children: [
-                    BuildDayItem(day: '14 اكتوبر'),
-                    BuildDayItem(day: '15 اكتوبر'),
-                    BuildDayItem(day: '16 اكتوبر'),
-                    BuildDayItem(day: '17 اكتوبر'),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 0.02.sh,
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10),
-                child: Text(
-                  'اختيار الوقت',
-                  style:
-                      TextStyle(fontSize: 18.sp, color: Colors.grey.shade500),
-                ),
-              ),
-              Container(
-                height: 0.06.sh,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  children: [
-                    BuildDayItem(day: '8:00 صباحا'),
-                    BuildDayItem(day: '8:30 صباحا'),
-                    BuildDayItem(day: '9:00 صباحا'),
-                    BuildDayItem(day: '9:30 صباحا'),
-                  ],
-                ),
-              ),
+              !isExpanded
+                  ? SizedBox(
+                      height: 0.3.sh,
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 10),
+                          child: Text(
+                            'اختيار التاريخ',
+                            style: TextStyle(
+                                fontSize: 18.sp, color: Colors.grey.shade500),
+                          ),
+                        ),
+                        Container(
+                          height: 0.06.sh,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            children: [
+                              BuildDayItem(day: '14 اكتوبر'),
+                              BuildDayItem(day: '15 اكتوبر'),
+                              BuildDayItem(day: '16 اكتوبر'),
+                              BuildDayItem(day: '17 اكتوبر'),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 0.02.sh,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 10),
+                          child: Text(
+                            'اختيار الوقت',
+                            style: TextStyle(
+                                fontSize: 18.sp, color: Colors.grey.shade500),
+                          ),
+                        ),
+                        Container(
+                          height: 0.06.sh,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            children: [
+                              BuildDayItem(day: '8:00 صباحا'),
+                              BuildDayItem(day: '8:30 صباحا'),
+                              BuildDayItem(day: '9:00 صباحا'),
+                              BuildDayItem(day: '9:30 صباحا'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 0.05.sh),
                 child: BuildIndigoButton(
