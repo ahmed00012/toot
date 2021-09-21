@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:toot/data/repositories/auth_repository.dart';
 import 'package:toot/data/web_services/auth_web_service.dart';
 
@@ -16,7 +15,7 @@ class AuthCubit extends Cubit<AuthState> {
       String? password,
       String? confirmPassword}) async {
     emit(AuthLoading());
-    authRepository
+    await authRepository
         .register(
       name: name,
       email: email,
@@ -32,8 +31,8 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> login({String? phone, String? password}) async {
     emit(AuthLoading());
-    authRepository
-        .register(
+    await authRepository
+        .login(
       password: password,
       phone: phone,
     )

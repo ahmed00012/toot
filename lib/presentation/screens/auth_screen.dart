@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,16 +28,15 @@ class _AuthScreenState extends State<AuthScreen> {
     'phone': '',
   };
 
-  var _isLoading = false;
   final _passwordController = TextEditingController();
 
-  _showDialog(BuildContext context) {
+  _showDialog(BuildContext context, String title) {
     VoidCallback continueCallBack = () => {
           Navigator.of(context).pop(),
           // code on continue comes here
         };
-    BlurryDialog alert = BlurryDialog("Abort",
-        "Are you sure you want to abort this operation?", continueCallBack);
+
+    BlurryDialog alert = BlurryDialog('خطأ', title, continueCallBack);
 
     showDialog(
       context: context,
@@ -52,34 +53,12 @@ class _AuthScreenState extends State<AuthScreen> {
 
     _formKey.currentState!.save();
 
-    if (_authMode == AuthMode.Login) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => BottomNavBar(),
-        ),
-      );
-    } else {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => ActivateAccountScreen(),
-        ),
-      );
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
     await BlocProvider.of<AuthCubit>(context).register(
         name: _authData['name'],
         phone: _authData['phone'],
         email: _authData['email'],
         password: _authData['password'],
         confirmPassword: _authData['password']);
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   void _switchAuthMode() {
@@ -98,131 +77,165 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Form(
-        key: _formKey,
-        child: Container(
-          height: 1.sh,
-          width: 1.sw,
-          padding: EdgeInsets.symmetric(horizontal: 0.08.sw),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Image.asset(
-                    "assets/images/Group 1547.png",
-                    fit: BoxFit.contain,
-                    height: 0.16.sh,
-                    width: 0.5.sw,
-                  ),
-                  Text(
-                    _authMode != AuthMode.Signup ? 'تسجيل دخول' : 'تسجيل',
-                    style: TextStyle(
-                        fontSize: 20.sp, color: Color(Constants.mainColor)),
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  if (_authMode == AuthMode.Signup)
-                    BuildTextField(
-                      icon: 'assets/images/add card  (2).png',
-                      hint: 'الاسم',
-                      validator: (String? val) {
-                        if (val!.isEmpty || val.length <= 6) {
-                          return 'الاسم غير صالح !';
-                        }
-                      },
-                      onSaved: (val) {
-                        _authData['name'] = val!;
-                      },
-                    ),
-                  if (_authMode == AuthMode.Signup)
-                    BuildTextField(
-                      icon: 'assets/images/icon-mail.png',
-                      hint: 'الايميل',
-                      validator: (val) {
-                        if (val!.isEmpty || !val!.contains('@')) {
-                          return 'الايميل غير صالح !';
-                        }
-                      },
-                      onSaved: (val) {
-                        _authData['email'] = val!;
-                      },
-                    ),
-                  BuildTextField(
-                    icon: 'assets/images/smartphone.png',
-                    hint: 'رقم الجوال',
-                    isNumeric: true,
-                    validator: (val) {
-                      if (!val.contains('05') || val.length != 10) {
-                        return 'رقم الجوال غير صالح !';
-                      }
-                    },
-                    onSaved: (val) {
-                      print(val);
-                      _authData['phone'] = val!;
-                    },
-                  ),
-                  BuildTextField(
-                    icon: 'assets/images/icon-padlock.png',
-                    hint: 'كلمة المرور',
-                    controller: _passwordController,
-                    isObscure: true,
-                    validator: (val) {
-                      if (val.length < 8) {
-                        return 'كلمة السر قصيرة جدا يجب ان تحتوي علي 8 حروف او ارقام !';
-                      }
-                    },
-                    onSaved: (val) {
-                      print(val);
-                      _authData['password'] = val!;
-                    },
-                  ),
-                  if (_authMode == AuthMode.Signup)
-                    BuildTextField(
-                      icon: 'assets/images/icon-padlock.png',
-                      hint: 'تاكيد كلمة المرور',
-                      validator: _authMode == AuthMode.Signup
-                          ? (val) {
-                              if (val != _passwordController.text) {
-                                return 'كلمة السر غير متطابقة !';
-                              }
+      body: BlocConsumer<AuthCubit, AuthState>(
+        listener: (context, state) {
+          if (state is AuthError) {
+            _showDialog(context, state.error);
+          } else if (state is AuthLoaded) {
+            if (_authMode == AuthMode.Login) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => BottomNavBar(),
+                ),
+              );
+            } else {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => ActivateAccountScreen(),
+                ),
+              );
+            }
+          }
+        },
+        builder: (context, state) => Stack(children: [
+          Form(
+            key: _formKey,
+            child: Container(
+              height: 1.sh,
+              width: 1.sw,
+              padding: EdgeInsets.symmetric(horizontal: 0.08.sw),
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      Image.asset(
+                        "assets/images/Group 1547.png",
+                        fit: BoxFit.contain,
+                        height: 0.16.sh,
+                        width: 0.5.sw,
+                      ),
+                      Text(
+                        _authMode != AuthMode.Signup ? 'تسجيل دخول' : 'تسجيل',
+                        style: TextStyle(
+                            fontSize: 20.sp, color: Color(Constants.mainColor)),
+                      ),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      if (_authMode == AuthMode.Signup)
+                        BuildTextField(
+                          icon: 'assets/images/add card  (2).png',
+                          hint: 'الاسم',
+                          validator: (String? val) {
+                            if (val!.isEmpty || val.length <= 6) {
+                              return 'الاسم غير صالح !';
                             }
-                          : (val) {},
-                      isObscure: true,
-                      onSaved: (val) {},
-                    ),
-                  if (_isLoading)
-                    CircularProgressIndicator()
-                  else
-                    SizedBox(
-                      width: 0.90.sw,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          return _submit();
+                          },
+                          onSaved: (val) {
+                            _authData['name'] = val!;
+                          },
+                        ),
+                      if (_authMode == AuthMode.Signup)
+                        BuildTextField(
+                          icon: 'assets/images/icon-mail.png',
+                          hint: 'الايميل',
+                          validator: (val) {
+                            if (val!.isEmpty || !val!.contains('@')) {
+                              return 'الايميل غير صالح !';
+                            }
+                          },
+                          onSaved: (val) {
+                            _authData['email'] = val!;
+                          },
+                        ),
+                      BuildTextField(
+                        icon: 'assets/images/smartphone.png',
+                        hint: 'رقم الجوال',
+                        isNumeric: true,
+                        validator: (val) {
+                          if (!val.contains('05') || val.length != 10) {
+                            return 'رقم الجوال غير صالح !';
+                          }
                         },
-                        child: Text(_authMode == AuthMode.Login
-                            ? 'تسجيل الدخول'
-                            : 'سجل'),
-                        style: ElevatedButton.styleFrom(
-                          primary: Color(Constants.mainColor),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5)),
+                        onSaved: (val) {
+                          print(val);
+                          _authData['phone'] = val!;
+                        },
+                      ),
+                      BuildTextField(
+                        icon: 'assets/images/icon-padlock.png',
+                        hint: 'كلمة المرور',
+                        controller: _passwordController,
+                        isObscure: true,
+                        validator: (val) {
+                          if (val.length < 8) {
+                            return 'يجب ان تحتوي كلمة السر علي 8 حروف او ارقام علي الاقل !';
+                          }
+                        },
+                        onSaved: (val) {
+                          print(val);
+                          _authData['password'] = val!;
+                        },
+                      ),
+                      if (_authMode == AuthMode.Signup)
+                        BuildTextField(
+                          icon: 'assets/images/icon-padlock.png',
+                          hint: 'تاكيد كلمة المرور',
+                          validator: _authMode == AuthMode.Signup
+                              ? (val) {
+                                  if (val != _passwordController.text) {
+                                    return 'كلمة السر غير متطابقة !';
+                                  }
+                                }
+                              : (val) {},
+                          isObscure: true,
+                          onSaved: (val) {},
+                        ),
+                      SizedBox(
+                        width: 0.90.sw,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            return _submit();
+                          },
+                          child: Text(_authMode == AuthMode.Login
+                              ? 'تسجيل الدخول'
+                              : 'سجل'),
+                          style: ElevatedButton.styleFrom(
+                            primary: Color(Constants.mainColor),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                          ),
                         ),
                       ),
-                    ),
-                  SizedBox(
-                    height: 5,
+                      SizedBox(
+                        height: 5,
+                      ),
+                      TextButton(
+                        child: Text(
+                            '${_authMode == AuthMode.Login ? 'سجل' : 'تسجيل الدخول'}'),
+                        onPressed: _switchAuthMode,
+                      ),
+                    ],
                   ),
-                  TextButton(
-                    child: Text(
-                        '${_authMode == AuthMode.Login ? 'سجل' : 'تسجيل الدخول'}'),
-                    onPressed: _switchAuthMode,
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+          Visibility(
+            visible: state is AuthLoading,
+            child: AlertDialog(
+              backgroundColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              elevation: 0,
+              content: Center(
+                child: Image.asset(
+                  'assets/images/loading.gif',
+                ),
+              ),
+            ),
+          )
+        ]),
       ),
     );
   }

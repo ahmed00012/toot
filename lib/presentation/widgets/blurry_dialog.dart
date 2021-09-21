@@ -8,27 +8,27 @@ class BlurryDialog extends StatelessWidget {
   final VoidCallback continueCallBack;
 
   BlurryDialog(this.title, this.content, this.continueCallBack);
-  final TextStyle textStyle = TextStyle(color: Colors.black);
 
   @override
   Widget build(BuildContext context) {
     return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
         child: AlertDialog(
-          title: new Text(title, style: textStyle),
-          content: new Text(content, style: textStyle),
+          title: Center(
+              child: Text(title, style: TextStyle(color: Colors.red.shade400))),
+          content: Text(
+            content,
+            style: TextStyle(color: Colors.black87),
+            textAlign: TextAlign.center,
+          ),
           actions: <Widget>[
-            TextButton(
-              child: Text("Continue"),
-              onPressed: () {
-                continueCallBack();
-              },
-            ),
-            TextButton(
-              child: Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+            Center(
+              child: TextButton(
+                child: Text('موافق'),
+                onPressed: () {
+                  continueCallBack();
+                },
+              ),
             ),
           ],
         ));

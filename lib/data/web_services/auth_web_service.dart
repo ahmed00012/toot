@@ -17,23 +17,25 @@ class AuthWebServices {
     dio = Dio(options);
   }
 
-  Future<String?> register(FormData formData) async {
+  Future<dynamic> register(FormData formData) async {
     try {
       Response response = await dio.post('auth/register', data: formData);
-      print(response.data['success']);
       return response.data['success'];
     } on DioError catch (e) {
-      print(e.response!.data['success']);
-      return e.response!.data['errors'];
+      throw e.response!.data['error'];
+      // Map errors = e.response!.data['error'];
+      // errors.values.forEach((element) {
+      //   throw (element[0]);
+      // });
     }
   }
 
-  Future<String?> login(FormData formData) async {
+  Future<dynamic> login(FormData formData) async {
     try {
       Response response = await dio.post('auth/login', data: formData);
       return response.data['success'];
     } on DioError catch (e) {
-      return e.response!.data['errors'];
+      throw e.response!.data['message'];
     }
   }
 }

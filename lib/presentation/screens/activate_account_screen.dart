@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 import 'package:toot/presentation/widgets/default_text_field.dart';
-import 'package:toot/presentation/widgets/text_button.dart';
+
 import '../../constants.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'onboarding_screen.dart';
 
 class ActivateAccountScreen extends StatelessWidget {
   const ActivateAccountScreen({Key? key}) : super(key: key);
@@ -44,7 +43,7 @@ class ActivateAccountScreen extends StatelessWidget {
                 hint: 'كود الرسالة',
               ),
               SizedBox(
-                height: 0.1.sh,
+                height: 0.22.sh,
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 0.04.sh),
@@ -56,7 +55,6 @@ class ActivateAccountScreen extends StatelessWidget {
                   },
                 ),
               ),
-              BuildTextButton(title: 'تسجيل دخول', onPressed: () {})
             ],
           ),
         ),
