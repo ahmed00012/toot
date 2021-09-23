@@ -17,11 +17,24 @@ class AuthRepository {
     return await authWebServices.register(formData);
   }
 
-  Future<dynamic> login({String? phone, String? password}) async {
+  Future<String> login({String? phone, String? password}) async {
     FormData formData = FormData.fromMap({
       'phone': phone,
       'password': password,
     });
     return await authWebServices.login(formData);
+  }
+
+  Future<dynamic> fetchIntroductionImages() async {
+    final rawData = await authWebServices.fetchIntroductionImages();
+    return rawData.map((element) => element['img_url']).toList();
+  }
+
+  Future<String> otp({String? phone, String? otp}) async {
+    FormData formData = FormData.fromMap({
+      'phone': phone,
+      'otp': otp,
+    });
+    return await authWebServices.otp(formData);
   }
 }

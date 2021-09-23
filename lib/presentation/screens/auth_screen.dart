@@ -1,8 +1,10 @@
 import 'dart:ui';
 
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:toot/cubits/auth_cubit/auth_cubit.dart';
 import 'package:toot/presentation/widgets/blurry_dialog.dart';
 import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
@@ -19,8 +21,9 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey();
+  final _formKey = GlobalKey<FormState>();
   AuthMode _authMode = AuthMode.Login;
+
   Map<String, String> _authData = {
     'name': '',
     'email': '',
@@ -53,16 +56,25 @@ class _AuthScreenState extends State<AuthScreen> {
 
     _formKey.currentState!.save();
 
-    await BlocProvider.of<AuthCubit>(context).register(
-        name: _authData['name'],
-        phone: _authData['phone'],
-        email: _authData['email'],
-        password: _authData['password'],
-        confirmPassword: _authData['password']);
+    _authMode == AuthMode.Signup
+        ? await BlocProvider.of<AuthCubit>(context).register(
+            name: _authData['name'],
+            phone: _authData['phone'],
+            email: _authData['email'],
+            password: _authData['password'],
+            confirmPassword: _authData['password'])
+        : await BlocProvider.of<AuthCubit>(context)
+            .login(
+            phone: _authData['phone'],
+            password: _authData['password'],
+          )
+            .then((value) async {
+            final storage = new FlutterSecureStorage();
+            await storage.write(key: 'token', value: value);
+          });
   }
 
   void _switchAuthMode() {
-    _formKey.currentState!.reset();
     if (_authMode == AuthMode.Login) {
       setState(() {
         _authMode = AuthMode.Signup;
@@ -83,15 +95,17 @@ class _AuthScreenState extends State<AuthScreen> {
             _showDialog(context, state.error);
           } else if (state is AuthLoaded) {
             if (_authMode == AuthMode.Login) {
-              Navigator.of(context).push(
+              Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   builder: (_) => BottomNavBar(),
                 ),
               );
             } else {
-              Navigator.of(context).push(
+              Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (_) => ActivateAccountScreen(),
+                  builder: (_) => ActivateAccountScreen(
+                    phone: _authData['phone'],
+                  ),
                 ),
               );
             }
@@ -140,7 +154,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           icon: 'assets/images/icon-mail.png',
                           hint: 'الايميل',
                           validator: (val) {
-                            if (val!.isEmpty || !val!.contains('@')) {
+                            if (!EmailValidator.validate(val)) {
                               return 'الايميل غير صالح !';
                             }
                           },
@@ -229,8 +243,13 @@ class _AuthScreenState extends State<AuthScreen> {
                   borderRadius: BorderRadius.circular(15)),
               elevation: 0,
               content: Center(
-                child: Image.asset(
-                  'assets/images/loading.gif',
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.asset(
+                    'assets/images/loading.gif',
+                    height: 0.4.sw,
+                    width: 0.4.sw,
+                  ),
                 ),
               ),
             ),

@@ -27,8 +27,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-    return BlocProvider<AuthCubit>(
-      create: (BuildContext context) => AuthCubit(),
+    return BlocProvider.value(
+      value: AuthCubit(),
       child: ScreenUtilInit(
         designSize: Size(411, 683),
         builder: () => MaterialApp(

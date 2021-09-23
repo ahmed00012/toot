@@ -29,7 +29,7 @@ class AuthCubit extends Cubit<AuthState> {
     });
   }
 
-  Future<void> login({String? phone, String? password}) async {
+  Future<dynamic> login({String? phone, String? password}) async {
     emit(AuthLoading());
     await authRepository
         .login(
@@ -38,6 +38,24 @@ class AuthCubit extends Cubit<AuthState> {
     )
         .then((value) {
       emit(AuthLoaded());
+    }).catchError((e) {
+      emit(AuthError(error: e.toString()));
+    });
+  }
+
+  Future<void> fetchIntroductionImages() async {
+    emit(ImagesLoading());
+    await authRepository.fetchIntroductionImages().then((images) {
+      emit(ImagesLoaded(images: images));
+    }).catchError((e) {
+      emit(AuthError(error: e.toString()));
+    });
+  }
+
+  Future<dynamic> otp({String? phone, String? otp}) async {
+    await authRepository.otp(phone: phone, otp: otp).then((token) {
+      print(token);
+      return token;
     }).catchError((e) {
       emit(AuthError(error: e.toString()));
     });

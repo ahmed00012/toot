@@ -2,15 +2,12 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:toot/presentation/screens/auth_screen.dart';
-import 'package:toot/presentation/widgets/default_indigo_button.dart';
-import 'package:toot/presentation/widgets/text_button.dart';
 
 import '../../constants.dart';
 
 class ImagesSlider extends StatefulWidget {
-  final List<String> imagesPreview;
-  final List<String> title;
-  ImagesSlider({required this.imagesPreview, required this.title});
+  final List<dynamic> imagesPreview;
+  ImagesSlider({required this.imagesPreview});
 
   @override
   _ImagesSliderState createState() => _ImagesSliderState();
@@ -18,77 +15,47 @@ class ImagesSlider extends StatefulWidget {
 
 class _ImagesSliderState extends State<ImagesSlider> {
   int _current = 0;
+  CarouselController buttonCarouselController = CarouselController();
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
+      alignment: AlignmentDirectional.bottomCenter,
       children: [
+        CarouselSlider.builder(
+          itemCount: widget.imagesPreview.length,
+          carouselController: buttonCarouselController,
+          options: CarouselOptions(
+              height: 1.sh,
+              enlargeCenterPage: true,
+              disableCenter: false,
+              viewportFraction: 1,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _current = index;
+                });
+              }),
+          itemBuilder: (ctx, index, _) {
+            return SizedBox(
+              height: 1.sh,
+              width: 1.sw,
+              child: Image.network(
+                widget.imagesPreview[index],
+                fit: BoxFit.fill,
+              ),
+            );
+          },
+        ),
         Container(
-          height: 0.82.sh,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 3,
-                blurRadius: 7,
-                offset: Offset(0, -2), // changes position of shadow
-              ),
-            ],
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
-          ),
+          height: 0.22.sh,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CarouselSlider.builder(
-                itemCount: widget.imagesPreview.length,
-                options: CarouselOptions(
-                    height: 0.62.sh,
-                    enlargeCenterPage: true,
-                    enableInfiniteScroll: false,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        _current = index;
-                      });
-                    }),
-                itemBuilder: (ctx, index, _) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Column(
-                      children: [
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: Image.asset(
-                              widget.imagesPreview[index],
-                              fit: BoxFit.contain,
-                              width: 0.8.sw,
-                              height: 0.4.sh,
-                            )),
-                        SizedBox(
-                          height: 0.1.sh,
-                        ),
-                        Expanded(
-                          child: Text(
-                            widget.title[index],
-                            style: TextStyle(
-                                fontSize: 20.sp,
-                                color: Color(Constants.mainColor)),
-                            textAlign: TextAlign.center,
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                },
-              ),
-              SizedBox(
-                height: 15,
-              ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 height: 15,
                 child: ListView(
                   shrinkWrap: true, scrollDirection: Axis.horizontal,
-                  //   mainAxisAlignment: MainAxisAlignment.center,
+//   mainAxisAlignment: MainAxisAlignment.center,
                   children: widget.imagesPreview.map((e) {
                     int index = widget.imagesPreview.indexOf(e);
                     return Container(
@@ -105,25 +72,42 @@ class _ImagesSliderState extends State<ImagesSlider> {
                   }).toList(),
                 ),
               ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 10),
+                width: 0.8.sw,
+                height: 0.06.sh,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (_) => AuthScreen()));
+                  },
+                  child: Text('البدء'),
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.black87,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8))),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 10),
+                width: 0.8.sw,
+                height: 0.06.sh,
+                child: ElevatedButton(
+                  onPressed: () {
+                    buttonCarouselController.nextPage(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.linear);
+                  },
+                  child: Text('التالي'),
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.black87,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8))),
+                ),
+              ),
             ],
           ),
         ),
-        SizedBox(
-          height: 0.04.sh,
-        ),
-        _current + 1 == widget.imagesPreview.length
-            ? BuildIndigoButton(
-                title: 'البدء',
-                function: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => AuthScreen()));
-                })
-            : BuildTextButton(
-                title: 'تخطي',
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => AuthScreen()));
-                })
       ],
     );
   }
