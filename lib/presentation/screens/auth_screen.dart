@@ -4,7 +4,6 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:toot/cubits/auth_cubit/auth_cubit.dart';
 import 'package:toot/presentation/widgets/blurry_dialog.dart';
 import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
@@ -63,15 +62,10 @@ class _AuthScreenState extends State<AuthScreen> {
             email: _authData['email'],
             password: _authData['password'],
             confirmPassword: _authData['password'])
-        : await BlocProvider.of<AuthCubit>(context)
-            .login(
+        : await BlocProvider.of<AuthCubit>(context).login(
             phone: _authData['phone'],
             password: _authData['password'],
-          )
-            .then((value) async {
-            final storage = new FlutterSecureStorage();
-            await storage.write(key: 'token', value: value);
-          });
+          );
   }
 
   void _switchAuthMode() {
@@ -101,7 +95,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
               );
             } else {
-              Navigator.of(context).pushReplacement(
+              Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (_) => ActivateAccountScreen(
                     phone: _authData['phone'],

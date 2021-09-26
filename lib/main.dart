@@ -6,10 +6,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:toot/presentation/screens/splash_screen.dart';
 
 import 'cubits/auth_cubit/auth_cubit.dart';
+import 'cubits/bloc_observer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  Bloc.observer = MyBlocObserver();
   runApp(EasyLocalization(
     child: MyApp(),
     supportedLocales: [

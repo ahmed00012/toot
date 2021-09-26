@@ -19,3 +19,5 @@ class AuthError extends AuthState {
   final String error;
   AuthError({required this.error});
 }
+
+class OtpSuccess extends AuthState {}

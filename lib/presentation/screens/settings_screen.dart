@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:toot/presentation/screens/auth_screen.dart';
 import 'package:toot/presentation/screens/chat_screen.dart';
 import 'package:toot/presentation/screens/orders_screen.dart';
 import 'package:toot/presentation/screens/points_screen.dart';
@@ -68,6 +70,12 @@ class SettingsScreen extends StatelessWidget {
               SettingsItem(
                 title: 'تسجيل الخروج',
                 image: 'assets/images/icon-sign-out.png',
+                function: () async {
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => AuthScreen()));
+                  final storage = FlutterSecureStorage();
+                  await storage.delete(key: 'token');
+                },
               ),
             ],
           ),

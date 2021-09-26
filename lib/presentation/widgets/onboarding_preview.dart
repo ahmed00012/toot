@@ -78,8 +78,8 @@ class _ImagesSliderState extends State<ImagesSlider> {
                 height: 0.06.sh,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (_) => AuthScreen()));
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (_) => AuthScreen()));
                   },
                   child: Text('البدء'),
                   style: ElevatedButton.styleFrom(
