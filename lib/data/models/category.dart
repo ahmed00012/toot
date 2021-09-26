@@ -1,5 +1,21 @@
 class Category {
   Category({
+    required this.categoryName,
+    required this.markets,
+  });
+
+  final String categoryName;
+  final List<Market> markets;
+
+  factory Category.fromJson(Map<String, dynamic> json) => Category(
+        categoryName: json["category_name"],
+        markets:
+            List<Market>.from(json["markets"].map((x) => Market.fromJson(x))),
+      );
+}
+
+class Market {
+  Market({
     required this.id,
     required this.phone,
     required this.email,
@@ -32,7 +48,7 @@ class Category {
   final int isActive;
   final int cityId;
   final int regionId;
-  final dynamic image;
+  final String image;
   final String vendorRate;
   final String tasteRate;
   final String priceRate;
@@ -47,9 +63,9 @@ class Category {
   final String userType;
   final String uid;
   final String name;
-  final dynamic description;
+  final String description;
 
-  factory Category.fromJson(Map<String, dynamic> json) => Category(
+  factory Market.fromJson(Map<String, dynamic> json) => Market(
         id: json["id"],
         phone: json["phone"],
         email: json["email"],
@@ -57,7 +73,7 @@ class Category {
         isActive: json["is_active"],
         cityId: json["city_id"],
         regionId: json["region_id"],
-        image: json["image"],
+        image: json["image"] == null ? null : json["image"],
         vendorRate: json["vendor_rate"],
         tasteRate: json["taste_rate"],
         priceRate: json["price_rate"],
@@ -66,12 +82,12 @@ class Category {
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
         chatUid: json["chat_uid"],
-        lat: json["lat"],
-        long: json["long"],
+        lat: json["lat"] == null ? null : json["lat"],
+        long: json["long"] == null ? null : json["long"],
         maincategoryId: json["maincategory_id"],
         userType: json["user_type"],
         uid: json["uid"],
         name: json["name"],
-        description: json["description"],
+        description: json["description"] == null ? null : json["description"],
       );
 }

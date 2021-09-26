@@ -99,6 +99,9 @@ class _AuthScreenState extends State<AuthScreen> {
                 MaterialPageRoute(
                   builder: (_) => ActivateAccountScreen(
                     phone: _authData['phone'],
+                    email: _authData['email'],
+                    name: _authData['name'],
+                    password: _authData['password'],
                   ),
                 ),
               );

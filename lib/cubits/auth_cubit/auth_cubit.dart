@@ -69,8 +69,21 @@ class AuthCubit extends Cubit<AuthState> {
     });
   }
 
-  Future<dynamic> otp({String? phone, String? otp}) async {
-    await authRepository.otp(phone: phone, otp: otp).then((token) async {
+  Future<dynamic> otp({
+    String? phone,
+    String? otp,
+    String? name,
+    String? password,
+    String? email,
+  }) async {
+    await authRepository
+        .otp(
+            phone: phone,
+            otp: otp,
+            password: password,
+            email: email,
+            name: name)
+        .then((token) async {
       print(token);
       final storage = new FlutterSecureStorage();
       await storage.write(key: 'token', value: token);

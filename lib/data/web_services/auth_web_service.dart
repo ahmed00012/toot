@@ -55,7 +55,7 @@ class AuthWebServices {
     }
   }
 
-  Future<String> otp(FormData formData) async {
+  Future<dynamic> otp(FormData formData) async {
     try {
       Response response = await dio.post('auth/verify', data: formData);
       print(response.data.toString());
@@ -65,7 +65,7 @@ class AuthWebServices {
         throw response.data['message'];
       }
     } on DioError catch (e) {
-      throw e.response!.data['message'];
+      print(e.response!.data);
     }
   }
 }

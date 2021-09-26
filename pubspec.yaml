@@ -41,6 +41,7 @@ dependencies:
   shared_preferences: ^2.0.6
   email_validator: ^2.0.1
   flutter_secure_storage: ^4.2.1
+  geolocator: ^7.6.2
 
 
   # The following adds the Cupertino Icons font to your application.

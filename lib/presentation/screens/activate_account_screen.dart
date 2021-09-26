@@ -11,7 +11,15 @@ import '../../constants.dart';
 
 class ActivateAccountScreen extends StatefulWidget {
   final String? phone;
-  ActivateAccountScreen({required this.phone});
+  final String? password;
+  final String? name;
+  final String? email;
+
+  ActivateAccountScreen(
+      {required this.phone,
+      required this.email,
+      required this.password,
+      required this.name});
 
   @override
   State<ActivateAccountScreen> createState() => _ActivateAccountScreenState();
@@ -135,8 +143,12 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
                           ],
 
                           onCompleted: (v) async {
-                            await BlocProvider.of<AuthCubit>(context)
-                                .otp(otp: v, phone: widget.phone);
+                            await BlocProvider.of<AuthCubit>(context).otp(
+                                otp: v,
+                                phone: widget.phone,
+                                name: widget.name,
+                                email: widget.email,
+                                password: widget.password);
                           },
                           // onTap: () {
                           //   print("Pressed");

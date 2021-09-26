@@ -23,6 +23,7 @@ class ProductWebServices {
           await dio.get('vendors', queryParameters: {'lat': lat, 'long': long});
       return response.data;
     } on DioError catch (e) {
+      print(e.response!.data);
       throw e.response!.data;
     }
   }

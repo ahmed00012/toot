@@ -30,10 +30,19 @@ class AuthRepository {
     return rawData.map((element) => element['img_url']).toList();
   }
 
-  Future<String> otp({String? phone, String? otp}) async {
+  Future<String> otp({
+    String? phone,
+    String? otp,
+    String? name,
+    String? password,
+    String? email,
+  }) async {
     FormData formData = FormData.fromMap({
       'phone': phone,
       'otp': otp,
+      'name': name,
+      'password': password,
+      'email': email
     });
     return await authWebServices.otp(formData);
   }
