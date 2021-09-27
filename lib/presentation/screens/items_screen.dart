@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 import 'package:toot/presentation/screens/single_item_screen.dart';
+
 import '../../constants.dart';
 
 class ItemsScreen extends StatefulWidget {
@@ -13,99 +15,102 @@ class _ItemsScreenState extends State<ItemsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                    size: 25,
-                    color: Color(Constants.mainColor),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                Center(
-                  child: Text(
-                    'المنتجات',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      color: Color(Constants.mainColor),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 0.1.sw,
-                )
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              height: 0.1.sh,
-              width: 0.8.sw,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'البان',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      color: Color(Constants.mainColor),
-                    ),
-                  ),
-                  Text(
-                    'فواكه',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      color: Color(Constants.mainColor),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(25)),
-                    child: Text(
-                      'خضروات',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          color: Color(Constants.mainColor),
-                          fontSize: 16.sp),
-                    ),
-                  ),
-                  Text(
-                    'لحوم',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      color: Color(Constants.mainColor),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            size: 25,
+            color: Color(Constants.mainColor),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        title: Text(
+          'المنتجات',
+          style: TextStyle(
+            fontWeight: FontWeight.w400,
+            color: Color(Constants.mainColor),
+          ),
         ),
         automaticallyImplyLeading: false,
         centerTitle: true,
-        toolbarHeight: 0.18.sh,
+        // toolbarHeight: 0.18.sh,
         backgroundColor: Colors.white,
         elevation: 0,
         // shape: RoundedRectangleBorder(
         //     borderRadius: BorderRadius.vertical(bottom: Radius.circular(25))),
       ),
-      body: GridView.builder(
-          itemCount: 4,
-          padding: EdgeInsets.only(top: 0.04.sh, right: 0.05.sw, left: 0.05.sw),
-          shrinkWrap: true,
-          physics: ClampingScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, childAspectRatio: 0.65),
-          itemBuilder: (context, index) => BuildItem()),
+      body: Container(
+        width: 1.sw,
+        height: 0.9.sh,
+        child: DefaultTabController(
+          length: 3,
+          // initialIndex: 1,
+          child: Expanded(
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  color: Colors.white,
+                  child: TabBar(
+                    tabs: [
+                      Tab(
+                        child: Text(
+                          "البان",
+                          style: TextStyle(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Color(Constants.mainColor),
+                          ),
+                        ),
+                      ),
+                      Tab(
+                        child: Text(
+                          "خضراوات",
+                          style: TextStyle(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Color(Constants.mainColor),
+                          ),
+                        ),
+                      ),
+                      Tab(
+                        child: Text(
+                          "لحوم",
+                          style: TextStyle(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Color(Constants.mainColor),
+                          ),
+                        ),
+                      ),
+                    ],
+
+                    // add it here
+                    indicator: RectangularIndicator(
+                      color: Colors.grey.shade100,
+                      bottomRightRadius: 25,
+                      bottomLeftRadius: 25,
+                      topLeftRadius: 25,
+                      topRightRadius: 25,
+                      paintingStyle: PaintingStyle.fill,
+                    ),
+                  ),
+                ),
+                GridView.builder(
+                    itemCount: 4,
+                    padding: EdgeInsets.only(
+                        top: 0.04.sh, right: 0.05.sw, left: 0.05.sw),
+                    shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2, childAspectRatio: 0.65),
+                    itemBuilder: (context, index) => BuildItem()),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

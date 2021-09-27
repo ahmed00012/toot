@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:toot/data/models/category.dart';
 import 'package:toot/data/repositories/product_repository.dart';
 import 'package:toot/data/web_services/product_web_service.dart';
 
@@ -22,13 +21,25 @@ class ProductCubit extends Cubit<ProductState> {
   }
 
   Future<void> fetchCategories({double? lat, double? long}) async {
-    emit(ProductsLoading());
+    emit(CategoriesLoading());
     productRepository.fetchCategories(long: long, lat: lat).then((categories) {
       emit(
-        ProductsLoaded(categories: categories),
+        CategoriesLoaded(categories: categories),
       );
     }).catchError((e) {
-      print(e.toString());
+      emit(ErrorOccur(error: e.toString()));
+    });
+  }
+
+  Future<void> fetchShopCategories({int? shopId}) async {
+    emit(ShopCategoriesLoading());
+    productRepository
+        .fetchShopCategories(shopId: shopId)
+        .then((shopCategories) {
+      emit(
+        ShopCategoriesLoaded(shopCategories: shopCategories),
+      );
+    }).catchError((e) {
       emit(ErrorOccur(error: e.toString()));
     });
   }

@@ -120,7 +120,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   child: Column(
                     children: <Widget>[
                       Image.asset(
-                        "assets/images/Group 1547.png",
+                        "assets/images/logo.png",
                         fit: BoxFit.contain,
                         height: 0.16.sh,
                         width: 0.5.sw,

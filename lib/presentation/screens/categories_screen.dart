@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:toot/cubits/product_cubit/product_cubit.dart';
 import 'package:toot/presentation/screens/items_screen.dart';
+
 import '../../constants.dart';
 
-class CategoriesScreen extends StatelessWidget {
-  final List<Map<String, String>> items = [
-    {'image': 'assets/images/kale.png', 'title': 'Skimmed milk'},
-    {'image': 'assets/images/strawberry-shadow.png', 'title': 'Strawberry'},
-    {'image': 'assets/images/pepper-shadow.png', 'title': 'Legumes'},
-    {'image': 'assets/images/broccoli-shadow.png', 'title': 'Vegetables'}
-  ];
+class CategoriesScreen extends StatefulWidget {
+  final int categoryId;
+  CategoriesScreen({required this.categoryId});
+
+  @override
+  State<CategoriesScreen> createState() => _CategoriesScreenState();
+}
+
+class _CategoriesScreenState extends State<CategoriesScreen> {
+  @override
+  void initState() {
+    BlocProvider.of<ProductCubit>(context)
+        .fetchShopCategories(shopId: widget.categoryId);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,14 +97,39 @@ class CategoriesScreen extends StatelessWidget {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(25))),
         ),
-        body: GridView.builder(
-          itemCount: items.length,
-          padding: EdgeInsets.only(top: 0.03.sh, right: 0.05.sw, left: 0.05.sw),
-          shrinkWrap: true,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, childAspectRatio: 2 / 2.5),
-          itemBuilder: (context, index) => CategoryItem(
-              image: items[index]['image']!, title: items[index]['title']!),
+        body: BlocBuilder<ProductCubit, ProductState>(
+          builder: (context, state) {
+            if (state is ShopCategoriesLoaded) {
+              final shopCat = state.shopCategories;
+              return GridView.builder(
+                itemCount: shopCat.length,
+                padding: EdgeInsets.only(
+                    top: 0.03.sh, right: 0.05.sw, left: 0.05.sw),
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, childAspectRatio: 2 / 2.5),
+                itemBuilder: (context, index) => CategoryItem(
+                    image: shopCat[index].image, title: shopCat[index].name),
+              );
+            } else {
+              return AlertDialog(
+                backgroundColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                elevation: 0,
+                content: Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.asset(
+                      'assets/images/loading.gif',
+                      height: 0.4.sw,
+                      width: 0.4.sw,
+                    ),
+                  ),
+                ),
+              );
+            }
+          },
         ),
       ),
     );
@@ -123,7 +159,7 @@ class CategoryItem extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
+              child: Image.network(
                 image,
                 height: 0.2.sh,
                 width: 0.3.sw,

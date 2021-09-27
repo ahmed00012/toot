@@ -4,11 +4,18 @@ abstract class ProductState {}
 
 class ProductInitial extends ProductState {}
 
-class ProductsLoading extends ProductState {}
+class CategoriesLoading extends ProductState {}
 
-class ProductsLoaded extends ProductState {
-  List<Category> categories;
-  ProductsLoaded({required this.categories});
+class CategoriesLoaded extends ProductState {
+  final List<dynamic> categories;
+  CategoriesLoaded({required this.categories});
+}
+
+class ShopCategoriesLoading extends ProductState {}
+
+class ShopCategoriesLoaded extends ProductState {
+  final List<dynamic> shopCategories;
+  ShopCategoriesLoaded({required this.shopCategories});
 }
 
 class ErrorOccur extends ProductState {
