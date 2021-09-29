@@ -7,8 +7,8 @@ import 'package:toot/presentation/screens/items_screen.dart';
 import '../../constants.dart';
 
 class CategoriesScreen extends StatefulWidget {
-  final int categoryId;
-  CategoriesScreen({required this.categoryId});
+  final int shopId;
+  CategoriesScreen({required this.shopId});
 
   @override
   State<CategoriesScreen> createState() => _CategoriesScreenState();
@@ -17,9 +17,13 @@ class CategoriesScreen extends StatefulWidget {
 class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   void initState() {
-    BlocProvider.of<ProductCubit>(context)
-        .fetchShopCategories(shopId: widget.categoryId);
+    getShopCat();
     super.initState();
+  }
+
+  getShopCat() {
+    BlocProvider.of<ProductCubit>(context)
+        .fetchShopCategories(shopId: widget.shopId);
   }
 
   @override
@@ -104,12 +108,24 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               return GridView.builder(
                 itemCount: shopCat.length,
                 padding: EdgeInsets.only(
-                    top: 0.03.sh, right: 0.05.sw, left: 0.05.sw),
+                  top: 0.03.sh,
+                  right: 0.05.sw,
+                  left: 0.05.sw,
+                ),
                 shrinkWrap: true,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, childAspectRatio: 2 / 2.5),
+                  crossAxisCount: 2,
+                  childAspectRatio: 2 / 2.5,
+                ),
                 itemBuilder: (context, index) => CategoryItem(
-                    image: shopCat[index].image, title: shopCat[index].name),
+                  image: shopCat[index].image,
+                  title: shopCat[index].name,
+                  shopId: widget.shopId,
+                  categoryId: shopCat[index].id,
+                  categories: shopCat,
+                  function: getShopCat,
+                  index: index,
+                ),
               );
             } else {
               return AlertDialog(
@@ -139,14 +155,35 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 class CategoryItem extends StatelessWidget {
   final String image;
   final String title;
-  CategoryItem({required this.image, required this.title});
+  final int shopId;
+  final int categoryId;
+  final List categories;
+  final int index;
+  final Function function;
+
+  CategoryItem(
+      {required this.image,
+      required this.title,
+      required this.categories,
+      required this.categoryId,
+      required this.shopId,
+      required this.function,
+      required this.index});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (_) => ItemsScreen()));
+            .push(MaterialPageRoute(
+                builder: (_) => ItemsScreen(
+                    categories: categories,
+                    catId: categoryId,
+                    shopId: shopId,
+                    index: index)))
+            .then((value) {
+          return function();
+        });
       },
       child: Container(
         margin: EdgeInsets.all(8),

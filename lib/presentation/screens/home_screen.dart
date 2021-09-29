@@ -146,7 +146,7 @@ class BuildShopsListView extends StatelessWidget {
                                 .push(
                               MaterialPageRoute(
                                 builder: (_) => CategoriesScreen(
-                                    categoryId: categories[index]
+                                    shopId: categories[index]
                                         .markets![imagesIndex]
                                         .id),
                               ),

@@ -30,9 +30,18 @@ class ProductWebServices {
   Future<dynamic> fetchShopCategories({int? shopId}) async {
     try {
       Response response = await dio.get('vendors/$shopId/categories');
-      print(response.realUri);
-      print(response.data.toString());
       return response.data['categories'];
+    } on DioError catch (e) {
+      print(e.response!.data);
+      throw e.response!.data;
+    }
+  }
+
+  Future<dynamic> fetchItems({int? shopId, int? catId, int? page}) async {
+    try {
+      Response response = await dio.get('vendors/$shopId/$catId/products',
+          queryParameters: {'page': page});
+      return response.data['data'];
     } on DioError catch (e) {
       print(e.response!.data);
       throw e.response!.data;
