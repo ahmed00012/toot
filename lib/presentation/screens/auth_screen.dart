@@ -122,13 +122,16 @@ class _AuthScreenState extends State<AuthScreen> {
                       Image.asset(
                         "assets/images/logo.png",
                         fit: BoxFit.contain,
-                        height: 0.16.sh,
-                        width: 0.5.sw,
+                        height: 0.14.sh,
+                        width: 0.4.sw,
+                      ),
+                      SizedBox(
+                        height: 10,
                       ),
                       Text(
                         _authMode != AuthMode.Signup ? 'تسجيل دخول' : 'تسجيل',
                         style: TextStyle(
-                            fontSize: 20.sp, color: Color(Constants.mainColor)),
+                            fontSize: 19.sp, color: Color(Constants.mainColor)),
                       ),
                       SizedBox(
                         height: 12,

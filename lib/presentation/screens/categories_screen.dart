@@ -188,7 +188,6 @@ class CategoryItem extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.all(8),
         height: 0.3.sh,
-        width: 0.3,
         decoration: BoxDecoration(
             color: Colors.white, borderRadius: BorderRadius.circular(10)),
         child: Column(

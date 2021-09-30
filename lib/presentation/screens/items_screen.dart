@@ -155,7 +155,7 @@ class _ItemsScreenState extends State<ItemsScreen>
                 shrinkWrap: true,
                 physics: ClampingScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, childAspectRatio: 0.62),
+                    crossAxisCount: 2, childAspectRatio: 0.52),
                 builderDelegate: PagedChildBuilderDelegate<dynamic>(
                   itemBuilder: (context, item, index) => BuildItem(
                     title: item.name,
@@ -189,6 +189,16 @@ class BuildItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('item');
+    print(0.22.sh);
+    print(0.33.sw);
+    print('cat');
+    print(0.2.sh);
+    print(0.3.sw);
+    print('shop');
+    print(0.28.sh);
+    print(0.6.sw);
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context)
@@ -227,7 +237,7 @@ class BuildItem extends StatelessWidget {
                   ),
                   Center(
                     child: Container(
-                      width: 0.3.sw,
+                      width: 0.33.sw,
                       height: 0.22.sh,
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
