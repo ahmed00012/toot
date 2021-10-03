@@ -4,7 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:toot/cubits/auth_cubit/auth_cubit.dart';
 import 'package:toot/presentation/widgets/onboarding_preview.dart';
 
-class IntroductionScreen extends StatelessWidget {
+class IntroductionScreen extends StatefulWidget {
+  @override
+  State<IntroductionScreen> createState() => _IntroductionScreenState();
+}
+
+class _IntroductionScreenState extends State<IntroductionScreen> {
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<AuthCubit>(context).fetchIntroductionImages();

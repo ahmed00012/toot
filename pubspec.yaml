@@ -5,6 +5,7 @@ description: A new Flutter project.
 # pub.dev using `pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
+
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
 # followed by an optional build number separated by a +.
@@ -23,7 +24,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  after_layout: ^1.1.0
   flutter_screenutil: ^5.0.0+2
   font_awesome_flutter: ^9.1.0
   carousel_slider: ^4.0.0-nullsafety.0
@@ -37,7 +37,7 @@ dependencies:
   bloc: ^7.1.0
   flutter_bloc: ^7.2.0
   pin_code_fields: ^7.3.0
-  location: ^4.3.0
+  geolocator: ^7.6.2
   dio: ^4.0.0
   shared_preferences: ^2.0.6
   email_validator: ^2.0.1
@@ -46,16 +46,20 @@ dependencies:
   tab_indicator_styler: ^2.0.0
   skeleton_text: ^3.0.0
   infinite_scroll_pagination: ^3.1.0
-
+  after_layout: ^1.1.0
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

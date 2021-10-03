@@ -51,7 +51,6 @@ class _BottomNavBarState extends State<BottomNavBar>
 
   @override
   void initState() {
-    super.initState();
     _animationController = AnimationController(
       duration: Duration(seconds: 1),
       vsync: this,
@@ -73,6 +72,7 @@ class _BottomNavBarState extends State<BottomNavBar>
       Duration(seconds: 1),
       () => _animationController.forward(),
     );
+    super.initState();
   }
 
   @override

@@ -4,7 +4,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:location/location.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:toot/data/local_storage.dart';
 import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 
@@ -17,44 +17,12 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with AfterLayoutMixin<SplashScreen> {
-  Location location = Location();
-  late LocationData _locationData;
-
-  getLocation() async {
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
-    }
-
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      _serviceEnabled = await location.serviceEnabled();
-      if (!_serviceEnabled) {
-        _serviceEnabled = await location.requestService();
-        if (!_serviceEnabled) {
-          return;
-        }
-      }
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-
-    _locationData = await location.getLocation();
-    print(_locationData.latitude);
-    LocalStorage.saveData(key: 'lat', value: 21.543333);
-    LocalStorage.saveData(key: 'long', value: 39.172779);
-  }
-
   checkFirstSeen() async {
-    Timer(Duration(seconds: 3), () async {
+    Position? position = await Geolocator.getLastKnownPosition();
+    LocalStorage.saveData(key: 'long', value: position!.longitude);
+    LocalStorage.saveData(key: 'lat', value: position.latitude);
+
+    Timer(Duration(seconds: 2), () async {
       if (await FlutterSecureStorage().read(key: 'token') == null) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => IntroductionScreen()),
@@ -69,11 +37,6 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void afterFirstLayout(BuildContext context) => checkFirstSeen();
-  @override
-  void initState() {
-    getLocation();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

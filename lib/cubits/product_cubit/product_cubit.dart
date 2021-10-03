@@ -22,6 +22,7 @@ class ProductCubit extends Cubit<ProductState> {
 
   Future<void> fetchCategories({double? lat, double? long}) async {
     emit(CategoriesLoading());
+
     productRepository.fetchCategories(long: long, lat: lat).then((categories) {
       emit(
         CategoriesLoaded(categories: categories),

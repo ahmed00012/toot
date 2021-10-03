@@ -19,10 +19,13 @@ class ProductWebServices {
 
   Future<dynamic> fetchCategories({double? lat, double? long}) async {
     try {
-      Response response =
-          await dio.get('vendors', queryParameters: {'lat': lat, 'long': long});
+      Response response = await dio.get('vendors', queryParameters: {
+        'lat': lat ?? 21.543333,
+        'long': long ?? 39.172779
+      });
       return response.data;
     } on DioError catch (e) {
+      print(e.toString());
       throw e.response!.data;
     }
   }
@@ -47,4 +50,16 @@ class ProductWebServices {
       throw e.response!.data;
     }
   }
+
+  // Future<dynamic> fetchItemDetails(int itemId) async {
+  //   try {
+  //     Response response = await dio.get(
+  //       'products/$itemId/details',
+  //     );
+  //     return response.data['data'];
+  //   } on DioError catch (e) {
+  //     print(e.response!.data);
+  //     throw e.response!.data;
+  //   }
+  // }
 }

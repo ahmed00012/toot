@@ -23,82 +23,81 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   int current = 0;
-
   @override
   void initState() {
     BlocProvider.of<ProductCubit>(context).fetchCategories(
-        lat: LocalStorage.getData(key: 'lat'),
-        long: LocalStorage.getData(key: 'long'));
+        long: LocalStorage.getData(key: 'long'),
+        lat: LocalStorage.getData(key: 'lat'));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: BuildAppBar(
-        title: 'المتجر',
-      ),
-      body: BlocBuilder<ProductCubit, ProductState>(builder: (context, state) {
-        if (state is CategoriesLoaded) {
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                Center(
-                  child: CarouselSlider.builder(
-                    itemCount: imagesBannerList.length,
-                    options: CarouselOptions(
-                        height: 0.25.sh,
-                        autoPlay: true,
-                        autoPlayInterval: Duration(seconds: 4),
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            current = index;
-                          });
-                        }),
-                    itemBuilder: (ctx, index, _) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Image.asset(
-                              imagesBannerList[index],
-                              fit: BoxFit.contain,
-                              width: 0.8.sw,
-                            )),
-                      );
+        appBar: BuildAppBar(
+          title: 'المتجر',
+        ),
+        body:
+            BlocBuilder<ProductCubit, ProductState>(builder: (context, state) {
+          if (state is CategoriesLoaded) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Center(
+                    child: CarouselSlider.builder(
+                      itemCount: imagesBannerList.length,
+                      options: CarouselOptions(
+                          height: 0.25.sh,
+                          autoPlay: true,
+                          autoPlayInterval: Duration(seconds: 4),
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              current = index;
+                            });
+                          }),
+                      itemBuilder: (ctx, index, _) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.asset(
+                                imagesBannerList[index],
+                                fit: BoxFit.contain,
+                                width: 0.8.sw,
+                              )),
+                        );
+                      },
+                    ),
+                  ),
+                  BuildShopsListView(
+                    categories: state.categories,
+                    function: () {
+                      BlocProvider.of<ProductCubit>(context)
+                          .emit(CategoriesLoaded(categories: state.categories));
                     },
                   ),
-                ),
-                BuildShopsListView(
-                  categories: state.categories,
-                  function: () {
-                    BlocProvider.of<ProductCubit>(context)
-                        .emit(CategoriesLoaded(categories: state.categories));
-                  },
-                ),
-              ],
-            ),
-          );
-        } else {
-          return AlertDialog(
-            backgroundColor: Colors.transparent,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            elevation: 0,
-            content: Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Image.asset(
-                  'assets/images/loading.gif',
-                  height: 0.4.sw,
-                  width: 0.4.sw,
+                ],
+              ),
+            );
+          } else {
+            return AlertDialog(
+              backgroundColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              elevation: 0,
+              content: Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.asset(
+                    'assets/images/loading.gif',
+                    height: 0.4.sw,
+                    width: 0.4.sw,
+                  ),
                 ),
               ),
-            ),
-          );
-        }
-      }),
-    );
+            );
+          }
+        }));
   }
 }
 
