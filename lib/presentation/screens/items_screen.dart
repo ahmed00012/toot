@@ -155,7 +155,7 @@ class _ItemsScreenState extends State<ItemsScreen>
                 shrinkWrap: true,
                 physics: ClampingScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, childAspectRatio: 0.52),
+                    crossAxisCount: 2, childAspectRatio: 0.53),
                 builderDelegate: PagedChildBuilderDelegate<dynamic>(
                   itemBuilder: (context, item, index) => BuildItem(
                     title: item.name,

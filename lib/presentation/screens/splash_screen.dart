@@ -1,11 +1,8 @@
 import 'dart:async';
 
-import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:toot/data/local_storage.dart';
 import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 
 import 'introduction_screen.dart';
@@ -15,13 +12,8 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with AfterLayoutMixin<SplashScreen> {
-  checkFirstSeen() async {
-    Position? position = await Geolocator.getLastKnownPosition();
-    LocalStorage.saveData(key: 'long', value: position!.longitude);
-    LocalStorage.saveData(key: 'lat', value: position.latitude);
-
+class _SplashScreenState extends State<SplashScreen> {
+  checkFirstSeen() {
     Timer(Duration(seconds: 2), () async {
       if (await FlutterSecureStorage().read(key: 'token') == null) {
         Navigator.of(context).pushReplacement(
@@ -36,7 +28,10 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   @override
-  void afterFirstLayout(BuildContext context) => checkFirstSeen();
+  void initState() {
+    checkFirstSeen();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
