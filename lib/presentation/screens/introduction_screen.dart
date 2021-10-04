@@ -18,6 +18,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
           builder: (BuildContext context, state) {
         if (state is ImagesLoaded) {
           final images = state.images;
+          print(images);
           return ImagesSlider(
             imagesPreview: images,
           );

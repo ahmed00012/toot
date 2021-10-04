@@ -62,7 +62,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> fetchIntroductionImages() async {
     emit(ImagesLoading());
-    await authRepository.fetchIntroductionImages().then((images) {
+    authRepository.fetchIntroductionImages().then((images) {
       emit(ImagesLoaded(images: images));
     }).catchError((e) {
       emit(AuthError(error: e.toString()));

@@ -7,7 +7,7 @@ class AuthInitial extends AuthState {}
 class ImagesLoading extends AuthState {}
 
 class ImagesLoaded extends AuthState {
-  final List images;
+  final List<dynamic> images;
   ImagesLoaded({required this.images});
 }
 
