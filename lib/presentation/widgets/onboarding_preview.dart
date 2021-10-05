@@ -1,9 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:toot/presentation/screens/auth_screen.dart';
 
 import '../../constants.dart';
+import 'buttom_nav_bar.dart';
 
 class ImagesSlider extends StatefulWidget {
   final List<dynamic> imagesPreview;
@@ -28,6 +28,8 @@ class _ImagesSliderState extends State<ImagesSlider> {
               height: 1.sh,
               enlargeCenterPage: true,
               disableCenter: false,
+              // autoPlayInterval: Duration(seconds: 6),
+              autoPlay: true,
               viewportFraction: 1,
               onPageChanged: (index, reason) {
                 setState(() {
@@ -46,7 +48,7 @@ class _ImagesSliderState extends State<ImagesSlider> {
           },
         ),
         Container(
-          height: 0.22.sh,
+          height: 0.15.sh,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -54,8 +56,8 @@ class _ImagesSliderState extends State<ImagesSlider> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 height: 15,
                 child: ListView(
-                  shrinkWrap: true, scrollDirection: Axis.horizontal,
-//   mainAxisAlignment: MainAxisAlignment.center,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
                   children: widget.imagesPreview.map((e) {
                     int index = widget.imagesPreview.indexOf(e);
                     return Container(
@@ -72,37 +74,49 @@ class _ImagesSliderState extends State<ImagesSlider> {
                   }).toList(),
                 ),
               ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 10),
-                width: 0.8.sw,
-                height: 0.06.sh,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (_) => AuthScreen()));
-                  },
-                  child: Text('البدء'),
-                  style: ElevatedButton.styleFrom(
-                      primary: Colors.black87,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8))),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 10),
-                width: 0.8.sw,
-                height: 0.06.sh,
-                child: ElevatedButton(
-                  onPressed: () {
-                    buttonCarouselController.nextPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.linear);
-                  },
-                  child: Text('التالي'),
-                  style: ElevatedButton.styleFrom(
-                      primary: Colors.black87,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8))),
+              Spacer(),
+              Padding(
+                padding:
+                    const EdgeInsets.only(right: 12.0, left: 12.0, bottom: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 10),
+                      width: 0.35.sw,
+                      height: 0.06.sh,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          buttonCarouselController.nextPage(
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.linear);
+                        },
+                        child: Text('التالي'),
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.black.withOpacity(0.7),
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide.none,
+                                borderRadius: BorderRadius.circular(8))),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 10),
+                      width: 0.35.sw,
+                      height: 0.06.sh,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (_) => BottomNavBar()));
+                        },
+                        child: Text('تخطي'),
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.black.withOpacity(0.7),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8))),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

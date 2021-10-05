@@ -18,6 +18,13 @@ class ShopCategoriesLoaded extends ProductState {
   ShopCategoriesLoaded({required this.shopCategories});
 }
 
+class ItemDetailsLoading extends ProductState {}
+
+class ItemDetailsLoaded extends ProductState {
+  final ItemDetails itemDetails;
+  ItemDetailsLoaded({required this.itemDetails});
+}
+
 class ErrorOccur extends ProductState {
   final String error;
   ErrorOccur({required this.error});

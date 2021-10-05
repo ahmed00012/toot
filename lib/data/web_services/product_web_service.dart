@@ -51,15 +51,15 @@ class ProductWebServices {
     }
   }
 
-  // Future<dynamic> fetchItemDetails(int itemId) async {
-  //   try {
-  //     Response response = await dio.get(
-  //       'products/$itemId/details',
-  //     );
-  //     return response.data['data'];
-  //   } on DioError catch (e) {
-  //     print(e.response!.data);
-  //     throw e.response!.data;
-  //   }
-  // }
+  Future<dynamic> fetchItemDetails(int itemId) async {
+    try {
+      Response response = await dio.get(
+        'products/$itemId/details',
+      );
+      return response.data['product'];
+    } on DioError catch (e) {
+      print(e.response!.data);
+      throw e.response!.data;
+    }
+  }
 }

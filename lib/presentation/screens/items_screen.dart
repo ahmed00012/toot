@@ -37,6 +37,7 @@ class _ItemsScreenState extends State<ItemsScreen>
       final rawData = await ProductWebServices()
           .fetchItems(shopId: widget.shopId, catId: catId, page: pageKey);
       List newItems = rawData.map((item) => Item.fromJson(item)).toList();
+      print(newItems);
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
@@ -58,7 +59,7 @@ class _ItemsScreenState extends State<ItemsScreen>
     );
 
     _pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey, widget.catId);
+      _fetchPage(1, widget.catId);
     });
 
     super.initState();
@@ -117,7 +118,9 @@ class _ItemsScreenState extends State<ItemsScreen>
                             onTap: () {
                               tabController
                                   .animateTo(widget.categories.indexOf(e));
+                              print(e.id);
                               _fetchPage(1, e.id);
+                              setState(() {});
                             },
                             child: Text(
                               e.name,
@@ -155,7 +158,7 @@ class _ItemsScreenState extends State<ItemsScreen>
                 shrinkWrap: true,
                 physics: ClampingScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, childAspectRatio: 0.53),
+                    crossAxisCount: 2, childAspectRatio: 0.6),
                 builderDelegate: PagedChildBuilderDelegate<dynamic>(
                   itemBuilder: (context, item, index) => BuildItem(
                     title: item.name,
@@ -189,20 +192,14 @@ class BuildItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('item');
-    print(0.22.sh);
-    print(0.33.sw);
-    print('cat');
-    print(0.2.sh);
-    print(0.3.sw);
-    print('shop');
-    print(0.28.sh);
-    print(0.6.sw);
-
     return GestureDetector(
       onTap: () {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (_) => SingleItemScreen()));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => SingleItemScreen(
+                  id: itemId,
+                  title: title,
+                  price: double.parse(price),
+                )));
       },
       child: StatefulBuilder(
         builder: (context, setState) {
@@ -243,7 +240,7 @@ class BuildItem extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
                             image,
-                            fit: BoxFit.fill,
+                            fit: BoxFit.contain,
                           )),
                     ),
                   ),

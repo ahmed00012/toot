@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   int current = 0;
+
   @override
   void initState() {
     BlocProvider.of<ProductCubit>(context).fetchCategories(

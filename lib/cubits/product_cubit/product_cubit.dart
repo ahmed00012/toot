@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:toot/data/local_storage.dart';
+import 'package:toot/data/models/item_details.dart';
 import 'package:toot/data/repositories/product_repository.dart';
 import 'package:toot/data/web_services/product_web_service.dart';
 
@@ -60,6 +61,17 @@ class ProductCubit extends Cubit<ProductState> {
         ShopCategoriesLoaded(shopCategories: shopCategories),
       );
     }).catchError((e) {
+      emit(ErrorOccur(error: e.toString()));
+    });
+  }
+
+  Future<dynamic> fetchItemDetails(int itemId) async {
+    emit(ItemDetailsLoading());
+    productRepository
+        .fetchItemDetails(itemId)
+        .then(
+            (itemDetails) => emit(ItemDetailsLoaded(itemDetails: itemDetails)))
+        .catchError((e) {
       emit(ErrorOccur(error: e.toString()));
     });
   }

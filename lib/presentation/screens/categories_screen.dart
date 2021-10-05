@@ -199,7 +199,7 @@ class CategoryItem extends StatelessWidget {
                 image,
                 height: 0.2.sh,
                 width: 0.3.sw,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
               ),
             ),
             Text(

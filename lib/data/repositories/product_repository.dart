@@ -1,4 +1,5 @@
 import 'package:toot/data/models/category.dart';
+import 'package:toot/data/models/item_details.dart';
 import 'package:toot/data/models/shop_category.dart';
 import 'package:toot/data/web_services/product_web_service.dart';
 
@@ -18,5 +19,10 @@ class ProductRepository {
     return rawData
         .map((shopCategory) => ShopCategory.fromJson(shopCategory))
         .toList();
+  }
+
+  Future<dynamic> fetchItemDetails(int itemId) async {
+    final rawData = await productWebServices.fetchItemDetails(itemId);
+    return ItemDetails.fromJson(rawData);
   }
 }
