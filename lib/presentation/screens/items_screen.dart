@@ -33,11 +33,11 @@ class _ItemsScreenState extends State<ItemsScreen>
       PagingController(firstPageKey: 1);
 
   Future<void> _fetchPage(int pageKey, int catId) async {
+    print('الفانكشن اشتغلت');
     try {
       final rawData = await ProductWebServices()
           .fetchItems(shopId: widget.shopId, catId: catId, page: pageKey);
       List newItems = rawData.map((item) => Item.fromJson(item)).toList();
-      print(newItems);
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
@@ -57,11 +57,9 @@ class _ItemsScreenState extends State<ItemsScreen>
       length: widget.categories.length,
       initialIndex: widget.index,
     );
-
     _pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(1, widget.catId);
+      _fetchPage(pageKey, widget.catId);
     });
-
     super.initState();
   }
 
@@ -118,9 +116,13 @@ class _ItemsScreenState extends State<ItemsScreen>
                             onTap: () {
                               tabController
                                   .animateTo(widget.categories.indexOf(e));
-                              print(e.id);
+                              print('التاب اداس');
+                              _pagingController.itemList!.clear();
                               _fetchPage(1, e.id);
-                              setState(() {});
+                              _pagingController
+                                  .addPageRequestListener((pageKey) {
+                                _fetchPage(pageKey, e.id);
+                              });
                             },
                             child: Text(
                               e.name,
