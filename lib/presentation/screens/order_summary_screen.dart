@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:toot/constants.dart';
-import 'package:toot/presentation/widgets/cart_item.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 import 'package:toot/presentation/widgets/delivery_app_bar.dart';
 import 'package:toot/presentation/widgets/discount_modal_bottom_sheet.dart';
@@ -32,26 +31,26 @@ class OrderSummaryScreen extends StatelessWidget {
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 children: [
-                  CartItem(
-                    title: 'Broccoli',
-                    image: 'assets/images/cart (2).png',
-                    price: 3.00,
-                  ),
-                  CartItem(
-                    title: 'Kale',
-                    image: 'assets/images/cart (3).png',
-                    price: 1.50,
-                  ),
-                  CartItem(
-                    title: 'Red Peppers',
-                    image: 'assets/images/cart (1).png',
-                    price: 4.00,
-                  ),
-                  CartItem(
-                    title: 'Strawberries',
-                    image: 'assets/images/cart (4).png',
-                    price: 21.00,
-                  ),
+                  // CartItem(
+                  //   title: 'Broccoli',
+                  //   image: 'assets/images/cart (2).png',
+                  //   price: 3.00,
+                  // ),
+                  // CartItem(
+                  //   title: 'Kale',
+                  //   image: 'assets/images/cart (3).png',
+                  //   price: 1.50,
+                  // ),
+                  // CartItem(
+                  //   title: 'Red Peppers',
+                  //   image: 'assets/images/cart (1).png',
+                  //   price: 4.00,
+                  // ),
+                  // CartItem(
+                  //   title: 'Strawberries',
+                  //   image: 'assets/images/cart (4).png',
+                  //   price: 21.00,
+                  // ),
                 ],
               ),
               SizedBox(

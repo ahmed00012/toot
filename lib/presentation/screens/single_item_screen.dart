@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
+import 'package:toot/cubits/favorites_cubit/favorites_cubit.dart';
 import 'package:toot/cubits/product_cubit/product_cubit.dart';
 import 'package:toot/data/models/check_box_state.dart';
 
@@ -12,8 +14,16 @@ class SingleItemScreen extends StatefulWidget {
   final int id;
   final String title;
   final double price;
+  final int shopId;
+  final bool isFav;
+  final bool? isEditable;
   SingleItemScreen(
-      {required this.id, required this.title, required this.price});
+      {required this.id,
+      required this.title,
+      required this.price,
+      required this.shopId,
+      required this.isFav,
+      this.isEditable = false});
 
   @override
   _SingleItemScreenState createState() => _SingleItemScreenState();
@@ -21,7 +31,7 @@ class SingleItemScreen extends StatefulWidget {
 
 class _SingleItemScreenState extends State<SingleItemScreen> {
   bool isFav = false;
-  int number = 1;
+  int quantity = 1;
   String? dropdownPriceValue;
   List extra = [];
   bool extendExtraMenu = false;
@@ -47,6 +57,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
   void initState() {
     BlocProvider.of<ProductCubit>(context).fetchItemDetails(widget.id);
     price = widget.price;
+    this.isFav = widget.isFav;
     super.initState();
   }
 
@@ -77,9 +88,11 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
               color: Colors.red,
             ),
             onPressed: () {
-              setState(() {
-                isFav = !isFav;
-              });
+              BlocProvider.of<FavoritesCubit>(context)
+                  .toggleFavoriteStatus(itemId: widget.id)
+                  .then((value) => setState(() {
+                        isFav = !isFav;
+                      }));
             },
           )
         ],
@@ -87,6 +100,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
       body: BlocBuilder<ProductCubit, ProductState>(builder: (context, state) {
         if (state is ItemDetailsLoaded) {
           final item = state.itemDetails;
+
           extra = state.itemDetails.addon!
               .map((extra) => CheckBoxState(
                   name: '${extra.nameAr}   + ${extra.price}  RS ',
@@ -158,7 +172,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                                 color: Color(0xff4A4B4D)),
                                           )
                                         : Text(
-                                            (price * number).toString() +
+                                            (price * quantity).toString() +
                                                 " RS ",
                                             style: TextStyle(
                                                 fontSize: 26.sp,
@@ -286,12 +300,12 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                       ),
                                       onPressed: () {
                                         setState(() {
-                                          number++;
+                                          quantity++;
                                         });
                                       },
                                     ),
                                     Text(
-                                      number.toString(),
+                                      quantity.toString(),
                                       style: TextStyle(
                                         fontSize: 24,
                                         color: Color(Constants.mainColor),
@@ -305,11 +319,11 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                         color: Color(Constants.mainColor),
                                       ),
                                       onPressed: () {
-                                        if (number == 1) {
+                                        if (quantity == 1) {
                                           return;
                                         } else {
                                           setState(() {
-                                            number--;
+                                            quantity--;
                                           });
                                         }
                                       },
@@ -319,22 +333,61 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                               ),
                             ),
                           ),
-                          Container(
-                            width: 1.sw,
-                            height: 0.07.sh,
-                            child: ElevatedButton.icon(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                  primary: Color(Constants.mainColor),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                icon: Icon(
-                                  Icons.add_shopping_cart,
-                                  color: Colors.white,
-                                ),
-                                label: Text('اضافة الي السله')),
+                          BlocBuilder<CartCubit, CartState>(
+                            builder: (context, cartState) {
+                              return Container(
+                                width: 1.sw,
+                                height: 0.07.sh,
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      if (widget.isEditable!) {
+                                        BlocProvider.of<CartCubit>(context)
+                                            .removeFromCart(
+                                                productId:
+                                                    state.itemDetails.id);
+                                      }
+                                      print('shopId');
+                                      print(widget.shopId);
+                                      BlocProvider.of<CartCubit>(context)
+                                          .addToCart(
+                                              shopId: widget.shopId,
+                                              productId: state.itemDetails.id,
+                                              quantity: quantity)
+                                          .then((value) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                backgroundColor:
+                                                    Color(Constants.mainColor),
+                                                content: Text(
+                                                    'تم اضافة المنتج الي السلة بنجاح.')));
+                                      });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Color(Constants.mainColor),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    child: cartState is CartLoading
+                                        ? CircularProgressIndicator(
+                                            color: Colors.white,
+                                          )
+                                        : Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.add_shopping_cart,
+                                                color: Colors.white,
+                                              ),
+                                              SizedBox(width: 10),
+                                              Text(widget.isEditable!
+                                                  ? 'تعديل'
+                                                  : 'اضافة الي السله')
+                                            ],
+                                          )),
+                              );
+                            },
                           ),
                           Padding(
                             padding:

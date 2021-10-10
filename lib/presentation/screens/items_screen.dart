@@ -28,16 +28,16 @@ class _ItemsScreenState extends State<ItemsScreen>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
   static const _pageSize = 5;
-
+  late int id;
   final PagingController<int, dynamic> _pagingController =
       PagingController(firstPageKey: 1);
 
   Future<void> _fetchPage(int pageKey, int catId) async {
-    print('الفانكشن اشتغلت');
     try {
       final rawData = await ProductWebServices()
           .fetchItems(shopId: widget.shopId, catId: catId, page: pageKey);
       List newItems = rawData.map((item) => Item.fromJson(item)).toList();
+      print(newItems.length);
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
@@ -57,9 +57,11 @@ class _ItemsScreenState extends State<ItemsScreen>
       length: widget.categories.length,
       initialIndex: widget.index,
     );
+    id = widget.catId;
     _pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey, widget.catId);
+      _fetchPage(pageKey, id);
     });
+
     super.initState();
   }
 
@@ -72,110 +74,124 @@ class _ItemsScreenState extends State<ItemsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            size: 25,
-            color: Color(Constants.mainColor),
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              size: 25,
+              color: Color(Constants.mainColor),
+            ),
+            splashRadius: 25,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
-          splashRadius: 25,
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        title: Text(
-          'المنتجات',
-          style: TextStyle(
-            fontWeight: FontWeight.w400,
-            color: Color(Constants.mainColor),
+          title: Text(
+            'المنتجات',
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+              color: Color(Constants.mainColor),
+            ),
           ),
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          // toolbarHeight: 0.18.sh,
+          backgroundColor: Colors.white,
+          elevation: 0,
         ),
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        // toolbarHeight: 0.18.sh,
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: Container(
-        width: 1.sw,
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              color: Colors.white,
-              width: 1.sw,
-              child: Center(
-                child: TabBar(
-                  isScrollable: true,
-                  controller: tabController,
-                  tabs: widget.categories
-                      .map(
-                        (e) => Tab(
-                          child: InkWell(
-                            onTap: () {
-                              tabController
-                                  .animateTo(widget.categories.indexOf(e));
-                              print('التاب اداس');
-                              _pagingController.itemList!.clear();
-                              _fetchPage(1, e.id);
-                              _pagingController
-                                  .addPageRequestListener((pageKey) {
-                                _fetchPage(pageKey, e.id);
-                              });
-                            },
-                            child: Text(
-                              e.name,
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w400,
-                                color: Color(Constants.mainColor),
-                              ),
+        body: Container(
+          width: 1.sw,
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                color: Colors.white,
+                width: 1.sw,
+                child: Center(
+                  child: TabBar(
+                    isScrollable: true,
+                    controller: tabController,
+                    tabs: widget.categories.map((e) {
+                      return Tab(
+                        child: InkWell(
+                          onTap: () {
+                            tabController
+                                .animateTo(widget.categories.indexOf(e));
+                            _pagingController.itemList!.clear();
+                            _fetchPage(1, e.id);
+                            setState(() {
+                              id = e.id;
+                            });
+                          },
+                          child: Text(
+                            e.name,
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w400,
+                              color: Color(Constants.mainColor),
                             ),
                           ),
                         ),
-                      )
-                      .toList(),
-                  indicator: RectangularIndicator(
-                    color: Colors.grey.shade100,
-                    horizontalPadding: 3,
-                    verticalPadding: 3,
-                    bottomRightRadius: 25,
-                    bottomLeftRadius: 25,
-                    topLeftRadius: 25,
-                    topRightRadius: 25,
-                    paintingStyle: PaintingStyle.fill,
+                      );
+                    }).toList(),
+                    indicator: RectangularIndicator(
+                      color: Colors.grey.shade100,
+                      horizontalPadding: 3,
+                      verticalPadding: 3,
+                      bottomRightRadius: 25,
+                      bottomLeftRadius: 25,
+                      topLeftRadius: 25,
+                      topRightRadius: 25,
+                      paintingStyle: PaintingStyle.fill,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              child: PagedGridView<int, dynamic>(
-                // showNewPageProgressIndicatorAsGridChild: false,
-                // showNewPageErrorIndicatorAsGridChild: false,
-                showNoMoreItemsIndicatorAsGridChild: false,
-                pagingController: _pagingController,
-                padding: EdgeInsets.symmetric(
-                    vertical: 0.02.sh, horizontal: 0.05.sw),
-                shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, childAspectRatio: 0.6),
-                builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                  itemBuilder: (context, item, index) => BuildItem(
-                    title: item.name,
-                    image: item.image,
-                    isFav: item.inFavourite,
-                    itemId: item.id,
-                    price: item.price,
+              Expanded(
+                child: PagedGridView<int, dynamic>(
+                  // showNewPageProgressIndicatorAsGridChild: false,
+                  // showNewPageErrorIndicatorAsGridChild: false,
+
+                  showNoMoreItemsIndicatorAsGridChild: false,
+                  pagingController: _pagingController,
+                  padding: EdgeInsets.symmetric(
+                      vertical: 0.02.sh, horizontal: 0.05.sw),
+                  shrinkWrap: true,
+
+                  physics: ClampingScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, childAspectRatio: 0.6),
+                  builderDelegate: PagedChildBuilderDelegate<dynamic>(
+                    noItemsFoundIndicatorBuilder: (_) => AlertDialog(
+                      backgroundColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      elevation: 0,
+                      content: Center(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.asset(
+                            'assets/images/loading.gif',
+                            height: 0.4.sw,
+                            width: 0.4.sw,
+                          ),
+                        ),
+                      ),
+                    ),
+                    itemBuilder: (context, item, index) => BuildItem(
+                      title: item.name,
+                      image: item.image,
+                      isFav: item.inFavourite,
+                      itemId: item.id,
+                      price: item.price,
+                      shopId: widget.shopId,
+                    ),
                   ),
                 ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+              )
+            ],
+          ),
+        ));
   }
 }
 
@@ -185,12 +201,14 @@ class BuildItem extends StatelessWidget {
   final String price;
   final int isFav;
   final int itemId;
+  final int shopId;
   BuildItem(
       {required this.price,
       required this.image,
       required this.title,
       required this.isFav,
-      required this.itemId});
+      required this.itemId,
+      required this.shopId});
 
   @override
   Widget build(BuildContext context) {
@@ -201,6 +219,8 @@ class BuildItem extends StatelessWidget {
                   id: itemId,
                   title: title,
                   price: double.parse(price),
+                  shopId: shopId,
+                  isFav: isFav == 1 ? true : false,
                 )));
       },
       child: StatefulBuilder(

@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:toot/cubits/favorites_cubit/favorites_cubit.dart';
 import 'package:toot/cubits/product_cubit/product_cubit.dart';
 import 'package:toot/presentation/screens/splash_screen.dart';
 
 import 'cubits/auth_cubit/auth_cubit.dart';
 import 'cubits/bloc_observer.dart';
+import 'cubits/cart_cubit/cart_cubit.dart';
 import 'data/local_storage.dart';
 
 void main() async {
@@ -40,7 +42,14 @@ class MyApp extends StatelessWidget {
             create: (context) => AuthCubit(),
           ),
           BlocProvider<ProductCubit>(
-              create: (BuildContext context) => ProductCubit()),
+            create: (BuildContext context) => ProductCubit(),
+          ),
+          BlocProvider<FavoritesCubit>(
+            create: (BuildContext context) => FavoritesCubit(),
+          ),
+          BlocProvider<CartCubit>(
+            create: (BuildContext context) => CartCubit(),
+          ),
         ],
         child: MaterialApp(
           localizationsDelegates: context.localizationDelegates,
