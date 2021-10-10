@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
 import 'package:toot/presentation/screens/add_delivery_screen.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 import 'package:toot/presentation/widgets/delivery_app_bar.dart';
@@ -15,19 +17,10 @@ class DeliveryAddressesScreen extends StatefulWidget {
 }
 
 class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
-  List<bool> selections = List<bool>.filled(2, false, growable: false);
-
-  List<bool> singleSelection(bool selection, int index) {
-    if (selections.contains(true)) {
-      int i = selections.indexOf(true);
-      selections[i] = false;
-      selections[index] = true;
-    } else {
-      selections[index] = selection;
-    }
-    setState(() {});
-    print(selections);
-    return selections;
+  @override
+  void initState() {
+    BlocProvider.of<CartCubit>(context).fetchAddress();
+    super.initState();
   }
 
   @override
@@ -81,23 +74,55 @@ class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
       ),
       body: Padding(
         padding: EdgeInsets.only(right: 0.04.sw, left: 0.04.sw, top: 0.03.sw),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SingleChoiceItem(
-                function: singleSelection,
-                choicesList: selections,
-                index: 0,
-                title: "الرياض , حي السلام",
-              ),
-              SingleChoiceItem(
-                function: singleSelection,
-                choicesList: selections,
-                index: 1,
-                title: "المدينة المنورة , العزيزة",
-              ),
-            ],
-          ),
+        child: BlocBuilder<CartCubit, CartState>(
+          builder: (context, state) {
+            if (state is AddressesLoaded) {
+              final addresses = state.addresses;
+              List<bool> selections =
+                  List<bool>.filled(addresses.length, false, growable: false);
+              List<bool> singleSelection(bool selection, int index) {
+                if (selections.contains(true)) {
+                  int i = selections.indexOf(true);
+                  selections[i] = false;
+                  selections[index] = true;
+                } else {
+                  selections[index] = selection;
+                }
+                setState(() {});
+                print(selections);
+                return selections;
+              }
+
+              return ListView.builder(
+                shrinkWrap: true,
+                itemCount: addresses.length,
+                physics: ClampingScrollPhysics(),
+                itemBuilder: (context, index) => SingleChoiceItem(
+                  function: singleSelection,
+                  choicesList: selections,
+                  index: index,
+                  title: addresses[index].address!,
+                ),
+              );
+            } else {
+              return AlertDialog(
+                backgroundColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                elevation: 0,
+                content: Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.asset(
+                      'assets/images/loading.gif',
+                      height: 0.4.sw,
+                      width: 0.4.sw,
+                    ),
+                  ),
+                ),
+              );
+            }
+          },
         ),
       ),
     );

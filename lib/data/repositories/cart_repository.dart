@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:toot/data/models/address.dart';
 import 'package:toot/data/models/cart_item.dart';
 import 'package:toot/data/web_services/cart_web_service.dart';
 
@@ -26,5 +27,10 @@ class CartRepository {
   Future<dynamic> fetchCart() async {
     final rawData = await cartWebServices.fetchCart();
     return CartItem.fromJson(rawData);
+  }
+
+  Future<dynamic> fetchAddress() async {
+    final rawData = await cartWebServices.fetchAddress();
+    return rawData.map((address) => Address.fromJson(address)).toList();
   }
 }

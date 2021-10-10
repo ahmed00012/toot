@@ -7,8 +7,9 @@ class FavoritesInitial extends FavoritesState {}
 
 class FavoritesLoading extends FavoritesState {}
 
-// class FavoritesLoaded extends FavoritesState {
-//   final List<Favorite> favorites;
-//   FavoritesLoaded({required this.favorites});
-// }
+class FavoritesLoaded extends FavoritesState {
+  final List favorites;
+  FavoritesLoaded({required this.favorites});
+}
+
 class FavoritesError extends FavoritesState {}

@@ -1,11 +1,15 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-
-import '../local_storage.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class FavoritesWebServices {
   late Dio dio;
+  static late var token;
+
+  static init() async {
+    token = await FlutterSecureStorage().read(key: 'token');
+  }
 
   FavoritesWebServices() {
     BaseOptions options = BaseOptions(
@@ -13,25 +17,19 @@ class FavoritesWebServices {
         receiveDataWhenStatusError: true,
         connectTimeout: 20 * 1000, // 60 seconds,
         receiveTimeout: 20 * 1000,
-        headers: LocalStorage.getData(key: 'token') == null
-            ? {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Content-Type': 'application/json',
-                'Content-Language': 'ar',
-              }
-            : {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Content-Type': 'application/json',
-                'Content-Language': 'ar',
-                HttpHeaders.authorizationHeader:
-                    "Bearer" + LocalStorage.getData(key: 'token')
-              });
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Language': 'ar',
+          'X-Requested-With': 'XMLHttpRequest',
+          HttpHeaders.authorizationHeader: "Bearer " + token
+        });
 
     dio = Dio(options);
   }
 
   Future<bool> toggleFavoriteStatus(FormData formData) async {
     try {
+      print(dio.options.headers);
       Response response =
           await dio.post('customer/favourite/toggle', data: formData);
       print(response.data);
@@ -42,13 +40,13 @@ class FavoritesWebServices {
     }
   }
 
-  Future<List<dynamic>> fetchFavorites() async {
+  Future<dynamic> fetchFavorites() async {
     try {
       final response = await dio.get('customer/favourite/list');
       return response.data;
     } on DioError catch (e) {
       print(e.response.toString());
-      return [];
+      throw (e.response!.data);
     }
   }
 }

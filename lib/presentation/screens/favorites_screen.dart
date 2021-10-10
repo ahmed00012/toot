@@ -1,27 +1,70 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:toot/cubits/favorites_cubit/favorites_cubit.dart';
+import 'package:toot/presentation/screens/single_item_screen.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
 
 import '../../constants.dart';
 
-class FavoritesScreen extends StatelessWidget {
+class FavoritesScreen extends StatefulWidget {
+  @override
+  State<FavoritesScreen> createState() => _FavoritesScreenState();
+}
+
+class _FavoritesScreenState extends State<FavoritesScreen> {
+  @override
+  void initState() {
+    BlocProvider.of<FavoritesCubit>(context).fetchFavorites();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: BuildAppBar(
           title: 'المفضلة',
         ),
-        body: ListView.builder(
-          padding: EdgeInsets.symmetric(vertical: 0.01.sh, horizontal: 0.05.sw),
-          physics: BouncingScrollPhysics(),
-          shrinkWrap: true,
-          itemBuilder: (context, index) => FavoriteItem(
-            name: 'Broccoli',
-            image: 'assets/images/broccoli.png',
-            price: '9.00',
-          ),
-          itemCount: 4,
+        body: BlocBuilder<FavoritesCubit, FavoritesState>(
+          builder: (context, state) {
+            if (state is FavoritesLoaded) {
+              final fav = state.favorites;
+              return ListView.builder(
+                padding: EdgeInsets.symmetric(
+                    vertical: 0.01.sh, horizontal: 0.05.sw),
+                physics: BouncingScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (context, index) => FavoriteItem(
+                  name: fav[index].product!.name!,
+                  image: fav[index].product!.imageOne!,
+                  price: fav[index].product!.price!,
+                  id: fav[index].productId!,
+                  shopId: fav[index].vendorId!,
+                  isFav: fav[index].product!.inFavourite == 1 ? true : false,
+                ),
+                itemCount: fav.length,
+              );
+            } else {
+              return AlertDialog(
+                backgroundColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                elevation: 0,
+                content: Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.asset(
+                      'assets/images/loading.gif',
+                      height: 0.4.sw,
+                      width: 0.4.sw,
+                    ),
+                  ),
+                ),
+              );
+            }
+          },
         ));
   }
 }
@@ -30,12 +73,17 @@ class FavoriteItem extends StatefulWidget {
   final String name;
   final String price;
   final String image;
+  final int id;
+  final int shopId;
+  final bool isFav;
 
-  FavoriteItem({
-    required this.image,
-    required this.name,
-    required this.price,
-  });
+  FavoriteItem(
+      {required this.image,
+      required this.name,
+      required this.price,
+      required this.id,
+      required this.shopId,
+      required this.isFav});
 
   @override
   _FavoriteItemState createState() => _FavoriteItemState();
@@ -57,9 +105,9 @@ class _FavoriteItemState extends State<FavoriteItem> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
+              child: Image.network(
                 widget.image,
-                fit: BoxFit.fill,
+                fit: BoxFit.contain,
                 height: 0.2.sw,
                 width: 0.2.sw,
               ),
@@ -75,7 +123,8 @@ class _FavoriteItemState extends State<FavoriteItem> {
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
                     widget.name,
-                    style: TextStyle(fontSize: 16.sp, color: Color(Constants.mainColor)),
+                    style: TextStyle(
+                        fontSize: 16.sp, color: Color(Constants.mainColor)),
                   ),
                 ),
                 Text(
@@ -87,10 +136,18 @@ class _FavoriteItemState extends State<FavoriteItem> {
                   width: 0.35.sw,
                   height: 0.042.sh,
                   child: TextButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => SingleItemScreen(
+                                id: widget.id,
+                                title: widget.name,
+                                price: double.parse(widget.price),
+                                shopId: widget.shopId,
+                                isFav: widget.isFav)));
+                      },
                       icon: Icon(
                         Icons.add_shopping_cart,
-                        color:Color(Constants.mainColor),
+                        color: Color(Constants.mainColor),
                         size: 18,
                       ),
                       label: Text(
@@ -107,7 +164,18 @@ class _FavoriteItemState extends State<FavoriteItem> {
                 color: Color(0xffFD8C44),
                 size: 22,
               ),
-              onPressed: () {},
+              onPressed: () {
+                BlocProvider.of<FavoritesCubit>(context)
+                    .removeFromFavorites(itemId: widget.id)
+                    .then((value) => Fluttertoast.showToast(
+                        msg: "تم حذف المنتج بنجاح من المفضلة.",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 3,
+                        backgroundColor: Color(Constants.mainColor),
+                        textColor: Colors.white,
+                        fontSize: 16.0));
+              },
             ),
             SizedBox(
               width: 0.04.sw,

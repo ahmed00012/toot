@@ -7,6 +7,11 @@ import '../local_storage.dart';
 
 class CartWebServices {
   late Dio dio;
+  static late var token;
+
+  static init() async {
+    token = await FlutterSecureStorage().read(key: 'token');
+  }
 
   CartWebServices() {
     BaseOptions options = BaseOptions(
@@ -20,8 +25,7 @@ class CartWebServices {
               }
             : {
                 'Accept': 'application/json',
-                HttpHeaders.authorizationHeader:
-                    "Bearer" + LocalStorage.getData(key: 'token')
+                HttpHeaders.authorizationHeader: "Bearer " + token
               });
 
     dio = Dio(options);
@@ -58,6 +62,17 @@ class CartWebServices {
       } else {
         return response.data;
       }
+    } on DioError catch (e) {
+      print(e.response!.data);
+      throw e.response!.data;
+    }
+  }
+
+  Future<dynamic> fetchAddress() async {
+    try {
+      Response response = await dio.get('customer/addresses');
+      print(response.data);
+      return response.data;
     } on DioError catch (e) {
       print(e.response!.data);
       throw e.response!.data;

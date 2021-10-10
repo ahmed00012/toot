@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
+import 'package:toot/cubits/favorites_cubit/favorites_cubit.dart';
 import 'package:toot/data/models/item.dart';
 import 'package:toot/data/web_services/product_web_service.dart';
 import 'package:toot/presentation/screens/single_item_screen.dart';
+import 'package:toot/presentation/widgets/blurry_dialog.dart';
 
 import '../../constants.dart';
+import 'auth_screen.dart';
 
 class ItemsScreen extends StatefulWidget {
   final List categories;
@@ -61,7 +66,7 @@ class _ItemsScreenState extends State<ItemsScreen>
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey, id);
     });
-
+    print(widget.shopId);
     super.initState();
   }
 
@@ -112,17 +117,16 @@ class _ItemsScreenState extends State<ItemsScreen>
                     isScrollable: true,
                     controller: tabController,
                     tabs: widget.categories.map((e) {
-                      return Tab(
-                        child: InkWell(
-                          onTap: () {
-                            tabController
-                                .animateTo(widget.categories.indexOf(e));
-                            _pagingController.itemList!.clear();
-                            _fetchPage(1, e.id);
-                            setState(() {
-                              id = e.id;
-                            });
-                          },
+                      return GestureDetector(
+                        onTap: () {
+                          tabController.animateTo(widget.categories.indexOf(e));
+                          _pagingController.itemList!.clear();
+                          _fetchPage(_pagingController.firstPageKey, e.id);
+                          setState(() {
+                            id = e.id;
+                          });
+                        },
+                        child: Tab(
                           child: Text(
                             e.name,
                             style: TextStyle(
@@ -181,7 +185,7 @@ class _ItemsScreenState extends State<ItemsScreen>
                     itemBuilder: (context, item, index) => BuildItem(
                       title: item.name,
                       image: item.image,
-                      isFav: item.inFavourite,
+                      isFav: item.inFavourite == 1 ? true : false,
                       itemId: item.id,
                       price: item.price,
                       shopId: widget.shopId,
@@ -199,33 +203,54 @@ class BuildItem extends StatelessWidget {
   final String title;
   final String image;
   final String price;
-  final int isFav;
+  final bool isFav;
   final int itemId;
   final int shopId;
-  BuildItem(
-      {required this.price,
-      required this.image,
-      required this.title,
-      required this.isFav,
-      required this.itemId,
-      required this.shopId});
+
+  BuildItem({
+    required this.price,
+    required this.image,
+    required this.title,
+    required this.isFav,
+    required this.itemId,
+    required this.shopId,
+  });
+
+  _showDialog(BuildContext context, String title) {
+    VoidCallback continueCallBack = () => {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => AuthScreen())),
+          // code on continue comes here
+        };
+    BlurryDialog alert = BlurryDialog('التسجيل اولا', title, continueCallBack);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => SingleItemScreen(
-                  id: itemId,
-                  title: title,
-                  price: double.parse(price),
-                  shopId: shopId,
-                  isFav: isFav == 1 ? true : false,
-                )));
-      },
-      child: StatefulBuilder(
-        builder: (context, setState) {
-          return Padding(
+    print('fav status');
+    print(isFav);
+    bool favStatus = isFav;
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => SingleItemScreen(
+                      id: itemId,
+                      title: title,
+                      price: double.parse(price),
+                      shopId: shopId,
+                      isFav: favStatus,
+                    )));
+          },
+          child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
               padding: EdgeInsets.all(8),
@@ -239,13 +264,21 @@ class BuildItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       IconButton(
-                        onPressed: () {
-                          // setState(() {
-                          //   isFav = !isFav;
-                          // });
+                        onPressed: () async {
+                          if (await FlutterSecureStorage().read(key: 'token') ==
+                              null) {
+                            _showDialog(context,
+                                'لا يمكن الاضافه الي المفضلة يجب عليك التسجيل اولا');
+                          } else {
+                            BlocProvider.of<FavoritesCubit>(context)
+                                .toggleFavoriteStatus(itemId: itemId)
+                                .then((value) => setState(() {
+                                      favStatus = !favStatus;
+                                    }));
+                          }
                         },
                         icon: Icon(
-                          isFav == 1
+                          favStatus
                               ? Icons.favorite
                               : Icons.favorite_border_outlined,
                           color: Colors.red,
@@ -303,18 +336,9 @@ class BuildItem extends StatelessWidget {
                 ],
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
-
-// Fluttertoast.showToast(
-//     msg: "تمت اضافة 3 منتجات الى سلتك",
-//     toastLength: Toast.LENGTH_SHORT,
-//     gravity: ToastGravity.BOTTOM,
-//     timeInSecForIosWeb: 3,
-//     backgroundColor: Colors.green,
-//     textColor: Colors.white,
-//     fontSize: 16.0);

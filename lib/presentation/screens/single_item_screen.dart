@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
 import 'package:toot/cubits/favorites_cubit/favorites_cubit.dart';
 import 'package:toot/cubits/product_cubit/product_cubit.dart';
 import 'package:toot/data/models/check_box_state.dart';
+import 'package:toot/presentation/screens/auth_screen.dart';
+import 'package:toot/presentation/widgets/blurry_dialog.dart';
 
 import '../../constants.dart';
 
@@ -30,14 +33,14 @@ class SingleItemScreen extends StatefulWidget {
 }
 
 class _SingleItemScreenState extends State<SingleItemScreen> {
-  bool isFav = false;
+  late bool isFav;
   int quantity = 1;
   String? dropdownPriceValue;
+  List prices = [];
+  List chosenExtra = [];
   List extra = [];
-  bool extendExtraMenu = false;
   final _formKey = GlobalKey<FormState>();
   List<String> images = [];
-  String? kindDropdownValue;
   double price = 0.00;
   int current = 0;
 
@@ -51,6 +54,23 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
         this.price = this.price - extraPrice;
       });
     }
+  }
+
+  _showDialog(BuildContext context, String title) {
+    VoidCallback continueCallBack = () => {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => AuthScreen())),
+          // code on continue comes here
+        };
+
+    BlurryDialog alert = BlurryDialog('التسجيل اولا', title, continueCallBack);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   @override
@@ -87,12 +107,17 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
               isFav ? Icons.favorite : Icons.favorite_border_outlined,
               color: Colors.red,
             ),
-            onPressed: () {
-              BlocProvider.of<FavoritesCubit>(context)
-                  .toggleFavoriteStatus(itemId: widget.id)
-                  .then((value) => setState(() {
-                        isFav = !isFav;
-                      }));
+            onPressed: () async {
+              if (await FlutterSecureStorage().read(key: 'token') == null) {
+                _showDialog(context,
+                    'لا يمكن الاضافه الي المفضلة يجب عليك التسجيل اولا');
+              } else {
+                BlocProvider.of<FavoritesCubit>(context)
+                    .toggleFavoriteStatus(itemId: widget.id)
+                    .then((value) => setState(() {
+                          isFav = !isFav;
+                        }));
+              }
             },
           )
         ],

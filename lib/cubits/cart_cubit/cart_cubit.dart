@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:meta/meta.dart';
+import 'package:toot/data/models/address.dart';
 import 'package:toot/data/models/cart_item.dart';
 import 'package:toot/data/repositories/cart_repository.dart';
 import 'package:toot/data/web_services/cart_web_service.dart';
@@ -57,6 +58,16 @@ class CartCubit extends Cubit<CartState> {
     cartRepository
         .fetchCart()
         .then((cartDetails) => emit(CartLoaded(cartDetails: cartDetails)))
+        .catchError((e) {
+      emit(CartError(error: e.toString()));
+    });
+  }
+
+  Future<void> fetchAddress() async {
+    emit(CartLoading());
+    cartRepository
+        .fetchAddress()
+        .then((addresses) => emit(AddressesLoaded(addresses: addresses)))
         .catchError((e) {
       emit(CartError(error: e.toString()));
     });

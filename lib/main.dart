@@ -11,11 +11,17 @@ import 'cubits/auth_cubit/auth_cubit.dart';
 import 'cubits/bloc_observer.dart';
 import 'cubits/cart_cubit/cart_cubit.dart';
 import 'data/local_storage.dart';
+import 'data/web_services/cart_web_service.dart';
+import 'data/web_services/favorites_web_service.dart';
+import 'data/web_services/product_web_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await LocalStorage.init();
+  await ProductWebServices.init();
+  await FavoritesWebServices.init();
+  await CartWebServices.init();
   Bloc.observer = MyBlocObserver();
   runApp(EasyLocalization(
     child: MyApp(),

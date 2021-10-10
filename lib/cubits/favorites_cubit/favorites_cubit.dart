@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:toot/data/models/favorite.dart';
 import 'package:toot/data/repositories/favorites_repository.dart';
 import 'package:toot/data/web_services/favorites_web_service.dart';
 
@@ -32,25 +33,25 @@ class FavoritesCubit extends Cubit<FavoritesState> {
   Future<void> removeFromFavorites({required int itemId}) async {
     favoritesRepository.toggleFavoriteStatus(itemId: itemId).then((value) {
       if (value == true) {
-        // deleteFavorite(itemId);
+        deleteFavorite(itemId);
         print('removed from favorites');
       }
     });
   }
 
-  // void deleteFavorite(int id) {
-  //   final currentState = state;
-  //   if (currentState is FavoritesLoaded) {
-  //     final fav = currentState.favorites;
-  //     fav.removeWhere((element) => element.item.id == id);
-  //     emit(FavoritesLoaded(favorites: fav));
-  //   }
-  // }
-  //
-  // Future<void> fetchFavorites() async {
-  //   emit(FavoritesLoading());
-  //   favoritesRepository.fetchFavorites().then((fetchedFavorites) {
-  //     emit(FavoritesLoaded(favorites: fetchedFavorites));
-  //   });
-  // }
+  void deleteFavorite(int id) {
+    final currentState = state;
+    if (currentState is FavoritesLoaded) {
+      final fav = currentState.favorites;
+      fav.removeWhere((element) => element.productId == id);
+      emit(FavoritesLoaded(favorites: fav));
+    }
+  }
+
+  Future<void> fetchFavorites() async {
+    emit(FavoritesLoading());
+    favoritesRepository.fetchFavorites().then((fetchedFavorites) {
+      emit(FavoritesLoaded(favorites: fetchedFavorites));
+    });
+  }
 }
