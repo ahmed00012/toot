@@ -8,17 +8,19 @@ class SingleChoicePayment extends StatefulWidget {
   final String title;
   final int index;
   final Function function;
+  final String image;
   final List<bool> choicesList;
-  final IconData icon;
+
   final bool? isVisa;
 
-  SingleChoicePayment(
-      {required this.title,
-      required this.index,
-      required this.function,
-      required this.choicesList,
-      required this.isVisa,
-      required this.icon});
+  SingleChoicePayment({
+    required this.title,
+    required this.index,
+    required this.function,
+    required this.choicesList,
+    required this.image,
+    required this.isVisa,
+  });
 
   @override
   _SingleChoicePaymentState createState() => _SingleChoicePaymentState();
@@ -43,13 +45,9 @@ class _SingleChoicePaymentState extends State<SingleChoicePayment> {
             borderRadius: BorderRadius.circular(8)),
         child: Row(
           children: [
-            Icon(
-              widget.icon,
-              size: 20,
-              color: widget.choicesList[widget.index] == true
-                  ? Color(Constants.mainColor)
-                  : Colors.grey.shade600,
-            ),
+            // Image.network(
+            //  image!
+            // ),
             SizedBox(
               width: 10,
             ),

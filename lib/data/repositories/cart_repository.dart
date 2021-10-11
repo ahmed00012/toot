@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:toot/data/models/address.dart';
 import 'package:toot/data/models/cart_item.dart';
+import 'package:toot/data/models/payment.dart';
 import 'package:toot/data/web_services/cart_web_service.dart';
 
 class CartRepository {
@@ -32,5 +33,32 @@ class CartRepository {
   Future<dynamic> fetchAddress() async {
     final rawData = await cartWebServices.fetchAddress();
     return rawData.map((address) => Address.fromJson(address)).toList();
+  }
+
+  Future<dynamic> addAddress(
+      {String? cartToken,
+      String? address,
+      String? district,
+      double? lat,
+      double? lng}) async {
+    FormData formData = FormData.fromMap({
+      'cart_token': cartToken,
+      'address': address,
+      'district': district,
+      'lng': lng,
+      'lat': lat
+    });
+    return await cartWebServices.addAddress(formData);
+  }
+
+  Future<dynamic> selectAddress({String? cartToken, int? addressId}) async {
+    FormData formData =
+        FormData.fromMap({'cart_token': cartToken, 'address_id': addressId});
+    return await cartWebServices.selectAddress(formData);
+  }
+
+  Future<dynamic> fetchPayments() async {
+    final rawData = await cartWebServices.fetchPayments();
+    return rawData.map((address) => Payment.fromJson(address)).toList();
   }
 }

@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import '../local_storage.dart';
-
 class CartWebServices {
   late Dio dio;
   static late var token;
@@ -19,12 +17,16 @@ class CartWebServices {
         receiveDataWhenStatusError: true,
         connectTimeout: 20 * 1000, // 60 seconds,
         receiveTimeout: 20 * 1000,
-        headers: LocalStorage.getData(key: 'token') == null
+        headers: token == null
             ? {
                 'Accept': 'application/json',
+                'Content-Language': 'ar',
+                'X-Requested-With': 'XMLHttpRequest',
               }
             : {
                 'Accept': 'application/json',
+                'Content-Language': 'ar',
+                'X-Requested-With': 'XMLHttpRequest',
                 HttpHeaders.authorizationHeader: "Bearer " + token
               });
 
@@ -71,6 +73,39 @@ class CartWebServices {
   Future<dynamic> fetchAddress() async {
     try {
       Response response = await dio.get('customer/addresses');
+      print(response.data);
+      return response.data;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      throw e.response!.data;
+    }
+  }
+
+  Future<dynamic> addAddress(FormData formData) async {
+    try {
+      Response response = await dio.post('cart/add_address', data: formData);
+      print(response.data);
+      return response.data;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      throw e.response!.data;
+    }
+  }
+
+  Future<dynamic> selectAddress(FormData formData) async {
+    try {
+      Response response = await dio.post('cart/choose_address', data: formData);
+      print(response.data);
+      return response.data;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      throw e.response!.data;
+    }
+  }
+
+  Future<dynamic> fetchPayments() async {
+    try {
+      Response response = await dio.get('payment_method');
       print(response.data);
       return response.data;
     } on DioError catch (e) {

@@ -17,6 +17,24 @@ class DeliveryAddressesScreen extends StatefulWidget {
 }
 
 class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
+  List<bool> selections = List<bool>.filled(3, false, growable: false);
+  int? id;
+  List<bool> singleSelection(bool selection, int index, int id) {
+    setState(() {
+      this.id = id;
+    });
+    if (selections.contains(true)) {
+      int i = selections.indexOf(true);
+      selections[i] = false;
+      selections[index] = true;
+    } else {
+      selections[index] = selection;
+    }
+    setState(() {});
+    print(selections);
+    return selections;
+  }
+
   @override
   void initState() {
     BlocProvider.of<CartCubit>(context).fetchAddress();
@@ -66,6 +84,9 @@ class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
             BuildIndigoButton(
                 title: 'استمرار',
                 function: () {
+                  print(id);
+                  BlocProvider.of<CartCubit>(context)
+                      .selectAddress(addressId: id);
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (_) => DeliveryOptionsScreen()));
                 })
@@ -78,31 +99,16 @@ class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
           builder: (context, state) {
             if (state is AddressesLoaded) {
               final addresses = state.addresses;
-              List<bool> selections =
-                  List<bool>.filled(addresses.length, false, growable: false);
-              List<bool> singleSelection(bool selection, int index) {
-                if (selections.contains(true)) {
-                  int i = selections.indexOf(true);
-                  selections[i] = false;
-                  selections[index] = true;
-                } else {
-                  selections[index] = selection;
-                }
-                setState(() {});
-                print(selections);
-                return selections;
-              }
-
               return ListView.builder(
                 shrinkWrap: true,
                 itemCount: addresses.length,
                 physics: ClampingScrollPhysics(),
                 itemBuilder: (context, index) => SingleChoiceItem(
-                  function: singleSelection,
-                  choicesList: selections,
-                  index: index,
-                  title: addresses[index].address!,
-                ),
+                    function: singleSelection,
+                    choicesList: selections,
+                    index: index,
+                    title: addresses[index].address!,
+                    id: addresses[index].id),
               );
             } else {
               return AlertDialog(

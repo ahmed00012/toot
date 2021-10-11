@@ -19,6 +19,11 @@ class AddressesLoaded extends CartState {
   AddressesLoaded({required this.addresses});
 }
 
+class PaymentsLoaded extends CartState {
+  final List<Payment> payments;
+  PaymentsLoaded({required this.payments});
+}
+
 class CartError extends CartState {
   final String error;
   CartError({required this.error});

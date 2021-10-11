@@ -7,14 +7,15 @@ class SingleChoiceItem extends StatefulWidget {
   final String title;
   final int index;
   final Function function;
+  final int id;
   final List<bool> choicesList;
 
-  SingleChoiceItem({
-    required this.title,
-    required this.index,
-    required this.function,
-    required this.choicesList,
-  });
+  SingleChoiceItem(
+      {required this.title,
+      required this.index,
+      required this.function,
+      required this.choicesList,
+      required this.id});
 
   @override
   _SingleChoiceItemState createState() => _SingleChoiceItemState();
@@ -28,7 +29,7 @@ class _SingleChoiceItemState extends State<SingleChoiceItem> {
       onTap: () {
         setState(() {
           selected = !selected;
-          widget.function(selected, widget.index);
+          widget.function(selected, widget.index, widget.id);
         });
       },
       child: Container(

@@ -1,8 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:meta/meta.dart';
-import 'package:toot/data/models/address.dart';
+import 'package:toot/data/local_storage.dart';
 import 'package:toot/data/models/cart_item.dart';
+import 'package:toot/data/models/payment.dart';
 import 'package:toot/data/repositories/cart_repository.dart';
 import 'package:toot/data/web_services/cart_web_service.dart';
 
@@ -11,6 +12,7 @@ part 'cart_state.dart';
 class CartCubit extends Cubit<CartState> {
   CartCubit() : super(CartInitial());
   final CartRepository cartRepository = CartRepository(CartWebServices());
+  List addresses = [];
 
   @override
   void onChange(Change<CartState> change) {
@@ -65,10 +67,45 @@ class CartCubit extends Cubit<CartState> {
 
   Future<void> fetchAddress() async {
     emit(CartLoading());
+    cartRepository.fetchAddress().then((addresses) {
+      this.addresses = addresses;
+      emit(AddressesLoaded(addresses: addresses));
+    }).catchError((e) {
+      emit(CartError(error: e.toString()));
+    });
+  }
+
+  Future<dynamic> addAddress({String? address, String? district}) async {
+    String? cartToken = await FlutterSecureStorage().read(key: 'cart_token');
+    final long = LocalStorage.getData(key: 'long');
+    final lat = LocalStorage.getData(key: 'lat');
     cartRepository
-        .fetchAddress()
-        .then((addresses) => emit(AddressesLoaded(addresses: addresses)))
+        .addAddress(
+      address: address,
+      district: district,
+      cartToken: cartToken,
+      lng: long,
+      lat: lat,
+    )
         .catchError((e) {
+      emit(CartError(error: e.toString()));
+    });
+  }
+
+  Future<dynamic> selectAddress({int? addressId}) async {
+    String? cartToken = await FlutterSecureStorage().read(key: 'cart_token');
+    cartRepository
+        .selectAddress(cartToken: cartToken, addressId: addressId)
+        .catchError((e) {
+      emit(CartError(error: e.toString()));
+    });
+  }
+
+  Future<dynamic> fetchPayments() async {
+    emit(CartLoading());
+    cartRepository.fetchPayments().then((payments) {
+      emit(PaymentsLoaded(payments: payments));
+    }).catchError((e) {
       emit(CartError(error: e.toString()));
     });
   }

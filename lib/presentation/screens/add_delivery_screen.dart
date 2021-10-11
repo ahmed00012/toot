@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:toot/constants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:toot/constants.dart';
+import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 
 class AddDeliveryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    String? address;
+    String? district;
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -46,6 +50,9 @@ class AddDeliveryScreen extends StatelessWidget {
                   height: 10,
                 ),
                 TextField(
+                  onChanged: (val) {
+                    address = val;
+                  },
                   decoration: InputDecoration(
                     isDense: true,
                     fillColor: Colors.white,
@@ -74,6 +81,9 @@ class AddDeliveryScreen extends StatelessWidget {
                 ),
                 TextField(
                   maxLines: 4,
+                  onChanged: (val) {
+                    district = val;
+                  },
                   decoration: InputDecoration(
                     isDense: true,
                     fillColor: Colors.white,
@@ -96,6 +106,8 @@ class AddDeliveryScreen extends StatelessWidget {
                   child: BuildIndigoButton(
                       title: 'اضافة',
                       function: () {
+                        BlocProvider.of<CartCubit>(context)
+                            .addAddress(address: address, district: district);
                         Navigator.of(context).pop();
                       }),
                 )
