@@ -61,4 +61,15 @@ class CartRepository {
     final rawData = await cartWebServices.fetchPayments();
     return rawData.map((address) => Payment.fromJson(address)).toList();
   }
+
+  Future<dynamic> selectPayment({
+    String? cartToken,
+    String? method,
+  }) async {
+    FormData formData =
+        FormData.fromMap({'cart_token': cartToken, 'payment_type': method});
+    return await cartWebServices.selectPayment(formData);
+  }
+
+  // Future<dynamic> confirmOrder(FormData formData) async {}
 }

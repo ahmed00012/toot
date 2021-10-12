@@ -4,19 +4,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:toot/constants.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
+import 'package:toot/presentation/screens/single_item_screen.dart';
 
 class CartItem extends StatelessWidget {
   final String? image;
   final String? title;
   final String? price;
   final int? quantity;
+  final Function? function;
   final int? id;
+  final int? shopId;
   CartItem(
       {required this.image,
       required this.title,
       required this.price,
       required this.quantity,
-      required this.id});
+      this.function,
+      required this.id,
+      required this.shopId});
 
   @override
   Widget build(BuildContext context) {
@@ -73,12 +78,20 @@ class CartItem extends StatelessWidget {
               color: Color(Constants.mainColor),
               icon: Icons.edit,
               onTap: () {
-                //   Navigator.of(context).push(MaterialPageRoute(
-                //       builder: (_) => SingleItemScreen(
-                //           id: id!,
-                //           title: title!,
-                //           price: double.parse(price!),
-                //           shopId: shopId,isEditable: true,)));
+                Navigator.of(context)
+                    .push(MaterialPageRoute(
+                        builder: (_) => SingleItemScreen(
+                              id: id!,
+                              title: title!,
+                              price: double.parse(price!),
+                              shopId: shopId!,
+                              isEditable: true,
+                              removeFav: true,
+                              isFav: true,
+                            )))
+                    .then((value) {
+                  return function!();
+                });
               },
             ),
             IconSlideAction(

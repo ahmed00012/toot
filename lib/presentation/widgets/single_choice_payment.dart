@@ -10,17 +10,18 @@ class SingleChoicePayment extends StatefulWidget {
   final Function function;
   final String image;
   final List<bool> choicesList;
+  final String method;
 
   final bool? isVisa;
 
-  SingleChoicePayment({
-    required this.title,
-    required this.index,
-    required this.function,
-    required this.choicesList,
-    required this.image,
-    required this.isVisa,
-  });
+  SingleChoicePayment(
+      {required this.title,
+      required this.index,
+      required this.function,
+      required this.choicesList,
+      required this.image,
+      required this.isVisa,
+      required this.method});
 
   @override
   _SingleChoicePaymentState createState() => _SingleChoicePaymentState();
@@ -34,7 +35,7 @@ class _SingleChoicePaymentState extends State<SingleChoicePayment> {
       onTap: () {
         setState(() {
           selected = !selected;
-          widget.function(selected, widget.index);
+          widget.function(selected, widget.index, widget.method);
         });
       },
       child: Container(
@@ -45,11 +46,16 @@ class _SingleChoicePaymentState extends State<SingleChoicePayment> {
             borderRadius: BorderRadius.circular(8)),
         child: Row(
           children: [
-            // Image.network(
-            //  image!
-            // ),
+            Container(
+              height: 0.1.sw,
+              width: 0.1.sw,
+              child: Image.network(
+                widget.image,
+                fit: BoxFit.cover,
+              ),
+            ),
             SizedBox(
-              width: 10,
+              width: 15,
             ),
             GestureDetector(
               onTap: () {

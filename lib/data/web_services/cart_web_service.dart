@@ -105,7 +105,29 @@ class CartWebServices {
 
   Future<dynamic> fetchPayments() async {
     try {
-      Response response = await dio.get('payment_method');
+      Response response = await dio.get('cart/payment_method');
+      print(response.data);
+      return response.data;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      throw e.response!.data;
+    }
+  }
+
+  Future<dynamic> selectPayment(FormData formData) async {
+    try {
+      Response response = await dio.post('cart/add_payment', data: formData);
+      print(response.data);
+      return response.data;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      throw e.response!.data;
+    }
+  }
+
+  Future<dynamic> confirmOrder(FormData formData) async {
+    try {
+      Response response = await dio.post('cart/confirm', data: formData);
       print(response.data);
       return response.data;
     } on DioError catch (e) {

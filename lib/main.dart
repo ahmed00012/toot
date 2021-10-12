@@ -23,6 +23,7 @@ void main() async {
   await FavoritesWebServices.init();
   await CartWebServices.init();
   Bloc.observer = MyBlocObserver();
+
   runApp(EasyLocalization(
     child: MyApp(),
     supportedLocales: [

@@ -142,6 +142,7 @@ class _FavoriteItemState extends State<FavoriteItem> {
                                 id: widget.id,
                                 title: widget.name,
                                 price: double.parse(widget.price),
+                                removeFav: true,
                                 shopId: widget.shopId,
                                 isFav: widget.isFav)));
                       },

@@ -20,7 +20,7 @@ class AddressesLoaded extends CartState {
 }
 
 class PaymentsLoaded extends CartState {
-  final List<Payment> payments;
+  final List payments;
   PaymentsLoaded({required this.payments});
 }
 

@@ -17,12 +17,18 @@ class FavoritesWebServices {
         receiveDataWhenStatusError: true,
         connectTimeout: 20 * 1000, // 60 seconds,
         receiveTimeout: 20 * 1000,
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Language': 'ar',
-          'X-Requested-With': 'XMLHttpRequest',
-          HttpHeaders.authorizationHeader: "Bearer " + token
-        });
+        headers: token == null
+            ? {
+                'Content-Type': 'application/json',
+                'Content-Language': 'ar',
+                'X-Requested-With': 'XMLHttpRequest',
+              }
+            : {
+                'Content-Type': 'application/json',
+                'Content-Language': 'ar',
+                'X-Requested-With': 'XMLHttpRequest',
+                HttpHeaders.authorizationHeader: "Bearer " + token
+              });
 
     dio = Dio(options);
   }

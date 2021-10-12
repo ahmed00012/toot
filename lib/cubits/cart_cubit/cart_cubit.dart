@@ -3,7 +3,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:meta/meta.dart';
 import 'package:toot/data/local_storage.dart';
 import 'package:toot/data/models/cart_item.dart';
-import 'package:toot/data/models/payment.dart';
 import 'package:toot/data/repositories/cart_repository.dart';
 import 'package:toot/data/web_services/cart_web_service.dart';
 
@@ -12,7 +11,6 @@ part 'cart_state.dart';
 class CartCubit extends Cubit<CartState> {
   CartCubit() : super(CartInitial());
   final CartRepository cartRepository = CartRepository(CartWebServices());
-  List addresses = [];
 
   @override
   void onChange(Change<CartState> change) {
@@ -68,7 +66,6 @@ class CartCubit extends Cubit<CartState> {
   Future<void> fetchAddress() async {
     emit(CartLoading());
     cartRepository.fetchAddress().then((addresses) {
-      this.addresses = addresses;
       emit(AddressesLoaded(addresses: addresses));
     }).catchError((e) {
       emit(CartError(error: e.toString()));
@@ -101,11 +98,21 @@ class CartCubit extends Cubit<CartState> {
     });
   }
 
-  Future<dynamic> fetchPayments() async {
+  Future<void> fetchPayments() async {
     emit(CartLoading());
     cartRepository.fetchPayments().then((payments) {
       emit(PaymentsLoaded(payments: payments));
     }).catchError((e) {
+      print(e.toString());
+      emit(CartError(error: e.toString()));
+    });
+  }
+
+  Future<void> selectPayment({String? method}) async {
+    String? cartToken = await FlutterSecureStorage().read(key: 'cart_token');
+    cartRepository
+        .selectPayment(cartToken: cartToken, method: method)
+        .catchError((e) {
       emit(CartError(error: e.toString()));
     });
   }

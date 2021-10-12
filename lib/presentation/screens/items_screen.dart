@@ -118,13 +118,13 @@ class _ItemsScreenState extends State<ItemsScreen>
                     controller: tabController,
                     tabs: widget.categories.map((e) {
                       return GestureDetector(
+                        behavior: HitTestBehavior.opaque,
                         onTap: () {
                           tabController.animateTo(widget.categories.indexOf(e));
                           _pagingController.itemList!.clear();
+                          id = e.id;
+                          setState(() {});
                           _fetchPage(_pagingController.firstPageKey, e.id);
-                          setState(() {
-                            id = e.id;
-                          });
                         },
                         child: Tab(
                           child: Text(
@@ -155,16 +155,14 @@ class _ItemsScreenState extends State<ItemsScreen>
                 child: PagedGridView<int, dynamic>(
                   // showNewPageProgressIndicatorAsGridChild: false,
                   // showNewPageErrorIndicatorAsGridChild: false,
-
                   showNoMoreItemsIndicatorAsGridChild: false,
                   pagingController: _pagingController,
                   padding: EdgeInsets.symmetric(
                       vertical: 0.02.sh, horizontal: 0.05.sw),
                   shrinkWrap: true,
-
                   physics: ClampingScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, childAspectRatio: 0.6),
+                      crossAxisCount: 2, childAspectRatio: 0.52),
                   builderDelegate: PagedChildBuilderDelegate<dynamic>(
                     noItemsFoundIndicatorBuilder: (_) => AlertDialog(
                       backgroundColor: Colors.transparent,
@@ -234,21 +232,20 @@ class BuildItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('fav status');
-    print(isFav);
     bool favStatus = isFav;
     return StatefulBuilder(
       builder: (context, setState) {
         return GestureDetector(
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => SingleItemScreen(
-                      id: itemId,
-                      title: title,
-                      price: double.parse(price),
-                      shopId: shopId,
-                      isFav: favStatus,
-                    )));
+              builder: (_) => SingleItemScreen(
+                id: itemId,
+                title: title,
+                price: double.parse(price),
+                shopId: shopId,
+                isFav: favStatus,
+              ),
+            ));
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),

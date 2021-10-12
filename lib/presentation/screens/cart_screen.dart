@@ -32,6 +32,7 @@ class _CartScreenState extends State<CartScreen> {
         builder: (context, state) {
           if (state is CartLoaded) {
             final cartDetails = state.cartDetails;
+            print(cartDetails.data!.items![0].vendorId);
             return Padding(
               padding:
                   EdgeInsets.only(right: 0.06.sw, left: 0.06.sw, top: 0.02.sh),
@@ -49,6 +50,11 @@ class _CartScreenState extends State<CartScreen> {
                         price: cartDetails.data!.items![index].price,
                         quantity: cartDetails.data!.items![index].count,
                         id: cartDetails.data!.items![index].productId,
+                        shopId: cartDetails.data!.items![index].vendorId,
+                        function: () {
+                          BlocProvider.of<CartCubit>(context)
+                              .emit(CartLoaded(cartDetails: cartDetails));
+                        },
                       ),
                     ),
                   ),
@@ -135,8 +141,15 @@ class _CartScreenState extends State<CartScreen> {
                   BuildIndigoButton(
                       title: 'الدفع',
                       function: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => DeliveryAddressesScreen()));
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(
+                                builder: (_) => DeliveryAddressesScreen()))
+                            .then(
+                              (value) =>
+                                  BlocProvider.of<CartCubit>(context).emit(
+                                CartLoaded(cartDetails: cartDetails),
+                              ),
+                            );
                       }),
                   SizedBox(
                     height: 0.05.sh,

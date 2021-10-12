@@ -17,8 +17,9 @@ class DeliveryAddressesScreen extends StatefulWidget {
 }
 
 class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
-  List<bool> selections = List<bool>.filled(3, false, growable: false);
+  List<bool> selections = List<bool>.filled(20, false, growable: false);
   int? id;
+  List savedAddress = [];
   List<bool> singleSelection(bool selection, int index, int id) {
     setState(() {
       this.id = id;
@@ -57,8 +58,11 @@ class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
           children: [
             GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => AddDeliveryScreen()));
+                Navigator.of(context)
+                    .push(
+                        MaterialPageRoute(builder: (_) => AddDeliveryScreen()))
+                    .then((value) =>
+                        BlocProvider.of<CartCubit>(context).fetchAddress());
               },
               child: Container(
                 height: 0.065.sh,
@@ -87,8 +91,11 @@ class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
                   print(id);
                   BlocProvider.of<CartCubit>(context)
                       .selectAddress(addressId: id);
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => DeliveryOptionsScreen()));
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
+                          builder: (_) => DeliveryOptionsScreen()))
+                      .then((value) => BlocProvider.of<CartCubit>(context)
+                          .emit(AddressesLoaded(addresses: savedAddress)));
                 })
           ],
         ),
@@ -99,6 +106,7 @@ class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
           builder: (context, state) {
             if (state is AddressesLoaded) {
               final addresses = state.addresses;
+              savedAddress = addresses;
               return ListView.builder(
                 shrinkWrap: true,
                 itemCount: addresses.length,

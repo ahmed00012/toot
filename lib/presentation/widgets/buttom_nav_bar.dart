@@ -1,7 +1,9 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:toot/presentation/screens/auth_screen.dart';
 import 'package:toot/presentation/screens/cart_screen.dart';
 import 'package:toot/presentation/screens/favorites_screen.dart';
 import 'package:toot/presentation/screens/home_screen.dart';
@@ -9,6 +11,7 @@ import 'package:toot/presentation/screens/notifications_screen.dart';
 import 'package:toot/presentation/screens/settings_screen.dart';
 
 import '../../constants.dart';
+import 'blurry_dialog.dart';
 
 class BottomNavBar extends StatefulWidget {
   @override
@@ -75,6 +78,22 @@ class _BottomNavBarState extends State<BottomNavBar>
     super.initState();
   }
 
+  _showDialog(BuildContext context, String title) {
+    VoidCallback continueCallBack = () => {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => AuthScreen())),
+          // code on continue comes here
+        };
+    BlurryDialog alert = BlurryDialog('التسجيل اولا', title, continueCallBack);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,46 +129,54 @@ class _BottomNavBarState extends State<BottomNavBar>
       floatingActionButtonLocation:
           FloatingActionButtonLocation.miniCenterDocked,
       bottomNavigationBar: AnimatedBottomNavigationBar.builder(
-        itemCount: iconList.length,
-        tabBuilder: (int index, bool isActive) {
-          final color = isActive ? Color(Constants.mainColor) : Colors.grey;
-          return Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FaIcon(
-                  iconList[index],
-                  color: color,
-                  size: 20,
-                ),
-                SizedBox(height: 4),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: AutoSizeText(
-                    // Localizations.localeOf(context).languageCode == "ar"
-                    //     ? iconTitlesAr[index]
-                    iconTitlesAR[index],
-                    maxLines: 1,
-                    style: TextStyle(color: color, fontSize: 8),
-                    group: autoSizeGroup,
+          itemCount: iconList.length,
+          tabBuilder: (int index, bool isActive) {
+            final color = isActive ? Color(Constants.mainColor) : Colors.grey;
+            return Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FaIcon(
+                    iconList[index],
+                    color: color,
+                    size: 20,
                   ),
-                )
-              ],
-            ),
-          );
-        },
-        backgroundColor: Colors.white,
-        activeIndex: currentTab,
-        splashColor: Color(Constants.mainColor),
-        notchAndCornersAnimation: animation,
-        splashSpeedInMilliseconds: 300,
-        notchSmoothness: NotchSmoothness.softEdge,
-        gapLocation: GapLocation.center,
-        height: MediaQuery.of(context).size.height * 0.1,
-        // leftCornerRadius: 32,
-        // rightCornerRadius: 32,
-        onTap: (index) => setState(() => this._onItemTapped(index)),
-      ),
+                  SizedBox(height: 4),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: AutoSizeText(
+                      // Localizations.localeOf(context).languageCode == "ar"
+                      //     ? iconTitlesAr[index]
+                      iconTitlesAR[index],
+                      maxLines: 1,
+                      style: TextStyle(color: color, fontSize: 8),
+                      group: autoSizeGroup,
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+          backgroundColor: Colors.white,
+          activeIndex: currentTab,
+          splashColor: Color(Constants.mainColor),
+          notchAndCornersAnimation: animation,
+          splashSpeedInMilliseconds: 300,
+          notchSmoothness: NotchSmoothness.softEdge,
+          gapLocation: GapLocation.center,
+          height: MediaQuery.of(context).size.height * 0.1,
+          // leftCornerRadius: 32,
+          // rightCornerRadius: 32,
+          onTap: (index) async {
+            if (await FlutterSecureStorage().read(key: 'token') == null &&
+                index == 1) {
+              _showDialog(context, 'لا يمكن عرض المفضلة يجب عليك التسجيل اولا');
+            } else {
+              setState(() {
+                this._onItemTapped(index);
+              });
+            }
+          }),
     );
   }
 }

@@ -15,8 +15,11 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   List<bool> selections = List<bool>.filled(2, false, growable: false);
-
-  List<bool> singleSelection(bool selection, int index) {
+  String? selectionMethod;
+  List<bool> singleSelection(bool selection, int index, String method) {
+    setState(() {
+      selectionMethod = method;
+    });
     if (selections.contains(true)) {
       int i = selections.indexOf(true);
       selections[i] = false;
@@ -60,7 +63,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       index: 0,
                       title: paymentsMethods[0].titleAr!,
                       image: paymentsMethods[0].image!,
-                      isVisa: true,
+                      isVisa: false,
+                      method: paymentsMethods[0].code!,
                     ),
                     SingleChoicePayment(
                       function: singleSelection,
@@ -68,7 +72,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       index: 1,
                       title: paymentsMethods[1].titleAr!,
                       image: paymentsMethods[1].image!,
-                      isVisa: false,
+                      isVisa: true,
+                      method: paymentsMethods[1].code!,
                     ),
                   ],
                 ),
@@ -78,11 +83,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 BuildIndigoButton(
                     title: 'الاستمرار',
                     function: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => OrderSummaryScreen(),
-                        ),
-                      );
+                      print(selectionMethod);
+                      BlocProvider.of<CartCubit>(context)
+                          .selectPayment(method: selectionMethod);
+                      Navigator.of(context)
+                          .push(
+                            MaterialPageRoute(
+                              builder: (_) => OrderSummaryScreen(),
+                            ),
+                          )
+                          .then((value) => BlocProvider.of<CartCubit>(context)
+                              .emit(PaymentsLoaded(payments: paymentsMethods)));
                     })
               ],
             );
