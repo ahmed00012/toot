@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:toot/data/models/address.dart';
 import 'package:toot/data/models/cart_item.dart';
 import 'package:toot/data/models/payment.dart';
+import 'package:toot/data/models/promo_status.dart';
 import 'package:toot/data/web_services/cart_web_service.dart';
 
 class CartRepository {
@@ -9,12 +10,19 @@ class CartRepository {
   CartRepository(this.cartWebServices);
 
   Future<dynamic> addToCart(
-      {int? shopId, int? productId, int? quantity, String? cartToken}) async {
+      {int? shopId,
+      int? productId,
+      int? quantity,
+      String? cartToken,
+      List? extras,
+      List? options}) async {
     FormData formData = FormData.fromMap({
       'vendor_id': shopId,
       'product_id': productId,
       'quantity': quantity,
-      'cart_token': cartToken
+      'cart_token': cartToken,
+      'option': options,
+      'addon': extras
     });
     return await cartWebServices.addToCart(formData);
   }
@@ -71,5 +79,15 @@ class CartRepository {
     return await cartWebServices.selectPayment(formData);
   }
 
-  // Future<dynamic> confirmOrder(FormData formData) async {}
+  Future<dynamic> confirmOrder({String? cartToken}) async {
+    FormData formData = FormData.fromMap({'cart_token': cartToken});
+    return await cartWebServices.confirmOrder(formData);
+  }
+
+  Future<dynamic> promoCode({String? cartToken, String? code}) async {
+    FormData formData =
+        FormData.fromMap({'cart_token': cartToken, 'code': code});
+    final rawData = await cartWebServices.promoCode(formData);
+    return PromoStatus.fromJson(rawData);
+  }
 }

@@ -9,6 +9,7 @@ import 'package:toot/cubits/favorites_cubit/favorites_cubit.dart';
 import 'package:toot/cubits/product_cubit/product_cubit.dart';
 import 'package:toot/data/models/check_box_state.dart';
 import 'package:toot/presentation/screens/auth_screen.dart';
+import 'package:toot/presentation/screens/cart_screen.dart';
 import 'package:toot/presentation/widgets/blurry_dialog.dart';
 
 import '../../constants.dart';
@@ -399,12 +400,25 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                             .then((value) {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
-                                                  backgroundColor: Color(
-                                                      Constants.mainColor),
-                                                  content: Text(widget
-                                                          .isEditable!
-                                                      ? 'تم تعديل المنتح بنجاح.'
-                                                      : 'تم اضافة المنتج الي السلة بنجاح.')));
+                                            backgroundColor:
+                                                Color(Constants.mainColor),
+                                            content: Text(
+                                              widget.isEditable!
+                                                  ? 'تم تعديل المنتح بنجاح.'
+                                                  : 'تم اضافة المنتج الي السلة بنجاح.',
+                                              style: TextStyle(fontSize: 14),
+                                            ),
+                                            action: SnackBarAction(
+                                              label: 'الذهاب الي السلة',
+                                              textColor: Colors.white,
+                                              onPressed: () {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (_) =>
+                                                            CartScreen()));
+                                              },
+                                            ),
+                                          ));
                                           if (widget.isEditable!) {
                                             Navigator.of(context).pop();
                                           }

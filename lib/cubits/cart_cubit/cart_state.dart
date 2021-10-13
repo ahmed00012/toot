@@ -19,6 +19,11 @@ class AddressesLoaded extends CartState {
   AddressesLoaded({required this.addresses});
 }
 
+class PromoLoaded extends CartState {
+  final promo;
+  PromoLoaded({required this.promo});
+}
+
 class PaymentsLoaded extends CartState {
   final List payments;
   PaymentsLoaded({required this.payments});

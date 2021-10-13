@@ -24,7 +24,12 @@ class CartCubit extends Cubit<CartState> {
     super.onError(error, stackTrace);
   }
 
-  Future<void> addToCart({int? shopId, int? productId, int? quantity}) async {
+  Future<void> addToCart(
+      {int? shopId,
+      int? productId,
+      int? quantity,
+      List? options,
+      List? extras}) async {
     emit(CartLoading());
     String? cartToken = await FlutterSecureStorage().read(key: 'cart_token');
     cartRepository
@@ -114,6 +119,24 @@ class CartCubit extends Cubit<CartState> {
         .selectPayment(cartToken: cartToken, method: method)
         .catchError((e) {
       emit(CartError(error: e.toString()));
+    });
+  }
+
+  Future<void> confirmOrder() async {
+    String? cartToken = await FlutterSecureStorage().read(key: 'cart_token');
+    cartRepository.confirmOrder(cartToken: cartToken).catchError((e) {
+      emit(CartError(error: e.toString()));
+    });
+  }
+
+  Future<dynamic> promoCode({String? code}) async {
+    String? cartToken = await FlutterSecureStorage().read(key: 'cart_token');
+
+    cartRepository
+        .promoCode(cartToken: cartToken, code: code)
+        .then((promoStatus) => emit(PromoLoaded(promo: promoStatus)))
+        .catchError((e) {
+      emit(CartError(error: e['message'].toString()));
     });
   }
 }

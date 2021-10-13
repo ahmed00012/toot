@@ -25,12 +25,13 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: BuildDeliveryBar(
         title: 'ملخص الطلب',
         isSummary: true,
       ),
       body: BlocBuilder<CartCubit, CartState>(
-        builder: (context, state) {
+        builder: (_, state) {
           if (state is CartLoaded) {
             final cartDetails = state.cartDetails;
             return SingleChildScrollView(
@@ -50,11 +51,13 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         quantity: cartDetails.data!.items![index].count,
                         id: cartDetails.data!.items![index].productId,
                         shopId: cartDetails.data!.items![index].vendorId,
+                        addons: cartDetails.data!.items![index].cartitemaddon!,
+                        extra: cartDetails.data!.items![index].cartitemoption!,
                       ),
                     ),
                     SizedBox(
                       height:
-                          cartDetails.data!.items!.length < 3 ? 0.215.sh : 18,
+                          cartDetails.data!.items!.length < 3 ? 0.21.sh : 18,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -62,16 +65,26 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('احصل علي خصم مع طلبك'),
-                          GestureDetector(
-                            onTap: () => discountModalBottomSheetMenu(context),
-                            child: Text(
-                              'اضافة رمز ترويجي',
-                              style:
-                                  TextStyle(color: Color(Constants.mainColor)),
+                          Container(
+                            width: 0.35.sw,
+                            height: 0.044.sh,
+                            child: ElevatedButton(
+                              onPressed: () =>
+                                  discountModalBottomSheetMenu(context),
+                              child: Text(
+                                'اضافة رمز ترويجي',
+                                style: TextStyle(color: Colors.white),
+                                textAlign: TextAlign.center,
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                  primary: Color(Constants.mainColor)),
                             ),
                           )
                         ],
                       ),
+                    ),
+                    SizedBox(
+                      height: 10,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -156,6 +169,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     BuildIndigoButton(
                         title: 'تأكيد الطلب',
                         function: () {
+                          BlocProvider.of<CartCubit>(context).confirmOrder();
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (_) => OrderConfirmationScreen()));
                         }),
@@ -166,7 +180,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                 ),
               ),
             );
-          } else if (state is CartLoading) {
+          } else {
             return AlertDialog(
               backgroundColor: Colors.transparent,
               shape: RoundedRectangleBorder(
@@ -181,13 +195,6 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     width: 0.4.sw,
                   ),
                 ),
-              ),
-            );
-          } else {
-            return Center(
-              child: Text(
-                'السلة فارغة',
-                style: TextStyle(fontSize: 24.sp),
               ),
             );
           }

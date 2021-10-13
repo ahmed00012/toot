@@ -135,4 +135,15 @@ class CartWebServices {
       throw e.response!.data;
     }
   }
+
+  Future<dynamic> promoCode(FormData formData) async {
+    try {
+      Response response = await dio.post('cart/add_coupon', data: formData);
+      print(response.data);
+      return response.data;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      throw e.response!.data;
+    }
+  }
 }
