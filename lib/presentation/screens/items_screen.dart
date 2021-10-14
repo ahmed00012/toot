@@ -62,7 +62,9 @@ class _ItemsScreenState extends State<ItemsScreen>
       length: widget.categories.length,
       initialIndex: widget.index,
     );
+
     id = widget.catId;
+
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey, id);
     });
@@ -120,11 +122,11 @@ class _ItemsScreenState extends State<ItemsScreen>
                       return GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
-                          tabController.animateTo(widget.categories.indexOf(e));
                           _pagingController.itemList!.clear();
                           id = e.id;
-                          setState(() {});
                           _fetchPage(_pagingController.firstPageKey, e.id);
+                          tabController.animateTo(widget.categories.indexOf(e));
+                          setState(() {});
                         },
                         child: Tab(
                           child: Text(

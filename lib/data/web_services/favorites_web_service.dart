@@ -19,12 +19,12 @@ class FavoritesWebServices {
         receiveTimeout: 20 * 1000,
         headers: token == null
             ? {
-                'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'Content-Language': 'ar',
                 'X-Requested-With': 'XMLHttpRequest',
               }
             : {
-                'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'Content-Language': 'ar',
                 'X-Requested-With': 'XMLHttpRequest',
                 HttpHeaders.authorizationHeader: "Bearer " + token
@@ -47,6 +47,7 @@ class FavoritesWebServices {
   }
 
   Future<dynamic> fetchFavorites() async {
+    print(dio.options.headers);
     try {
       final response = await dio.get('customer/favourite/list');
       return response.data;

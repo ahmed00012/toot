@@ -21,8 +21,8 @@ class CartRepository {
       'product_id': productId,
       'quantity': quantity,
       'cart_token': cartToken,
-      'option': options,
-      'addon': extras
+      'options': options,
+      'addons': extras
     });
     return await cartWebServices.addToCart(formData);
   }

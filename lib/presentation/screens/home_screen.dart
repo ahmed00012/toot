@@ -29,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     BlocProvider.of<ProductCubit>(context).fetchCategories(
         long: LocalStorage.getData(key: 'long'),
         lat: LocalStorage.getData(key: 'lat'));
+
     super.initState();
   }
 

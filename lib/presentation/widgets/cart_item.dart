@@ -86,32 +86,28 @@ class CartItem extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text('الاضافات', style: TextStyle(fontSize: 16)),
+                      child: Text('الوزن', style: TextStyle(fontSize: 16)),
                     ),
                     Spacer(),
                     Column(
-                      children: [...addons!.map((e) => Text(e.addon.nameAr))],
+                      children: extra!
+                          .map((e) => Text(e.optionvalue.nameAr))
+                          .toList(),
                     )
                   ],
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Text('الحجم', style: TextStyle(fontSize: 16)),
-                      Spacer(),
-                      Column(
-                        children: [
-                          ...extra!.map((e) => Text(
-                                e.addon.nameAr,
-                              )),
-                        ],
-                      ),
-                    ],
-                  ),
+                Row(
+                  children: [
+                    Text('الاضافات', style: TextStyle(fontSize: 16)),
+                    Spacer(),
+                    Column(
+                      children:
+                          addons!.map((e) => Text(e.addon.nameAr)).toList(),
+                    ),
+                  ],
                 ),
                 SizedBox(
                   height: 12,

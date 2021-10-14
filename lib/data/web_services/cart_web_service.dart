@@ -57,6 +57,8 @@ class CartWebServices {
   Future<dynamic> fetchCart() async {
     try {
       String? cartToken = await FlutterSecureStorage().read(key: 'cart_token');
+      print('هنا token الcart ');
+      print(cartToken);
       Response response = await dio.get('cart/get_cart/${cartToken ?? ''}');
       print(response.data);
       if (response.data['success'] == 0) {

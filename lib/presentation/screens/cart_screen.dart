@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
+import 'package:toot/presentation/widgets/blurry_dialog.dart';
 import 'package:toot/presentation/widgets/cart_item.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 
 import '../../constants.dart';
+import 'auth_screen.dart';
 import 'delivery_screen.dart';
 
 class CartScreen extends StatefulWidget {
@@ -15,6 +18,23 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  _showDialog(BuildContext context, String title) {
+    VoidCallback continueCallBack = () => {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => AuthScreen())),
+          // code on continue comes here
+        };
+
+    BlurryDialog alert = BlurryDialog('التسجيل اولا', title, continueCallBack);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   void initState() {
     BlocProvider.of<CartCubit>(context).fetchCart();
@@ -32,7 +52,6 @@ class _CartScreenState extends State<CartScreen> {
         builder: (context, state) {
           if (state is CartLoaded) {
             final cartDetails = state.cartDetails;
-            print(cartDetails.data!.items![0].vendorId);
             return Padding(
               padding:
                   EdgeInsets.only(right: 0.06.sw, left: 0.06.sw, top: 0.02.sh),
@@ -142,16 +161,22 @@ class _CartScreenState extends State<CartScreen> {
                   ),
                   BuildIndigoButton(
                       title: 'الدفع',
-                      function: () {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(
-                                builder: (_) => DeliveryAddressesScreen()))
-                            .then(
-                              (value) =>
-                                  BlocProvider.of<CartCubit>(context).emit(
-                                CartLoaded(cartDetails: cartDetails),
-                              ),
-                            );
+                      function: () async {
+                        if (await FlutterSecureStorage().read(key: 'token') ==
+                            null) {
+                          _showDialog(context,
+                              'حتي تتمكن من اتمام الطلب يجب عليك التسجيل اولا');
+                        } else {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(
+                                  builder: (_) => DeliveryAddressesScreen()))
+                              .then(
+                                (value) =>
+                                    BlocProvider.of<CartCubit>(context).emit(
+                                  CartLoaded(cartDetails: cartDetails),
+                                ),
+                              );
+                        }
                       }),
                   SizedBox(
                     height: 0.05.sh,

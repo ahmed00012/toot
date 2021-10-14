@@ -37,7 +37,9 @@ class CartCubit extends Cubit<CartState> {
             productId: productId,
             quantity: quantity,
             shopId: shopId,
-            cartToken: cartToken)
+            cartToken: cartToken,
+            extras: extras,
+            options: options)
         .then((value) async {
       emit(AddedToCart());
       await FlutterSecureStorage()

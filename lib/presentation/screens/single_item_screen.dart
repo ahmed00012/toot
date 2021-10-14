@@ -39,16 +39,17 @@ class SingleItemScreen extends StatefulWidget {
 class _SingleItemScreenState extends State<SingleItemScreen> {
   late bool isFav;
   int quantity = 1;
+  int? selectedId;
   String? dropdownPriceValue;
   List prices = [];
-  List chosenExtra = [];
   List extra = [];
+  List chosenExtra = [];
   final _formKey = GlobalKey<FormState>();
   List<String> images = [];
   double price = 0.00;
   int current = 0;
 
-  addExtrasPrice(double extraPrice, bool incremental) {
+  addExtrasPrice(double extraPrice, bool incremental, int chosenId) {
     if (incremental) {
       setState(() {
         this.price = this.price + extraPrice;
@@ -58,6 +59,12 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
         this.price = this.price - extraPrice;
       });
     }
+    if (chosenExtra.contains(chosenId)) {
+      chosenExtra.removeWhere((element) => element == chosenId);
+      print(chosenExtra);
+      return;
+    }
+    chosenExtra.add(chosenId);
   }
 
   _showDialog(BuildContext context, String title) {
@@ -144,7 +151,8 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
             extra = state.itemDetails.addon!
                 .map((extra) => CheckBoxState(
                     name: '${extra.nameAr}   + ${extra.price}  RS ',
-                    price: double.parse(extra.price!)))
+                    price: double.parse(extra.price!),
+                    id: extra.id!))
                 .toList();
 
             if (item.imageOne != null) {
@@ -292,6 +300,12 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                       .map<DropdownMenuItem<String>>((value) {
                                     return DropdownMenuItem<String>(
                                       value: value.price,
+                                      onTap: () {
+                                        setState(() {
+                                          selectedId = value.id!;
+                                        });
+                                        print(selectedId);
+                                      },
                                       child: Text(
                                           '${value.textAr}  ${value.price} RS '),
                                     );
@@ -396,7 +410,11 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                             .addToCart(
                                                 shopId: widget.shopId,
                                                 productId: state.itemDetails.id,
-                                                quantity: quantity)
+                                                quantity: quantity,
+                                                options: selectedId != null
+                                                    ? [selectedId]
+                                                    : [],
+                                                extras: chosenExtra)
                                             .then((value) {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
@@ -504,8 +522,12 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
 class BuildCheckboxListTile extends StatefulWidget {
   final CheckBoxState checkBoxState;
   final Function function;
-  BuildCheckboxListTile(
-      {context, required this.checkBoxState, required this.function});
+
+  BuildCheckboxListTile({
+    context,
+    required this.checkBoxState,
+    required this.function,
+  });
 
   @override
   State<BuildCheckboxListTile> createState() => _BuildCheckboxListTileState();
@@ -518,7 +540,7 @@ class _BuildCheckboxListTileState extends State<BuildCheckboxListTile> {
     return CheckboxListTile(
         title: Text(
           widget.checkBoxState.name,
-          style: TextStyle(fontSize: 16.sp),
+          style: TextStyle(fontSize: 16.sp, color: Color(Constants.mainColor)),
         ),
         controlAffinity: ListTileControlAffinity.leading,
         value: isAdded,
@@ -527,9 +549,11 @@ class _BuildCheckboxListTileState extends State<BuildCheckboxListTile> {
             isAdded = value!;
             print(isAdded);
             if (isAdded == true) {
-              return widget.function(widget.checkBoxState.price, true);
+              return widget.function(
+                  widget.checkBoxState.price, true, widget.checkBoxState.id);
             } else {
-              return widget.function(widget.checkBoxState.price, false);
+              return widget.function(
+                  widget.checkBoxState.price, false, widget.checkBoxState.id);
             }
           });
         });
