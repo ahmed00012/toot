@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
 import 'package:toot/cubits/favorites_cubit/favorites_cubit.dart';
 import 'package:toot/cubits/product_cubit/product_cubit.dart';
+import 'package:toot/data/local_storage.dart';
 import 'package:toot/data/models/check_box_state.dart';
 import 'package:toot/presentation/screens/auth_screen.dart';
 import 'package:toot/presentation/screens/cart_screen.dart';
@@ -126,7 +126,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                 color: Colors.red,
               ),
               onPressed: () async {
-                if (await FlutterSecureStorage().read(key: 'token') == null) {
+                if (LocalStorage.getData(key: 'token') == null) {
                   _showDialog(context,
                       'لا يمكن الاضافه الي المفضلة يجب عليك التسجيل اولا');
                 } else {

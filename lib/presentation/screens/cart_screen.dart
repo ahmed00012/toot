@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
+import 'package:toot/data/local_storage.dart';
 import 'package:toot/presentation/widgets/blurry_dialog.dart';
 import 'package:toot/presentation/widgets/cart_item.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
@@ -162,14 +162,16 @@ class _CartScreenState extends State<CartScreen> {
                   BuildIndigoButton(
                       title: 'الدفع',
                       function: () async {
-                        if (await FlutterSecureStorage().read(key: 'token') ==
-                            null) {
+                        if (LocalStorage.getData(key: 'token') == null) {
                           _showDialog(context,
                               'حتي تتمكن من اتمام الطلب يجب عليك التسجيل اولا');
                         } else {
                           Navigator.of(context)
                               .push(MaterialPageRoute(
-                                  builder: (_) => DeliveryAddressesScreen()))
+                                  builder: (_) => DeliveryAddressesScreen(
+                                        id: cartDetails
+                                            .data!.items![0].vendorId!,
+                                      )))
                               .then(
                                 (value) =>
                                     BlocProvider.of<CartCubit>(context).emit(

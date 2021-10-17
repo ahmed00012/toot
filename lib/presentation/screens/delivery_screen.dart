@@ -11,6 +11,8 @@ import 'package:toot/presentation/widgets/single_choice_item.dart';
 import 'delivery_options_screen.dart';
 
 class DeliveryAddressesScreen extends StatefulWidget {
+  final int id;
+  DeliveryAddressesScreen({required this.id});
   @override
   _DeliveryAddressesScreenState createState() =>
       _DeliveryAddressesScreenState();
@@ -20,6 +22,8 @@ class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
   List<bool> selections = List<bool>.filled(20, false, growable: false);
   int? id;
   List savedAddress = [];
+  String? token;
+
   List<bool> singleSelection(bool selection, int index, int id) {
     setState(() {
       this.id = id;
@@ -93,7 +97,9 @@ class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
                       .selectAddress(addressId: id);
                   Navigator.of(context)
                       .push(MaterialPageRoute(
-                          builder: (_) => DeliveryOptionsScreen()))
+                          builder: (_) => DeliveryOptionsScreen(
+                                id: widget.id,
+                              )))
                       .then((value) => BlocProvider.of<CartCubit>(context)
                           .emit(AddressesLoaded(addresses: savedAddress)));
                 })

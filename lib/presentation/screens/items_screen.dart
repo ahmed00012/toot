@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 import 'package:toot/cubits/favorites_cubit/favorites_cubit.dart';
+import 'package:toot/data/local_storage.dart';
 import 'package:toot/data/models/item.dart';
 import 'package:toot/data/web_services/product_web_service.dart';
 import 'package:toot/presentation/screens/single_item_screen.dart';
@@ -299,9 +299,7 @@ class BuildItem extends StatelessWidget {
                             borderRadius: BorderRadius.circular(5)),
                         child: IconButton(
                           onPressed: () async {
-                            if (await FlutterSecureStorage()
-                                    .read(key: 'token') ==
-                                null) {
+                            if (LocalStorage.getData(key: 'token') == null) {
                               _showDialog(context,
                                   'لا يمكن الاضافه الي المفضلة يجب عليك التسجيل اولا');
                             } else {

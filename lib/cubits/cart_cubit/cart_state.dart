@@ -29,6 +29,11 @@ class PaymentsLoaded extends CartState {
   PaymentsLoaded({required this.payments});
 }
 
+class InfoLoaded extends CartState {
+  final Info info;
+  InfoLoaded({required this.info});
+}
+
 class CartError extends CartState {
   final String error;
   CartError({required this.error});

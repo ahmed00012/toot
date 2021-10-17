@@ -1,15 +1,11 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import '../local_storage.dart';
 
 class FavoritesWebServices {
   late Dio dio;
-  static var token;
-
-  static init() async {
-    token = await FlutterSecureStorage().read(key: 'token');
-  }
 
   FavoritesWebServices() {
     BaseOptions options = BaseOptions(
@@ -17,7 +13,7 @@ class FavoritesWebServices {
         receiveDataWhenStatusError: true,
         connectTimeout: 20 * 1000, // 60 seconds,
         receiveTimeout: 20 * 1000,
-        headers: token == null
+        headers: LocalStorage.getData(key: 'token') == null
             ? {
                 'Accept': 'application/json',
                 'Content-Language': 'ar',
@@ -27,7 +23,8 @@ class FavoritesWebServices {
                 'Accept': 'application/json',
                 'Content-Language': 'ar',
                 'X-Requested-With': 'XMLHttpRequest',
-                HttpHeaders.authorizationHeader: "Bearer " + token
+                HttpHeaders.authorizationHeader:
+                    "Bearer " + LocalStorage.getData(key: 'token')
               });
 
     dio = Dio(options);

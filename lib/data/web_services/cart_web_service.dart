@@ -1,15 +1,11 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import '../local_storage.dart';
 
 class CartWebServices {
   late Dio dio;
-  static var token;
-
-  static init() async {
-    token = await FlutterSecureStorage().read(key: 'token');
-  }
 
   CartWebServices() {
     BaseOptions options = BaseOptions(
@@ -17,7 +13,7 @@ class CartWebServices {
         receiveDataWhenStatusError: true,
         connectTimeout: 20 * 1000, // 60 seconds,
         receiveTimeout: 20 * 1000,
-        headers: token == null
+        headers: LocalStorage.getData(key: 'token') == null
             ? {
                 'Accept': 'application/json',
                 'Content-Language': 'ar',
@@ -27,7 +23,8 @@ class CartWebServices {
                 'Accept': 'application/json',
                 'Content-Language': 'ar',
                 'X-Requested-With': 'XMLHttpRequest',
-                HttpHeaders.authorizationHeader: "Bearer " + token
+                HttpHeaders.authorizationHeader:
+                    "Bearer " + LocalStorage.getData(key: 'token')
               });
 
     dio = Dio(options);
@@ -56,9 +53,7 @@ class CartWebServices {
 
   Future<dynamic> fetchCart() async {
     try {
-      String? cartToken = await FlutterSecureStorage().read(key: 'cart_token');
-      print('هنا token الcart ');
-      print(cartToken);
+      String? cartToken = LocalStorage.getData(key: 'cart_token');
       Response response = await dio.get('cart/get_cart/${cartToken ?? ''}');
       print(response.data);
       if (response.data['success'] == 0) {
@@ -141,6 +136,29 @@ class CartWebServices {
   Future<dynamic> promoCode(FormData formData) async {
     try {
       Response response = await dio.post('cart/add_coupon', data: formData);
+      print(response.data);
+      return response.data;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      throw e.response!.data;
+    }
+  }
+
+  Future<dynamic> fetchDatesAndTimes({int? id}) async {
+    try {
+      Response response = await dio.get('cart/dates_times/$id');
+      print(response.data);
+      return response.data;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      throw e.response!.data;
+    }
+  }
+
+  Future<dynamic> confirmInfoDateAndTime(FormData formData) async {
+    try {
+      Response response =
+          await dio.post('cart/add_delivery_date', data: formData);
       print(response.data);
       return response.data;
     } on DioError catch (e) {

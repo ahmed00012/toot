@@ -1,8 +1,8 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:toot/data/local_storage.dart';
 import 'package:toot/presentation/screens/auth_screen.dart';
 import 'package:toot/presentation/screens/cart_screen.dart';
 import 'package:toot/presentation/screens/favorites_screen.dart';
@@ -168,8 +168,7 @@ class _BottomNavBarState extends State<BottomNavBar>
           // leftCornerRadius: 32,
           // rightCornerRadius: 32,
           onTap: (index) async {
-            if (await FlutterSecureStorage().read(key: 'token') == null &&
-                index == 1) {
+            if (LocalStorage.getData(key: 'token') == null && index == 1) {
               _showDialog(context, 'لا يمكن عرض المفضلة يجب عليك التسجيل اولا');
             } else {
               setState(() {

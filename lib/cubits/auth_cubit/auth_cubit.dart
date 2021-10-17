@@ -1,10 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:toot/data/local_storage.dart';
 import 'package:toot/data/repositories/auth_repository.dart';
 import 'package:toot/data/web_services/auth_web_service.dart';
-import 'package:toot/data/web_services/cart_web_service.dart';
-import 'package:toot/data/web_services/favorites_web_service.dart';
-import 'package:toot/data/web_services/product_web_service.dart';
 
 part 'auth_state.dart';
 
@@ -53,13 +50,7 @@ class AuthCubit extends Cubit<AuthState> {
       phone: phone,
     )
         .then((token) async {
-      print('token in signIn');
-      print(token);
-      final storage = new FlutterSecureStorage();
-      await storage.write(key: 'token', value: token);
-      await ProductWebServices.init();
-      await FavoritesWebServices.init();
-      await CartWebServices.init();
+      LocalStorage.saveData(key: 'token', value: token);
       emit(AuthLoaded());
     }).catchError((e) {
       emit(AuthError(error: e.toString()));
@@ -90,13 +81,7 @@ class AuthCubit extends Cubit<AuthState> {
             email: email,
             name: name)
         .then((token) async {
-      print(token);
-      final storage = new FlutterSecureStorage();
-      await storage.write(key: 'token', value: token).then((value) async {
-        await ProductWebServices.init();
-        await FavoritesWebServices.init();
-        await CartWebServices.init();
-      });
+      LocalStorage.saveData(key: 'token', value: token);
 
       emit(OtpSuccess());
     }).catchError((e) {

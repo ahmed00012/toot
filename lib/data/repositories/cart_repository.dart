@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:toot/data/models/address.dart';
 import 'package:toot/data/models/cart_item.dart';
+import 'package:toot/data/models/info.dart';
 import 'package:toot/data/models/payment.dart';
 import 'package:toot/data/models/promo_status.dart';
 import 'package:toot/data/web_services/cart_web_service.dart';
@@ -89,5 +90,17 @@ class CartRepository {
         FormData.fromMap({'cart_token': cartToken, 'code': code});
     final rawData = await cartWebServices.promoCode(formData);
     return PromoStatus.fromJson(rawData);
+  }
+
+  Future<dynamic> fetchDatesAndTimes({int? id}) async {
+    final rawData = await cartWebServices.fetchDatesAndTimes(id: id);
+    return Info.fromJson(rawData);
+  }
+
+  Future<dynamic> confirmInfoDateAndTime(
+      {String? date, int? id, String? token}) async {
+    FormData formData =
+        FormData.fromMap({'date': date, 'time_id': id, 'cart_token': token});
+    return await cartWebServices.confirmInfoDateAndTime(formData);
   }
 }

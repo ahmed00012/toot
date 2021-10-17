@@ -17,6 +17,7 @@ void main() async {
   await EasyLocalization.ensureInitialized();
   Bloc.observer = MyBlocObserver();
   await LocalStorage.init();
+
   runApp(EasyLocalization(
     child: MyApp(),
     supportedLocales: [
@@ -42,13 +43,13 @@ class MyApp extends StatelessWidget {
             create: (context) => AuthCubit(),
           ),
           BlocProvider<ProductCubit>(
-            create: (BuildContext context) => ProductCubit(),
+            create: (context) => ProductCubit(),
           ),
           BlocProvider<FavoritesCubit>(
-            create: (BuildContext context) => FavoritesCubit(),
+            create: (context) => FavoritesCubit(),
           ),
           BlocProvider<CartCubit>(
-            create: (BuildContext context) => CartCubit(),
+            create: (context) => CartCubit(),
           ),
         ],
         child: MaterialApp(
