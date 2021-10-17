@@ -67,13 +67,14 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                           Text('احصل علي خصم مع طلبك'),
                           Container(
                             width: 0.35.sw,
-                            height: 0.044.sh,
+                            height: 0.042.sh,
                             child: ElevatedButton(
                               onPressed: () =>
                                   discountModalBottomSheetMenu(context),
                               child: Text(
                                 'اضافة رمز ترويجي',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 13),
                                 textAlign: TextAlign.center,
                               ),
                               style: ElevatedButton.styleFrom(

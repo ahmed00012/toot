@@ -32,7 +32,6 @@ class ProductCubit extends Cubit<ProductState> {
           desiredAccuracy: LocationAccuracy.low);
       latitude = position.latitude;
       longitude = position.longitude;
-      print(latitude);
       LocalStorage.saveData(key: 'long', value: longitude);
       LocalStorage.saveData(key: 'lat', value: latitude);
     } catch (e) {

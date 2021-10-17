@@ -169,34 +169,55 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      Center(
-                        child: CarouselSlider.builder(
-                          itemCount: images.length,
-                          options: CarouselOptions(
+                      images.isNotEmpty
+                          ? Center(
+                              child: CarouselSlider.builder(
+                                itemCount: images.length,
+                                options: CarouselOptions(
+                                    height: 0.4.sh,
+                                    autoPlay: true,
+                                    viewportFraction: 0.9,
+                                    autoPlayInterval: Duration(seconds: 8),
+                                    onPageChanged: (index, reason) {
+                                      setState(() {
+                                        current = index;
+                                      });
+                                    }),
+                                itemBuilder: (ctx, index, _) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0),
+                                    child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        child: Image.network(
+                                          images[index],
+                                          fit: BoxFit.fitHeight,
+                                          width: 0.9.sw,
+                                        )),
+                                  );
+                                },
+                              ),
+                            )
+                          : Container(
                               height: 0.4.sh,
-                              autoPlay: true,
-                              viewportFraction: 0.9,
-                              autoPlayInterval: Duration(seconds: 8),
-                              onPageChanged: (index, reason) {
-                                setState(() {
-                                  current = index;
-                                });
-                              }),
-                          itemBuilder: (ctx, index, _) {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  child: Image.network(
-                                    images[index],
-                                    fit: BoxFit.fitHeight,
-                                    width: 0.9.sw,
-                                  )),
-                            );
-                          },
-                        ),
-                      ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.image_not_supported_outlined,
+                                    size: 80,
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                    'لا يتوفر صورة لهذا المنتج',
+                                    style: TextStyle(fontSize: 13),
+                                  )
+                                ],
+                              ),
+                            ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 0.06.sw),
                         child: Column(
@@ -241,7 +262,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                               ),
                             ),
                             Visibility(
-                              visible: extra.isNotEmpty,
+                              visible: item.options!.isNotEmpty,
                               child: Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 12.0),
@@ -277,7 +298,9 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                   isExpanded: true,
                                   value: dropdownPriceValue,
                                   hint: Text(
-                                    '${item.options![0].textAr!}  ${item.options![0].price.toString()} RS',
+                                    item.options!.isNotEmpty
+                                        ? '${item.options![0].textAr!}  ${item.options![0].price.toString()} RS'
+                                        : '',
                                     style: TextStyle(
                                         fontSize: 15, color: Color(0xff4A4B4D)),
                                   ),

@@ -201,7 +201,7 @@ class _ItemsScreenState extends State<ItemsScreen>
 
 class BuildItem extends StatelessWidget {
   final String title;
-  final String image;
+  final String? image;
   final String price;
   final bool isFav;
   final int itemId;
@@ -209,7 +209,7 @@ class BuildItem extends StatelessWidget {
 
   BuildItem({
     required this.price,
-    required this.image,
+    this.image,
     required this.title,
     required this.isFav,
     required this.itemId,
@@ -259,44 +259,69 @@ class BuildItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                  Stack(
+                    alignment: AlignmentDirectional.topEnd,
                     children: [
-                      IconButton(
-                        onPressed: () async {
-                          if (await FlutterSecureStorage().read(key: 'token') ==
-                              null) {
-                            _showDialog(context,
-                                'لا يمكن الاضافه الي المفضلة يجب عليك التسجيل اولا');
-                          } else {
-                            BlocProvider.of<FavoritesCubit>(context)
-                                .toggleFavoriteStatus(itemId: itemId)
-                                .then((value) => setState(() {
-                                      favStatus = !favStatus;
-                                    }));
-                          }
-                        },
-                        icon: Icon(
-                          favStatus
-                              ? Icons.favorite
-                              : Icons.favorite_border_outlined,
-                          color: Colors.red,
+                      Container(
+                        width: double.infinity,
+                        height: 0.35.sh,
+                        child: image != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.network(
+                                  image!,
+                                  fit: BoxFit.cover,
+                                ))
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.image_not_supported_outlined,
+                                    size: 80,
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                    'لا يتوفر صورة لهذا المنتج',
+                                    style: TextStyle(fontSize: 13),
+                                  )
+                                ],
+                              ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.zero,
+                        height: 0.1.sw,
+                        width: 0.1.sw,
+                        margin: EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                            color: Colors.black12,
+                            borderRadius: BorderRadius.circular(5)),
+                        child: IconButton(
+                          onPressed: () async {
+                            if (await FlutterSecureStorage()
+                                    .read(key: 'token') ==
+                                null) {
+                              _showDialog(context,
+                                  'لا يمكن الاضافه الي المفضلة يجب عليك التسجيل اولا');
+                            } else {
+                              BlocProvider.of<FavoritesCubit>(context)
+                                  .toggleFavoriteStatus(itemId: itemId)
+                                  .then((value) => setState(() {
+                                        favStatus = !favStatus;
+                                      }));
+                            }
+                          },
+                          icon: Icon(
+                            favStatus
+                                ? Icons.favorite
+                                : Icons.favorite_border_outlined,
+                            color: Colors.red,
+                          ),
+                          splashRadius: 1,
                         ),
-                        splashRadius: 1,
-                      )
+                      ),
                     ],
-                  ),
-                  Center(
-                    child: Container(
-                      width: 0.33.sw,
-                      height: 0.22.sh,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            image,
-                            fit: BoxFit.contain,
-                          )),
-                    ),
                   ),
                   SizedBox(
                     height: 12,
@@ -326,7 +351,7 @@ class BuildItem extends StatelessWidget {
                       title,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          color: Colors.grey.shade400, fontSize: 14.sp),
+                          color: Colors.grey.shade400, fontSize: 15.sp),
                     ),
                   ),
                   SizedBox(

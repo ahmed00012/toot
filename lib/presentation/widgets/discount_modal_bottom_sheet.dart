@@ -10,8 +10,11 @@ import 'blurry_dialog.dart';
 void discountModalBottomSheetMenu(context) {
   TextEditingController textEditingController = TextEditingController();
 
-  _showDialog(context, String title) {
-    VoidCallback continueCallBack = () => {Navigator.of(context).pop()};
+  _showDialog(BuildContext context, BuildContext builder, String title) {
+    VoidCallback continueCallBack = () {
+      Navigator.of(context).pop();
+      Navigator.of(builder).pop();
+    };
     BlurryDialog alert =
         BlurryDialog('حالة كوبون الخصم', title, continueCallBack);
 
@@ -94,11 +97,11 @@ void discountModalBottomSheetMenu(context) {
                     width: 1.sw,
                     height: 0.07.sh,
                     child: BlocListener<CartCubit, CartState>(
-                      listener: (_, state) {
+                      listener: (context, state) {
                         if (state is PromoLoaded) {
-                          _showDialog(builder, state.promo.message);
+                          _showDialog(context, builder, state.promo.message);
                         } else if (state is CartError) {
-                          _showDialog(builder, state.error);
+                          _showDialog(context, builder, state.error);
                         }
                       },
                       child: ElevatedButton(

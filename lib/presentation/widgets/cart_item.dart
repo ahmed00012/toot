@@ -52,21 +52,30 @@ class CartItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          '${price.toString()} RS',
+                          '${price.toString()} SR',
                           style: TextStyle(fontSize: 22),
                         ),
                         Text(
-                          '$quantity : Piece',
+                          '  العدد : $quantity',
                           style: TextStyle(fontWeight: FontWeight.w600),
                         )
                       ],
                     ),
                     Row(
                       children: [
-                        Text(
-                          title!,
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w300),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Container(
+                            width: 0.25.sw,
+                            child: Text(
+                              title!,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  overflow: TextOverflow.ellipsis,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w300),
+                            ),
+                          ),
                         ),
                         SizedBox(
                           width: 10,

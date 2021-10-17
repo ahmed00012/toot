@@ -5,7 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ProductWebServices {
   late Dio dio;
-  static late var token;
+  static var token;
 
   static init() async {
     token = await FlutterSecureStorage().read(key: 'token');

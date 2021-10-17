@@ -38,7 +38,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 shrinkWrap: true,
                 itemBuilder: (context, index) => FavoriteItem(
                   name: fav[index].product!.name!,
-                  image: fav[index].product!.imageOne!,
+                  image: fav[index].product!.imageOne,
                   price: fav[index].product!.price!,
                   id: fav[index].productId!,
                   shopId: fav[index].vendorId!,
@@ -72,13 +72,13 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 class FavoriteItem extends StatefulWidget {
   final String name;
   final String price;
-  final String image;
+  final String? image;
   final int id;
   final int shopId;
   final bool isFav;
 
   FavoriteItem(
-      {required this.image,
+      {this.image,
       required this.name,
       required this.price,
       required this.id,
@@ -103,15 +103,20 @@ class _FavoriteItemState extends State<FavoriteItem> {
         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                widget.image,
-                fit: BoxFit.contain,
-                height: 0.2.sw,
-                width: 0.2.sw,
-              ),
-            ),
+            widget.image != null
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      widget.image!,
+                      fit: BoxFit.contain,
+                      height: 0.2.sw,
+                      width: 0.2.sw,
+                    ),
+                  )
+                : Icon(
+                    Icons.image_not_supported_outlined,
+                    size: 40,
+                  ),
             SizedBox(
               width: 0.08.sw,
             ),

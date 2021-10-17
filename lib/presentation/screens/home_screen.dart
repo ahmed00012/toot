@@ -29,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
     BlocProvider.of<ProductCubit>(context).fetchCategories(
         long: LocalStorage.getData(key: 'long'),
         lat: LocalStorage.getData(key: 'lat'));
-
     super.initState();
   }
 
@@ -71,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                     ),
                   ),
-                  BuildShopsListView(
+                  ShopsListView(
                     categories: state.categories,
                     function: () {
                       BlocProvider.of<ProductCubit>(context)
@@ -103,8 +102,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class BuildShopsListView extends StatelessWidget {
-  BuildShopsListView({required this.categories, required this.function});
+class ShopsListView extends StatelessWidget {
+  ShopsListView({required this.categories, required this.function});
 
   final List<dynamic> categories;
   final Function function;
@@ -118,7 +117,7 @@ class BuildShopsListView extends StatelessWidget {
         shrinkWrap: true,
         itemBuilder: (context, index) {
           return Container(
-            height: 0.28.sh,
+            height: 0.30.sh,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -157,11 +156,11 @@ class BuildShopsListView extends StatelessWidget {
                             });
                           },
                           child: Container(
-                            width: 0.6.sw,
+                            width: 0.8.sw,
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 12.0),
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15.0),
+                                borderRadius: BorderRadius.circular(12.0),
                                 child: categories[index]
                                             .markets![imagesIndex]
                                             .image !=
@@ -176,25 +175,25 @@ class BuildShopsListView extends StatelessWidget {
                                           decoration: BoxDecoration(
                                             image: DecorationImage(
                                               image: imageProvider,
-                                              fit: BoxFit.fill,
+                                              fit: BoxFit.cover,
                                             ),
                                           ),
                                         ),
                                         placeholder: (context, url) =>
                                             Image.asset(
                                           'assets/images/image loading.gif',
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.cover,
                                           width: 0.6.sw,
                                         ),
                                         errorWidget: (context, url, error) =>
                                             Image.asset(
                                           'assets/images/eCommerce-Shop.png',
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.cover,
                                         ),
                                       )
                                     : Image.asset(
                                         'assets/images/eCommerce-Shop.png',
-                                        fit: BoxFit.fill,
+                                        fit: BoxFit.cover,
                                       )),
                           ),
                         );
