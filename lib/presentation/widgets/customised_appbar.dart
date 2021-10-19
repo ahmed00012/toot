@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../constants.dart';
 
 class BuildAppBar extends StatelessWidget with PreferredSizeWidget {
@@ -15,7 +16,7 @@ class BuildAppBar extends StatelessWidget with PreferredSizeWidget {
     return AppBar(
       title: Text(
         title,
-        style: TextStyle(fontWeight: FontWeight.w400),
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
       ),
       centerTitle: true,
       leading: Visibility(

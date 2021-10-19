@@ -19,7 +19,7 @@ class DeliveryAddressesScreen extends StatefulWidget {
 }
 
 class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
-  List<bool> selections = List<bool>.filled(20, false, growable: false);
+  List<bool> selections = List<bool>.filled(30, false, growable: false);
   int? id;
   List savedAddress = [];
   String? token;
@@ -36,7 +36,6 @@ class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
       selections[index] = selection;
     }
     setState(() {});
-    print(selections);
     return selections;
   }
 
@@ -65,8 +64,10 @@ class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
                 Navigator.of(context)
                     .push(
                         MaterialPageRoute(builder: (_) => AddDeliveryScreen()))
-                    .then((value) =>
-                        BlocProvider.of<CartCubit>(context).fetchAddress());
+                    .then((value) {
+                  BlocProvider.of<CartCubit>(context).fetchAddress();
+                  setState(() {});
+                });
               },
               child: Container(
                 height: 0.065.sh,
@@ -92,6 +93,7 @@ class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
             BuildIndigoButton(
                 title: 'استمرار',
                 function: () {
+                  print('address id here');
                   print(id);
                   BlocProvider.of<CartCubit>(context)
                       .selectAddress(addressId: id);
@@ -107,7 +109,8 @@ class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.only(right: 0.04.sw, left: 0.04.sw, top: 0.03.sw),
+        padding: EdgeInsets.only(
+            right: 0.04.sw, left: 0.04.sw, top: 0.03.sw, bottom: 0.2.sh),
         child: BlocBuilder<CartCubit, CartState>(
           builder: (context, state) {
             if (state is AddressesLoaded) {
@@ -116,7 +119,7 @@ class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
               return ListView.builder(
                 shrinkWrap: true,
                 itemCount: addresses.length,
-                physics: ClampingScrollPhysics(),
+                // physics: ClampingScrollPhysics(),
                 itemBuilder: (context, index) => SingleChoiceItem(
                     function: singleSelection,
                     choicesList: selections,

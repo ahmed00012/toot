@@ -59,8 +59,10 @@ class _SingleChoicePaymentState extends State<SingleChoicePayment> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_) => AddVisaScreen()));
+                if (widget.isVisa == true) {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (_) => AddVisaScreen()));
+                }
               },
               child: Text(
                 widget.title,

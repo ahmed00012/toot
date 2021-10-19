@@ -112,30 +112,29 @@ class ShopsListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
         itemCount: categories.length,
-        padding: const EdgeInsets.symmetric(vertical: 12.0),
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemBuilder: (context, index) {
           return Container(
-            height: 0.30.sh,
+            height: 0.28.sh,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
+                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
                   child: Text(
                     categories[index].categoryName ?? '',
                     style: TextStyle(
                         color: Color(Constants.mainColor),
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w300),
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
                 Expanded(
                   child: ListView.builder(
                       itemCount: categories[index].markets!.length,
-                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
                       shrinkWrap: true,
                       physics: BouncingScrollPhysics(),
                       scrollDirection: Axis.horizontal,
@@ -148,7 +147,10 @@ class ShopsListView extends StatelessWidget {
                                 builder: (_) => CategoriesScreen(
                                     shopId: categories[index]
                                         .markets![imagesIndex]
-                                        .id),
+                                        .id,
+                                    shopName: categories[index]
+                                        .markets![imagesIndex]
+                                        .name),
                               ),
                             )
                                 .then((value) {
@@ -172,10 +174,41 @@ class ShopsListView extends StatelessWidget {
                                         imageBuilder:
                                             (context, imageProvider) =>
                                                 Container(
+                                          alignment: Alignment.bottomRight,
                                           decoration: BoxDecoration(
                                             image: DecorationImage(
                                               image: imageProvider,
                                               fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 0.04.sh,
+                                            decoration: BoxDecoration(
+                                              gradient: LinearGradient(
+                                                begin: Alignment.topRight,
+                                                end: Alignment.bottomLeft,
+                                                colors: [
+                                                  Colors.black45,
+                                                  Colors.black12
+                                                ],
+                                              ),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0,
+                                                      vertical: 5),
+                                              child: Text(
+                                                categories[index]
+                                                    .markets![imagesIndex]
+                                                    .name,
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
                                             ),
                                           ),
                                         ),

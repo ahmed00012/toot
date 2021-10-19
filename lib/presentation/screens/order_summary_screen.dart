@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
+import 'package:toot/data/local_storage.dart';
 import 'package:toot/presentation/widgets/cart_item.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 import 'package:toot/presentation/widgets/delivery_app_bar.dart';
@@ -30,7 +31,20 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
         title: 'ملخص الطلب',
         isSummary: true,
       ),
-      body: BlocBuilder<CartCubit, CartState>(
+      body: BlocConsumer<CartCubit, CartState>(
+        listener: (_, state) {
+          if (state is OrderConfirmed) {
+            final num = state.num;
+            print(num);
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => OrderConfirmationScreen(
+                          num: num,
+                        )),
+                (Route route) => false);
+          }
+        },
         builder: (_, state) {
           if (state is CartLoaded) {
             final cartDetails = state.cartDetails;
@@ -171,8 +185,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         title: 'تأكيد الطلب',
                         function: () {
                           BlocProvider.of<CartCubit>(context).confirmOrder();
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => OrderConfirmationScreen()));
+                          LocalStorage.removeData(key: 'cart_token');
                         }),
                     SizedBox(
                       height: 0.05.sh,

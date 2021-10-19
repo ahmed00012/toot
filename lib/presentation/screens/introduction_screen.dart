@@ -23,12 +23,20 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
             imagesPreview: images,
           );
         } else {
-          return Center(
-            child: Image.asset(
-              "assets/images/logo.png",
-              fit: BoxFit.contain,
-              height: 0.23.sh,
-              width: 0.5.sw,
+          return AlertDialog(
+            backgroundColor: Colors.transparent,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            elevation: 0,
+            content: Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.asset(
+                  'assets/images/loading.gif',
+                  height: 0.4.sw,
+                  width: 0.4.sw,
+                ),
+              ),
             ),
           );
         }

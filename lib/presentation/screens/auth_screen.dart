@@ -226,7 +226,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                       TextButton(
                         child: Text(
-                            '${_authMode == AuthMode.Login ? 'سجل' : 'تسجيل الدخول'}'),
+                            '${_authMode == AuthMode.Login ? 'تسجيل عضوية جديدة' : 'تسجيل الدخول'}'),
                         onPressed: _switchAuthMode,
                       ),
                     ],

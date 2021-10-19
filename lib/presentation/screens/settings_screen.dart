@@ -74,6 +74,7 @@ class SettingsScreen extends StatelessWidget {
                   Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (context) => AuthScreen()));
                   LocalStorage.removeData(key: 'token');
+                  LocalStorage.removeData(key: 'cart_token');
                 },
               ),
             ],

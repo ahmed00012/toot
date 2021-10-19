@@ -29,6 +29,7 @@ class CartWebServices {
 
     dio = Dio(options);
   }
+
   Future<dynamic> addToCart(FormData formData) async {
     try {
       Response response = await dio.post('cart/add_product', data: formData);
@@ -54,11 +55,12 @@ class CartWebServices {
   Future<dynamic> fetchCart() async {
     try {
       String? cartToken = LocalStorage.getData(key: 'cart_token');
+      print(cartToken);
       Response response = await dio.get('cart/get_cart/${cartToken ?? ''}');
-      print(response.data);
       if (response.data['success'] == 0) {
         throw response.data['message'];
       } else {
+        print(response.data);
         return response.data;
       }
     } on DioError catch (e) {
@@ -69,6 +71,7 @@ class CartWebServices {
 
   Future<dynamic> fetchAddress() async {
     try {
+      print(dio.options.headers);
       Response response = await dio.get('customer/addresses');
       print(response.data);
       return response.data;

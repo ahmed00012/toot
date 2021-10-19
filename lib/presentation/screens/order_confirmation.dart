@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:toot/presentation/screens/orders_details_screen.dart';
 import 'package:toot/presentation/screens/orders_screen.dart';
+import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 import 'package:toot/presentation/widgets/indigo_elevated_button.dart';
 
 import '../../constants.dart';
 
 class OrderConfirmationScreen extends StatelessWidget {
+  final int? num;
+  OrderConfirmationScreen({required this.num});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +40,7 @@ class OrderConfirmationScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    '#5678',
+                    num.toString(),
                     style: TextStyle(
                       fontSize: 30.sp,
                       color: Color(Constants.mainColor),
@@ -66,7 +69,21 @@ class OrderConfirmationScreen extends StatelessWidget {
                     },
                   )
                 ],
-              )
+              ),
+              SizedBox(
+                height: 12,
+              ),
+              Center(
+                child: BuildElevatedButton(
+                  title: 'الشاشة الرئيسية',
+                  function: () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => BottomNavBar()),
+                        (Route route) => false);
+                  },
+                ),
+              ),
             ],
           ),
         ),

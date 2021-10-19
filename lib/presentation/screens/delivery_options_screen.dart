@@ -16,12 +16,15 @@ class DeliveryOptionsScreen extends StatefulWidget {
 }
 
 class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
-  List<bool> selections = List<bool>.filled(2, false, growable: false);
+  List<bool> deliverySelections = List<bool>.filled(2, false, growable: false);
+  List<bool> dateSelections = List<bool>.filled(7, false, growable: false);
+  List<bool> timeSelections = List<bool>.filled(20, false, growable: false);
   bool isExpanded = false;
+
   int? id;
   String? date;
 
-  List<bool> singleSelection(bool selection, int index) {
+  List<bool> singleSelection(List<bool> selections, bool selection, int index) {
     if (selections.contains(true)) {
       int i = selections.indexOf(true);
       selections[i] = false;
@@ -29,13 +32,6 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
     } else {
       selections[index] = selection;
     }
-    setState(() {
-      if (index == 1) {
-        isExpanded = true;
-      } else {
-        isExpanded = false;
-      }
-    });
     print(selections);
     return selections;
   }
@@ -81,14 +77,24 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SingleChoiceDelivery(
-                          function: singleSelection,
-                          choicesList: selections,
+                          selectionFunction: singleSelection,
+                          choicesList: deliverySelections,
                           index: 0,
+                          function: () {
+                            setState(() {
+                              isExpanded = false;
+                            });
+                          },
                           title: "توصيل الان",
                         ),
                         SingleChoiceDelivery(
-                          function: singleSelection,
-                          choicesList: selections,
+                          selectionFunction: singleSelection,
+                          choicesList: deliverySelections,
+                          function: () {
+                            setState(() {
+                              isExpanded = true;
+                            });
+                          },
                           index: 1,
                           title: "توصيل لاحقا",
                         ),
@@ -120,17 +126,18 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                                   scrollDirection: Axis.horizontal,
                                   shrinkWrap: true,
                                   children: info.dates!
-                                      .map((e) => GestureDetector(
-                                            onTap: () {
+                                      .map((e) => BuildDayItem(
+                                            day: DateFormat('dd-MM-yyyy')
+                                                .format(e),
+                                            index: info.dates!.indexOf(e),
+                                            choicesList: dateSelections,
+                                            selectionFunction: singleSelection,
+                                            function: () {
                                               setState(() {
                                                 date = DateFormat('yyyy-MM-dd')
                                                     .format(e);
                                               });
                                             },
-                                            child: BuildDayItem(
-                                              day: DateFormat('yyyy-MM-dd')
-                                                  .format(e),
-                                            ),
                                           ))
                                       .toList(),
                                 ),
@@ -154,15 +161,17 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                                   scrollDirection: Axis.horizontal,
                                   shrinkWrap: true,
                                   children: info.times!
-                                      .map((e) => GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              id = e.id;
-                                            });
-                                          },
-                                          child: BuildDayItem(
+                                      .map((e) => BuildDayItem(
                                             day: e.duration!,
-                                          )))
+                                            selectionFunction: singleSelection,
+                                            choicesList: timeSelections,
+                                            index: info.times!.indexOf(e),
+                                            function: () {
+                                              setState(() {
+                                                id = e.id;
+                                              });
+                                            },
+                                          ))
                                       .toList(),
                                 ),
                               ),
@@ -173,8 +182,10 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                       child: BuildIndigoButton(
                           title: 'استمرار',
                           function: () {
-                            BlocProvider.of<CartCubit>(context)
-                                .confirmInfoDateAndTime(date: date, id: id);
+                            if (isExpanded) {
+                              BlocProvider.of<CartCubit>(context)
+                                  .confirmInfoDateAndTime(date: date, id: id);
+                            }
                             Navigator.of(context)
                                 .push(MaterialPageRoute(
                                     builder: (_) => PaymentScreen()))
@@ -213,24 +224,49 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
 
 class BuildDayItem extends StatelessWidget {
   final String day;
-
-  BuildDayItem({required this.day});
+  final Function selectionFunction;
+  final Function function;
+  final List<bool> choicesList;
+  final int index;
+  BuildDayItem(
+      {required this.day,
+      required this.selectionFunction,
+      required this.choicesList,
+      required this.index,
+      required this.function});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
-      width: 0.26.sw,
-      decoration: BoxDecoration(
-          color: Color(0xffF0F4F8), borderRadius: BorderRadius.circular(15)),
-      child: Center(
-          child: Text(
-        day,
-        style: TextStyle(
-            fontSize: 16.sp,
-            color: Colors.grey.shade600,
-            fontWeight: FontWeight.w300),
-      )),
+    bool isSelected = false;
+    return StatefulBuilder(
+      builder: (context, setState) => GestureDetector(
+        onTap: () {
+          setState(() {
+            isSelected = !isSelected;
+            function();
+            return selectionFunction(choicesList, isSelected, index);
+          });
+        },
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 8),
+          width: 0.24.sw,
+          decoration: BoxDecoration(
+              color: choicesList[index] == true
+                  ? Colors.greenAccent.shade400
+                  : Color(0xffF0F4F8),
+              borderRadius: BorderRadius.circular(15)),
+          child: Center(
+              child: Text(
+            day,
+            style: TextStyle(
+                fontSize: 16.sp,
+                color: choicesList[index] == true
+                    ? Colors.white
+                    : Colors.grey.shade600,
+                fontWeight: FontWeight.w300),
+          )),
+        ),
+      ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -53,11 +54,16 @@ class CartItem extends StatelessWidget {
                       children: [
                         Text(
                           '${price.toString()} SR',
-                          style: TextStyle(fontSize: 22),
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 4,
                         ),
                         Text(
-                          '  العدد : $quantity',
-                          style: TextStyle(fontWeight: FontWeight.w600),
+                          'العدد : $quantity',
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w600),
                         )
                       ],
                     ),
@@ -72,7 +78,7 @@ class CartItem extends StatelessWidget {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   overflow: TextOverflow.ellipsis,
-                                  fontSize: 20,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.w300),
                             ),
                           ),
@@ -91,32 +97,48 @@ class CartItem extends StatelessWidget {
                 ),
               ),
               children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text('الوزن', style: TextStyle(fontSize: 16)),
-                    ),
-                    Spacer(),
-                    Column(
-                      children: extra!
-                          .map((e) => Text(e.optionvalue.nameAr))
-                          .toList(),
-                    )
-                  ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Row(
+                    children: [
+                      Text('الوزن', style: TextStyle(fontSize: 16)),
+                      Spacer(),
+                      extra == []
+                          ? Text(
+                              'لا يوجد',
+                              style: TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.bold),
+                            )
+                          : Column(
+                              children: extra!
+                                  .map((e) => Text(e.optionvalue.nameAr))
+                                  .toList(),
+                            )
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                Row(
-                  children: [
-                    Text('الاضافات', style: TextStyle(fontSize: 16)),
-                    Spacer(),
-                    Column(
-                      children:
-                          addons!.map((e) => Text(e.addon.nameAr)).toList(),
-                    ),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Row(
+                    children: [
+                      Text('الاضافات', style: TextStyle(fontSize: 16)),
+                      Spacer(),
+                      addons == []
+                          ? Text(
+                              'لا يوجد',
+                              style: TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.bold),
+                            )
+                          : Column(
+                              children: addons!
+                                  .map((e) => Text(e.addon.nameAr))
+                                  .toList(),
+                            ),
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: 12,

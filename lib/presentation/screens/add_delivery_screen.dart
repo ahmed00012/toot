@@ -10,6 +10,7 @@ class AddDeliveryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     String? address;
     String? district;
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -101,13 +102,16 @@ class AddDeliveryScreen extends StatelessWidget {
                 ),
                 // Image.network(
                 //     'https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap &markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318 &markers=color:red%7Clabel:C%7C40.718217,-73.998284 &key=AIzaSyA6pqUxVRxuv5mV0-RWjGl2Qg-wIsZA6PY'),
+                SizedBox(
+                  height: 0.35.sh,
+                ),
                 Center(
                   child: BuildIndigoButton(
                       title: 'اضافة',
                       function: () {
                         BlocProvider.of<CartCubit>(context)
-                            .addAddress(address: address, district: district);
-                        Navigator.of(context).pop();
+                            .addAddress(address: address, district: district)
+                            .then((value) => Navigator.of(context).pop());
                       }),
                 )
               ],

@@ -82,7 +82,6 @@ class AuthCubit extends Cubit<AuthState> {
             name: name)
         .then((token) async {
       LocalStorage.saveData(key: 'token', value: token);
-
       emit(OtpSuccess());
     }).catchError((e) {
       emit(AuthError(error: e.toString()));

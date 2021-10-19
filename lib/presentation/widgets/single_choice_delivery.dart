@@ -6,15 +6,16 @@ import 'package:toot/constants.dart';
 class SingleChoiceDelivery extends StatefulWidget {
   final String title;
   final int index;
+  final Function selectionFunction;
   final Function function;
   final List<bool> choicesList;
 
-  SingleChoiceDelivery({
-    required this.title,
-    required this.index,
-    required this.function,
-    required this.choicesList,
-  });
+  SingleChoiceDelivery(
+      {required this.title,
+      required this.index,
+      required this.selectionFunction,
+      required this.choicesList,
+      required this.function});
 
   @override
   _SingleChoiceDeliveryState createState() => _SingleChoiceDeliveryState();
@@ -28,7 +29,8 @@ class _SingleChoiceDeliveryState extends State<SingleChoiceDelivery> {
       onTap: () {
         setState(() {
           selected = !selected;
-          widget.function(selected, widget.index);
+          widget.function();
+          widget.selectionFunction(widget.choicesList, selected, widget.index);
         });
       },
       child: Padding(

@@ -24,7 +24,7 @@ class CartCubit extends Cubit<CartState> {
     super.onError(error, stackTrace);
   }
 
-  static String? cartToken = LocalStorage.getData(key: 'cart_token');
+  String? cartToken = LocalStorage.getData(key: 'cart_token');
 
   Future<void> addToCart(
       {int? shopId,
@@ -66,6 +66,7 @@ class CartCubit extends Cubit<CartState> {
         .fetchCart()
         .then((cartDetails) => emit(CartLoaded(cartDetails: cartDetails)))
         .catchError((e) {
+      print(e.toString());
       emit(CartError(error: e.toString()));
     });
   }
@@ -121,8 +122,12 @@ class CartCubit extends Cubit<CartState> {
     });
   }
 
-  Future<void> confirmOrder() async {
-    cartRepository.confirmOrder(cartToken: cartToken).catchError((e) {
+  Future confirmOrder() async {
+    emit(CartLoading());
+    cartRepository.confirmOrder(cartToken: cartToken).then((value) {
+      emit(OrderConfirmed(num: value['order']['id']));
+    }).catchError((e) {
+      print(e);
       emit(CartError(error: e.toString()));
     });
   }

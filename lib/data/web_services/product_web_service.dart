@@ -55,6 +55,8 @@ class ProductWebServices {
 
   Future<dynamic> fetchItems({int? shopId, int? catId, int? page}) async {
     try {
+      print(shopId);
+      print(catId);
       Response response = await dio.get('vendors/$shopId/$catId/products',
           queryParameters: {'page': page});
       print(dio.options.headers);

@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:toot/presentation/screens/auth_screen.dart';
 
 import '../../constants.dart';
 import 'buttom_nav_bar.dart';
@@ -83,17 +84,16 @@ class _ImagesSliderState extends State<ImagesSlider> {
                   children: [
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 10),
-                      width: 0.35.sw,
-                      height: 0.06.sh,
+                      width: 0.45.sw,
+                      height: 0.05.sh,
                       child: ElevatedButton(
                         onPressed: () {
-                          buttonCarouselController.nextPage(
-                              duration: Duration(milliseconds: 300),
-                              curve: Curves.linear);
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => AuthScreen()));
                         },
-                        child: Text('التالي'),
+                        child: Text('تسجيل الدخول'),
                         style: ElevatedButton.styleFrom(
-                            primary: Colors.black.withOpacity(0.7),
+                            primary: Colors.black.withOpacity(0.6),
                             shape: RoundedRectangleBorder(
                                 side: BorderSide.none,
                                 borderRadius: BorderRadius.circular(8))),
@@ -101,8 +101,8 @@ class _ImagesSliderState extends State<ImagesSlider> {
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 10),
-                      width: 0.35.sw,
-                      height: 0.06.sh,
+                      width: 0.45.sw,
+                      height: 0.05.sh,
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pushReplacement(
@@ -111,7 +111,7 @@ class _ImagesSliderState extends State<ImagesSlider> {
                         },
                         child: Text('تخطي'),
                         style: ElevatedButton.styleFrom(
-                            primary: Colors.black.withOpacity(0.7),
+                            primary: Colors.black.withOpacity(0.6),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8))),
                       ),

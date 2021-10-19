@@ -14,6 +14,7 @@ void discountModalBottomSheetMenu(context) {
     VoidCallback continueCallBack = () {
       Navigator.of(context).pop();
       Navigator.of(builder).pop();
+      BlocProvider.of<CartCubit>(context).fetchCart();
     };
     BlurryDialog alert =
         BlurryDialog('حالة كوبون الخصم', title, continueCallBack);
@@ -97,7 +98,7 @@ void discountModalBottomSheetMenu(context) {
                     width: 1.sw,
                     height: 0.07.sh,
                     child: BlocListener<CartCubit, CartState>(
-                      listener: (context, state) {
+                      listener: (_, state) {
                         if (state is PromoLoaded) {
                           _showDialog(context, builder, state.promo.message);
                         } else if (state is CartError) {

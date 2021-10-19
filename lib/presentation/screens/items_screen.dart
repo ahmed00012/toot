@@ -164,7 +164,7 @@ class _ItemsScreenState extends State<ItemsScreen>
                   shrinkWrap: true,
                   physics: ClampingScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, childAspectRatio: 0.52),
+                      crossAxisCount: 2, childAspectRatio: 0.575),
                   builderDelegate: PagedChildBuilderDelegate<dynamic>(
                     noItemsFoundIndicatorBuilder: (_) => AlertDialog(
                       backgroundColor: Colors.transparent,
@@ -187,6 +187,7 @@ class _ItemsScreenState extends State<ItemsScreen>
                       image: item.image,
                       isFav: item.inFavourite == 1 ? true : false,
                       itemId: item.id,
+                      beforeDiscount: item.beforeDiscount,
                       price: item.price,
                       shopId: widget.shopId,
                     ),
@@ -203,12 +204,14 @@ class BuildItem extends StatelessWidget {
   final String title;
   final String? image;
   final String price;
+  final String beforeDiscount;
   final bool isFav;
   final int itemId;
   final int shopId;
 
   BuildItem({
     required this.price,
+    required this.beforeDiscount,
     this.image,
     required this.title,
     required this.isFav,
@@ -234,7 +237,12 @@ class BuildItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('shopId');
+    print(shopId);
+    print('itemId');
+    print(itemId);
     bool favStatus = isFav;
+
     return StatefulBuilder(
       builder: (context, setState) {
         return GestureDetector(
@@ -264,7 +272,7 @@ class BuildItem extends StatelessWidget {
                     children: [
                       Container(
                         width: double.infinity,
-                        height: 0.35.sh,
+                        height: 0.26.sh,
                         child: image != null
                             ? ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
@@ -290,9 +298,8 @@ class BuildItem extends StatelessWidget {
                               ),
                       ),
                       Container(
-                        padding: EdgeInsets.zero,
-                        height: 0.1.sw,
-                        width: 0.1.sw,
+                        height: 0.09.sw,
+                        width: 0.09.sw,
                         margin: EdgeInsets.all(6),
                         decoration: BoxDecoration(
                             color: Colors.black12,
@@ -315,6 +322,7 @@ class BuildItem extends StatelessWidget {
                                 ? Icons.favorite
                                 : Icons.favorite_border_outlined,
                             color: Colors.red,
+                            size: 18,
                           ),
                           splashRadius: 1,
                         ),
@@ -335,7 +343,7 @@ class BuildItem extends StatelessWidget {
                         width: 10,
                       ),
                       Text(
-                        '3.50 RS',
+                        'RS $beforeDiscount',
                         style: TextStyle(
                             color: Colors.grey.shade400,
                             fontSize: 16.sp,
@@ -353,7 +361,7 @@ class BuildItem extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                 ],
               ),

@@ -1,13 +1,3 @@
-// To parse this JSON data, do
-//
-//     final cartItem = cartItemFromJson(jsonString);
-
-import 'dart:convert';
-
-CartItem cartItemFromJson(String str) => CartItem.fromJson(json.decode(str));
-
-String cartItemToJson(CartItem data) => json.encode(data.toJson());
-
 class CartItem {
   CartItem({
     this.data,
@@ -38,26 +28,25 @@ class Data {
   });
 
   int? id;
-  double? subTotal;
+  var subTotal;
   dynamic discount;
-  double? tax;
-  double? total;
+  var tax;
+  var total;
   int? quantity;
   String? deliveryFee;
   int? pointsToCash;
-  List<ItemDetails>? items;
+  List<Item>? items;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         id: json["id"],
-        subTotal: json["sub_total"].toDouble(),
+        subTotal: json["sub_total"],
         discount: json["discount"],
-        tax: json["tax"].toDouble(),
-        total: json["total"].toDouble(),
+        tax: json["tax"],
+        total: json["total"],
         quantity: json["quantity"],
         deliveryFee: json["delivery_fee"],
         pointsToCash: json["points_to_cash"],
-        items: List<ItemDetails>.from(
-            json["items"].map((x) => ItemDetails.fromJson(x))),
+        items: List<Item>.from(json["items"].map((x) => Item.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -73,8 +62,8 @@ class Data {
       };
 }
 
-class ItemDetails {
-  ItemDetails({
+class Item {
+  Item({
     this.id,
     this.cartId,
     this.productId,
@@ -101,8 +90,8 @@ class ItemDetails {
   int? productId;
   int? hasGiftCard;
   int? hasPersonalName;
-  double? subTotal;
-  double? total;
+  var subTotal;
+  var total;
   int? count;
   dynamic weightId;
   String? createdAt;
@@ -116,14 +105,14 @@ class ItemDetails {
   List<Cartitemaddon>? cartitemaddon;
   List<Cartitemoption>? cartitemoption;
 
-  factory ItemDetails.fromJson(Map<String, dynamic> json) => ItemDetails(
+  factory Item.fromJson(Map<String, dynamic> json) => Item(
         id: json["id"],
         cartId: json["cart_id"],
         productId: json["product_id"],
         hasGiftCard: json["has_gift_card"],
         hasPersonalName: json["has_personal_name"],
-        subTotal: json["sub_total"].toDouble(),
-        total: json["total"].toDouble(),
+        subTotal: json["sub_total"],
+        total: json["total"],
         count: json["count"],
         weightId: json["weight_id"],
         createdAt: json["created_at"],
@@ -184,7 +173,7 @@ class Cartitemaddon {
   DateTime? createdAt;
   DateTime? updatedAt;
   dynamic deletedAt;
-  Addon? addon;
+  dynamic addon;
 
   factory Cartitemaddon.fromJson(Map<String, dynamic> json) => Cartitemaddon(
         id: json["id"],
@@ -194,7 +183,7 @@ class Cartitemaddon {
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
         deletedAt: json["deleted_at"],
-        addon: Addon.fromJson(json["addon"]),
+        addon: json["addon"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -205,55 +194,7 @@ class Cartitemaddon {
         "created_at": createdAt!.toIso8601String(),
         "updated_at": updatedAt!.toIso8601String(),
         "deleted_at": deletedAt,
-        "addon": addon!.toJson(),
-      };
-}
-
-class Addon {
-  Addon({
-    this.id,
-    this.nameEn,
-    this.nameAr,
-    this.price,
-    this.image,
-    this.isActive,
-    this.createdAt,
-    this.updatedAt,
-    this.deletedAt,
-  });
-
-  int? id;
-  String? nameEn;
-  String? nameAr;
-  String? price;
-  dynamic image;
-  int? isActive;
-  DateTime? createdAt;
-  DateTime? updatedAt;
-  dynamic deletedAt;
-
-  factory Addon.fromJson(Map<String, dynamic> json) => Addon(
-        id: json["id"],
-        nameEn: json["name_en"],
-        nameAr: json["name_ar"],
-        price: json["price"],
-        image: json["image"],
-        isActive: json["is_active"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        deletedAt: json["deleted_at"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name_en": nameEn,
-        "name_ar": nameAr,
-        "price": price,
-        "image": image,
-        "is_active": isActive,
-        "created_at": createdAt!.toIso8601String(),
-        "updated_at": updatedAt!.toIso8601String(),
-        "deleted_at": deletedAt,
+        "addon": addon,
       };
 }
 
@@ -324,7 +265,7 @@ class Option {
   String? nameAr;
   DateTime? createdAt;
   DateTime? updatedAt;
-  dynamic deletedAt;
+  DateTime? deletedAt;
 
   factory Option.fromJson(Map<String, dynamic> json) => Option(
         id: json["id"],
@@ -332,7 +273,7 @@ class Option {
         nameAr: json["name_ar"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
-        deletedAt: json["deleted_at"],
+        deletedAt: DateTime.parse(json["deleted_at"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -341,7 +282,7 @@ class Option {
         "name_ar": nameAr,
         "created_at": createdAt!.toIso8601String(),
         "updated_at": updatedAt!.toIso8601String(),
-        "deleted_at": deletedAt,
+        "deleted_at": deletedAt!.toIso8601String(),
       };
 }
 

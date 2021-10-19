@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../constants.dart';
 
 class BuildElevatedButton extends StatelessWidget {
   final String title;
@@ -15,7 +16,10 @@ class BuildElevatedButton extends StatelessWidget {
         onPressed: () {
           return function();
         },
-        child: Text(title),
+        child: Text(
+          title,
+          textAlign: TextAlign.center,
+        ),
         style: ElevatedButton.styleFrom(
           primary: Color(Constants.mainColor),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

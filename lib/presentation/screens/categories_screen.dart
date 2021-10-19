@@ -8,7 +8,8 @@ import '../../constants.dart';
 
 class CategoriesScreen extends StatefulWidget {
   final int shopId;
-  CategoriesScreen({required this.shopId});
+  final String shopName;
+  CategoriesScreen({required this.shopId, required this.shopName});
 
   @override
   State<CategoriesScreen> createState() => _CategoriesScreenState();
@@ -39,6 +40,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   IconButton(
                     icon: Icon(
@@ -52,8 +54,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   ),
                   Center(
                     child: Text(
-                      'الاقسام',
+                      widget.shopName,
                       style: TextStyle(
+                        fontSize: 20,
                         fontWeight: FontWeight.w400,
                         color: Color(Constants.mainColor),
                       ),
@@ -204,11 +207,12 @@ class CategoryItem extends StatelessWidget {
             ),
             Text(
               title,
+              textAlign: TextAlign.center,
               style: TextStyle(
                   color: Color(
                     Constants.mainColor,
                   ),
-                  fontSize: 18.sp),
+                  fontSize: 16.sp),
             )
           ],
         ),

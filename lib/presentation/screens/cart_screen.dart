@@ -144,13 +144,13 @@ class _CartScreenState extends State<CartScreen> {
                         Text(
                           'المجموع',
                           style: TextStyle(
-                            fontSize: 22.sp,
+                            fontSize: 18.sp,
                             color: Color(Constants.mainColor),
                           ),
                         ),
                         Text('SR ${cartDetails.data!.total}',
                             style: TextStyle(
-                                fontSize: 22.sp,
+                                fontSize: 18.sp,
                                 color: Color(Constants.mainColor),
                                 fontWeight: FontWeight.w800)),
                       ],
