@@ -70,8 +70,10 @@ class _CartScreenState extends State<CartScreen> {
                         quantity: cartDetails.data!.items![index].count,
                         id: cartDetails.data!.items![index].productId,
                         shopId: cartDetails.data!.items![index].vendorId,
-                        addons: cartDetails.data!.items![index].cartitemaddon!,
-                        extra: cartDetails.data!.items![index].cartitemoption!,
+                        addons:
+                            cartDetails.data!.items![index].cartitemaddon ?? [],
+                        extra: cartDetails.data!.items![index].cartitemoption ??
+                            [],
                         function: () {
                           BlocProvider.of<CartCubit>(context)
                               .emit(CartLoaded(cartDetails: cartDetails));
