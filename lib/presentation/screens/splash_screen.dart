@@ -17,7 +17,8 @@ class _SplashScreenState extends State<SplashScreen>
     with AfterLayoutMixin<SplashScreen> {
   checkFirstSeen() async {
     Timer(Duration(seconds: 2), () async {
-      if (LocalStorage.getData(key: 'token') == null) {
+      if (LocalStorage.getData(key: 'token') == null ||
+          LocalStorage.getData(key: 'token') == '') {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => IntroductionScreen()),
         );

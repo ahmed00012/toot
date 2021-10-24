@@ -46,11 +46,12 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     await authRepository
         .login(
-      password: password,
-      phone: phone,
-    )
+            password: password,
+            phone: phone,
+            fcmToken: LocalStorage.getData(key: 'token_fcm'))
         .then((token) async {
       LocalStorage.saveData(key: 'token', value: token);
+      LocalStorage.saveData(key: 'isLogin', value: true);
       emit(AuthLoaded());
     }).catchError((e) {
       emit(AuthError(error: e.toString()));
@@ -79,9 +80,11 @@ class AuthCubit extends Cubit<AuthState> {
             otp: otp,
             password: password,
             email: email,
-            name: name)
+            name: name,
+            fcmToken: LocalStorage.getData(key: 'token_fcm'))
         .then((token) async {
       LocalStorage.saveData(key: 'token', value: token);
+      LocalStorage.saveData(key: 'isLogin', value: true);
       emit(OtpSuccess());
     }).catchError((e) {
       emit(AuthError(error: e.toString()));

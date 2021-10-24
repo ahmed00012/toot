@@ -1,18 +1,18 @@
 class ItemDetails {
-  ItemDetails({
-    this.id,
-    this.name,
-    this.description,
-    this.imageOne,
-    this.imageTwo,
-    this.imageThree,
-    this.price,
-    this.beforeDiscount,
-    this.inFavourite,
-    this.unit,
-    this.options,
-    this.addon,
-  });
+  ItemDetails(
+      {this.id,
+      this.name,
+      this.description,
+      this.imageOne,
+      this.imageTwo,
+      this.imageThree,
+      this.price,
+      this.beforeDiscount,
+      this.inFavourite,
+      this.unit,
+      this.options,
+      this.addon,
+      this.vendorID});
 
   int? id;
   String? name;
@@ -26,6 +26,7 @@ class ItemDetails {
   String? unit;
   List<Option>? options;
   List<Addon>? addon;
+  int? vendorID;
 
   factory ItemDetails.fromJson(Map<String, dynamic> json) => ItemDetails(
         id: json["id"],
@@ -41,6 +42,24 @@ class ItemDetails {
         options:
             List<Option>.from(json["options"].map((x) => Option.fromJson(x))),
         addon: List<Addon>.from(json["addon"].map((x) => Addon.fromJson(x))),
+      );
+  factory ItemDetails.fromJson2(Map<String, dynamic> json) => ItemDetails(
+        id: json["id"],
+        name: json["name"],
+        // description: json["description"],
+        imageOne: json["image_one"],
+        vendorID: json['vendor_id'],
+
+        // imageTwo: json["image_two"],
+        // imageThree: json["image_three"],
+        price: json["price"],
+        // beforeDiscount: json["before_discount"],
+        // inFavourite: json["in_favourite"],
+        // unit: json["unit"],
+        // options:  List<Option>.from(json["options"].map((x) => Option.fromJson(x)))
+        //     ,
+        // addon: List<Addon>.from(json["addon"].map((x) => Addon.fromJson(x)))
+        //     ,
       );
 
   Map<String, dynamic> toJson() => {

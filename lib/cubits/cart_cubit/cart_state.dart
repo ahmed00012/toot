@@ -14,6 +14,8 @@ class CartLoaded extends CartState {
   CartLoaded({required this.cartDetails});
 }
 
+class CartEmpty extends CartState {}
+
 class AddressesLoaded extends CartState {
   final List addresses;
   AddressesLoaded({required this.addresses});
@@ -37,6 +39,13 @@ class OrderConfirmed extends CartState {
 class InfoLoaded extends CartState {
   final Info info;
   InfoLoaded({required this.info});
+}
+
+class OrderStatusLoading extends CartState {}
+
+class OrderStatusLoaded extends CartState {
+  final Order order;
+  OrderStatusLoaded({required this.order});
 }
 
 class CartError extends CartState {

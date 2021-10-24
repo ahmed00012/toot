@@ -47,8 +47,13 @@ dependencies:
   infinite_scroll_pagination: ^3.1.0
   after_layout: ^1.1.0
   flutter_html: ^2.1.4
-
-
+  lottie: ^1.0.1
+  overlay_support: ^1.2.1
+  firebase_messaging: ^10.0.9
+  flutter_local_notifications: ^9.0.1
+  firebase_core: ^1.8.0
+  fcm_config: ^3.1.2
+  cloud_firestore: ^2.5.4
 
 
 
@@ -68,7 +73,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/logo.png"
+  image_path: "assets/images/1024.png"
 
 
 # For information on the generic Dart part of this file, see the

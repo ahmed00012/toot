@@ -1,9 +1,9 @@
 import 'dart:ui';
 
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:toot/cubits/auth_cubit/auth_cubit.dart';
 import 'package:toot/presentation/widgets/blurry_dialog.dart';
 import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
@@ -29,6 +29,8 @@ class _AuthScreenState extends State<AuthScreen> {
     'password': '',
     'phone': '',
   };
+  bool seePassword = false;
+  bool seePassword1 = false;
 
   final _passwordController = TextEditingController();
 
@@ -149,19 +151,19 @@ class _AuthScreenState extends State<AuthScreen> {
                             _authData['name'] = val!;
                           },
                         ),
-                      if (_authMode == AuthMode.Signup)
-                        BuildTextField(
-                          icon: 'assets/images/icon-mail.png',
-                          hint: 'الايميل',
-                          validator: (val) {
-                            if (!EmailValidator.validate(val)) {
-                              return 'الايميل غير صالح !';
-                            }
-                          },
-                          onSaved: (val) {
-                            _authData['email'] = val!;
-                          },
-                        ),
+                      // if (_authMode == AuthMode.Signup)
+                      //   BuildTextField(
+                      //     icon: 'assets/images/icon-mail.png',
+                      //     hint: 'الايميل',
+                      //     validator: (val) {
+                      //       if (!EmailValidator.validate(val)) {
+                      //         return 'الايميل غير صالح !';
+                      //       }
+                      //     },
+                      //     onSaved: (val) {
+                      //       _authData['email'] = val!;
+                      //     },
+                      //   ),
                       BuildTextField(
                         icon: 'assets/images/smartphone.png',
                         hint: 'رقم الجوال',
@@ -176,34 +178,129 @@ class _AuthScreenState extends State<AuthScreen> {
                           _authData['phone'] = val!;
                         },
                       ),
-                      BuildTextField(
-                        icon: 'assets/images/icon-padlock.png',
-                        hint: 'كلمة المرور',
-                        controller: _passwordController,
-                        isObscure: true,
-                        validator: (val) {
-                          if (val.length < 8) {
-                            return 'يجب ان تحتوي كلمة السر علي 8 حروف او ارقام علي الاقل !';
-                          }
-                        },
-                        onSaved: (val) {
-                          print(val);
-                          _authData['password'] = val!;
-                        },
+
+                      // BuildTextField(
+                      //
+                      //   icon: 'assets/images/icon-padlock.png',
+                      //   hint: 'كلمة المرور',
+                      //   controller: _passwordController,
+                      //   isObscure: true,
+                      //   validator: (val) {
+                      //     if (val.length < 8) {
+                      //       return 'يجب ان تحتوي كلمة السر علي 8 حروف او ارقام علي الاقل !';
+                      //     }
+                      //   },
+                      //   onSaved: (val) {
+                      //     print(val);
+                      //     _authData['password'] = val!;
+                      //   },
+                      // ),
+                      // if (_authMode == AuthMode.Signup)
+                      //   BuildTextField(
+                      //     icon: 'assets/images/icon-padlock.png',
+                      //     hint: 'تاكيد كلمة المرور',
+                      //     validator: _authMode == AuthMode.Signup
+                      //         ? (val) {
+                      //             if (val != _passwordController.text) {
+                      //               return 'كلمة السر غير متطابقة !';
+                      //             }
+                      //           }
+                      //         : (val) {},
+                      //     isObscure: true,
+                      //     onSaved: (val) {},
+                      //   ),
+                      Container(
+                        height: 0.12.sh,
+                        child: TextFormField(
+                          style: TextStyle(fontSize: 20.sp),
+                          controller: _passwordController,
+                          keyboardType: TextInputType.visiblePassword,
+                          obscureText: !seePassword,
+                          decoration: new InputDecoration(
+                              isDense: true,
+                              filled: true,
+                              fillColor: Color(0xffF0F4F8),
+                              suffixIcon: GestureDetector(
+                                onTap: () {
+                                  // Update the state i.e. toogle the state of passwordVisible variable
+                                  setState(() {
+                                    seePassword = !seePassword;
+                                  });
+                                },
+                                child: Icon(
+                                  seePassword
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              icon: Image.asset(
+                                'assets/images/icon-padlock.png',
+                                height: 50,
+                                width: 50,
+                              ),
+                              hintText: 'كلمة المرور',
+                              hintStyle: TextStyle(
+                                  fontSize: 18.sp, color: Color(0xffA6BCD0)),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              )),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'كلمة المرور مطلوبة';
+                            }
+                            return null;
+                          },
+                          onSaved: (val) {
+                            _authData['password'] = val!;
+                          },
+                        ),
                       ),
+
                       if (_authMode == AuthMode.Signup)
-                        BuildTextField(
-                          icon: 'assets/images/icon-padlock.png',
-                          hint: 'تاكيد كلمة المرور',
-                          validator: _authMode == AuthMode.Signup
-                              ? (val) {
-                                  if (val != _passwordController.text) {
-                                    return 'كلمة السر غير متطابقة !';
+                        Container(
+                          height: 0.12.sh,
+                          child: TextFormField(
+                            style: TextStyle(fontSize: 20.sp),
+                            keyboardType: TextInputType.visiblePassword,
+                            obscureText: !seePassword1,
+                            decoration: new InputDecoration(
+                                isDense: true,
+                                filled: true,
+                                fillColor: Color(0xffF0F4F8),
+                                suffixIcon: GestureDetector(
+                                  onTap: () {
+                                    // Update the state i.e. toogle the state of passwordVisible variable
+                                    setState(() {
+                                      seePassword1 = !seePassword1;
+                                    });
+                                  },
+                                  child: Icon(
+                                    seePassword1
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                icon: Image.asset(
+                                  'assets/images/icon-padlock.png',
+                                  height: 50,
+                                  width: 50,
+                                ),
+                                hintText: 'تاكيد كلمة المرور',
+                                hintStyle: TextStyle(
+                                    fontSize: 18.sp, color: Color(0xffA6BCD0)),
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                )),
+                            validator: _authMode == AuthMode.Signup
+                                ? (val) {
+                                    if (val != _passwordController.text) {
+                                      return 'كلمة السر غير متطابقة !';
+                                    }
                                   }
-                                }
-                              : (val) {},
-                          isObscure: true,
-                          onSaved: (val) {},
+                                : (val) {},
+                          ),
                         ),
                       SizedBox(
                         width: 0.90.sw,
@@ -237,22 +334,12 @@ class _AuthScreenState extends State<AuthScreen> {
           ),
           Visibility(
             visible: state is AuthLoading,
-            child: AlertDialog(
-              backgroundColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              elevation: 0,
-              content: Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image.asset(
-                    'assets/images/loading.gif',
-                    height: 0.4.sw,
-                    width: 0.4.sw,
-                  ),
-                ),
-              ),
-            ),
+            child: Center(
+                child: Container(
+              height: 120,
+              width: 120,
+              child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
+            )),
           )
         ]),
       ),

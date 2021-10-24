@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "156273751945",
+    "project_id": "toot-329010",
+    "storage_bucket": "toot-329010.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:156273751945:android:e6c39a274a3efc50eb9358",
+        "android_client_info": {
+          "package_name": "com.example.toot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "156273751945-q4alr3uq2jqmqnjbt8ln6r1f2onr50lh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSJtUJ75rw_vcllx9J8dBwJpfURCkq0ls"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "156273751945-q4alr3uq2jqmqnjbt8ln6r1f2onr50lh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

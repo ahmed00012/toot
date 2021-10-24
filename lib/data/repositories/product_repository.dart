@@ -13,6 +13,11 @@ class ProductRepository {
     return rawData.map((category) => Category.fromJson(category)).toList();
   }
 
+  Future<List<ItemDetails>> fetchPanner() async {
+    final rawData = await productWebServices.fetchPanner();
+    return rawData;
+  }
+
   Future<dynamic> fetchShopCategories({int? shopId}) async {
     final rawData =
         await productWebServices.fetchShopCategories(shopId: shopId);

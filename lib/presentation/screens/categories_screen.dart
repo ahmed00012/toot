@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:toot/cubits/product_cubit/product_cubit.dart';
 import 'package:toot/presentation/screens/items_screen.dart';
 
@@ -131,22 +132,28 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 ),
               );
             } else {
-              return AlertDialog(
-                backgroundColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
-                elevation: 0,
-                content: Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: Image.asset(
-                      'assets/images/loading.gif',
-                      height: 0.4.sw,
-                      width: 0.4.sw,
-                    ),
-                  ),
-                ),
-              );
+              return Center(
+                  child: Container(
+                height: 120,
+                width: 120,
+                child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
+              ));
+              // return AlertDialog(
+              //   backgroundColor: Colors.transparent,
+              //   shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(15)),
+              //   elevation: 0,
+              //   content: Center(
+              //     child: ClipRRect(
+              //       borderRadius: BorderRadius.circular(15),
+              //       child: Image.asset(
+              //         'assets/images/loading.gif',
+              //         height: 0.4.sw,
+              //         width: 0.4.sw,
+              //       ),
+              //     ),
+              //   ),
+              // );
             }
           },
         ),

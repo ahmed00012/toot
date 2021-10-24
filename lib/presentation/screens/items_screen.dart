@@ -278,7 +278,7 @@ class BuildItem extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.network(
                                   image!,
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.fill,
                                 ))
                             : Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -342,13 +342,15 @@ class BuildItem extends StatelessWidget {
                       SizedBox(
                         width: 10,
                       ),
-                      Text(
-                        'RS $beforeDiscount',
-                        style: TextStyle(
-                            color: Colors.grey.shade400,
-                            fontSize: 16.sp,
-                            decoration: TextDecoration.lineThrough),
-                      )
+                      beforeDiscount != "0.00"
+                          ? Text(
+                              'RS $beforeDiscount',
+                              style: TextStyle(
+                                  color: Colors.grey.shade400,
+                                  fontSize: 12,
+                                  decoration: TextDecoration.lineThrough),
+                            )
+                          : Container()
                     ],
                   ),
                   Padding(

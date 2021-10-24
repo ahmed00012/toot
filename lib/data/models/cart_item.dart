@@ -5,10 +5,11 @@ class CartItem {
 
   Data? data;
 
-  factory CartItem.fromJson(Map<String, dynamic> json) => CartItem(
-        data: Data.fromJson(json["data"]),
-      );
-
+  factory CartItem.fromJson(Map<String, dynamic> json) {
+    return CartItem(
+      data: Data.fromJson(json["data"]),
+    );
+  }
   Map<String, dynamic> toJson() => {
         "data": data!.toJson(),
       };
@@ -123,10 +124,14 @@ class Item {
         productName: json["product_name"],
         productImage: json["product_image"],
         weight: json["weight"],
-        cartitemaddon: List<Cartitemaddon>.from(
-            json["cartitemaddon"].map((x) => Cartitemaddon.fromJson(x))),
-        cartitemoption: List<Cartitemoption>.from(
-            json["cartitemoption"].map((x) => Cartitemoption.fromJson(x))),
+        cartitemaddon: json["cartitemaddon"].length > 0
+            ? List<Cartitemaddon>.from(
+                json["cartitemaddon"].map((x) => Cartitemaddon.fromJson(x)))
+            : [],
+        cartitemoption: json["cartitemoption"].length > 0
+            ? List<Cartitemoption>.from(
+                json["cartitemoption"].map((x) => Cartitemoption.fromJson(x)))
+            : [],
       );
 
   Map<String, dynamic> toJson() => {
@@ -160,9 +165,9 @@ class Cartitemaddon {
     this.productId,
     this.cartItemId,
     this.addonId,
-    this.createdAt,
-    this.updatedAt,
-    this.deletedAt,
+    // this.createdAt,
+    // this.updatedAt,
+    // this.deletedAt,
     this.addon,
   });
 
@@ -170,31 +175,70 @@ class Cartitemaddon {
   int? productId;
   int? cartItemId;
   int? addonId;
-  DateTime? createdAt;
-  DateTime? updatedAt;
-  dynamic deletedAt;
-  dynamic addon;
+  // DateTime? createdAt;
+  // DateTime? updatedAt;
+  // dynamic deletedAt;
+  Addon? addon;
 
   factory Cartitemaddon.fromJson(Map<String, dynamic> json) => Cartitemaddon(
-        id: json["id"],
-        productId: json["product_id"],
-        cartItemId: json["cart_item_id"],
-        addonId: json["addon_id"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        deletedAt: json["deleted_at"],
-        addon: json["addon"],
-      );
+      id: json["id"],
+      productId: json["product_id"],
+      cartItemId: json["cart_item_id"],
+      addonId: json["addon_id"],
+      // createdAt: DateTime.parse(json["created_at"]),
+      // updatedAt: DateTime.parse(json["updated_at"]),
+      // deletedAt: json["deleted_at"],
+      addon: json["addon"] != null
+          ? Addon.fromJson(
+              json["addon"],
+            )
+          : Addon());
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "product_id": productId,
         "cart_item_id": cartItemId,
         "addon_id": addonId,
-        "created_at": createdAt!.toIso8601String(),
-        "updated_at": updatedAt!.toIso8601String(),
-        "deleted_at": deletedAt,
-        "addon": addon,
+        // "created_at": createdAt!.toIso8601String(),
+        // "updated_at": updatedAt!.toIso8601String(),
+        // "deleted_at": deletedAt,
+        "addon": addon as Map<String, dynamic>,
+      };
+}
+
+class Addon {
+  Addon({
+    this.id,
+    // this.nameEn,
+    this.nameAr,
+    // this.createdAt,
+    // this.updatedAt,
+    // this.deletedAt,
+  });
+
+  int? id;
+  // String? nameEn;
+  String? nameAr;
+  // DateTime? createdAt;
+  // DateTime? updatedAt;
+  // DateTime? deletedAt;
+
+  factory Addon.fromJson(Map<String, dynamic> json) => Addon(
+        id: json["id"],
+        // nameEn: json["name_en"] ?? '',
+        nameAr: json["name_ar"],
+        // createdAt: DateTime.parse(json["created_at"]),
+        // updatedAt: DateTime.parse(json["updated_at"]),
+        // deletedAt: DateTime.parse(json["deleted_at"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        // "name_en": nameEn ?? '',
+        "name_ar": nameAr ?? '',
+        // "created_at": createdAt!.toIso8601String(),
+        // "updated_at": updatedAt!.toIso8601String(),
+        // "deleted_at": deletedAt!.toIso8601String(),
       };
 }
 
@@ -205,10 +249,10 @@ class Cartitemoption {
     this.cartItemId,
     this.optionId,
     this.optionValueId,
-    this.createdAt,
-    this.updatedAt,
-    this.deletedAt,
-    this.option,
+    // this.createdAt,
+    // this.updatedAt,
+    // this.deletedAt,
+    // this.option,
     this.optionvalue,
   });
 
@@ -217,10 +261,10 @@ class Cartitemoption {
   int? cartItemId;
   int? optionId;
   int? optionValueId;
-  DateTime? createdAt;
-  DateTime? updatedAt;
-  dynamic deletedAt;
-  Option? option;
+  // DateTime? createdAt;
+  // DateTime? updatedAt;
+  // dynamic deletedAt;
+  // Option? option;
   Optionvalue? optionvalue;
 
   factory Cartitemoption.fromJson(Map<String, dynamic> json) => Cartitemoption(
@@ -229,10 +273,10 @@ class Cartitemoption {
         cartItemId: json["cart_item_id"],
         optionId: json["option_id"],
         optionValueId: json["option_value_id"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        deletedAt: json["deleted_at"],
-        option: Option.fromJson(json["option"]),
+        // createdAt: DateTime.parse(json["created_at"]),
+        // updatedAt: DateTime.parse(json["updated_at"]),
+        // deletedAt: json["deleted_at"],
+        // option: Option.fromJson(json["option"]),
         optionvalue: Optionvalue.fromJson(json["optionvalue"]),
       );
 
@@ -242,47 +286,11 @@ class Cartitemoption {
         "cart_item_id": cartItemId,
         "option_id": optionId,
         "option_value_id": optionValueId,
-        "created_at": createdAt!.toIso8601String(),
-        "updated_at": updatedAt!.toIso8601String(),
-        "deleted_at": deletedAt,
-        "option": option!.toJson(),
+        // "created_at": createdAt!.toIso8601String(),
+        // "updated_at": updatedAt!.toIso8601String(),
+        // "deleted_at": deletedAt,
+        // "option": option!.toJson(),
         "optionvalue": optionvalue!.toJson(),
-      };
-}
-
-class Option {
-  Option({
-    this.id,
-    this.nameEn,
-    this.nameAr,
-    this.createdAt,
-    this.updatedAt,
-    this.deletedAt,
-  });
-
-  int? id;
-  String? nameEn;
-  String? nameAr;
-  DateTime? createdAt;
-  DateTime? updatedAt;
-  DateTime? deletedAt;
-
-  factory Option.fromJson(Map<String, dynamic> json) => Option(
-        id: json["id"],
-        nameEn: json["name_en"],
-        nameAr: json["name_ar"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        deletedAt: DateTime.parse(json["deleted_at"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name_en": nameEn,
-        "name_ar": nameAr,
-        "created_at": createdAt!.toIso8601String(),
-        "updated_at": updatedAt!.toIso8601String(),
-        "deleted_at": deletedAt!.toIso8601String(),
       };
 }
 
@@ -290,13 +298,13 @@ class Optionvalue {
   Optionvalue({
     this.id,
     this.optionId,
-    this.valueEn,
-    this.valueAr,
-    this.image,
-    this.createdAt,
-    this.updatedAt,
-    this.deletedAt,
-    this.nameEn,
+    // this.valueEn,
+    // this.valueAr,
+    // this.image,
+    // this.createdAt,
+    // this.updatedAt,
+    // this.deletedAt,
+    // this.nameEn,
     this.nameAr,
   });
 
@@ -304,36 +312,36 @@ class Optionvalue {
   int? optionId;
   String? valueEn;
   String? valueAr;
-  dynamic image;
-  DateTime? createdAt;
-  DateTime? updatedAt;
-  dynamic deletedAt;
-  String? nameEn;
+  // dynamic image;
+  // DateTime? createdAt;
+  // DateTime? updatedAt;
+  // dynamic deletedAt;
+  // String? nameEn;
   String? nameAr;
 
   factory Optionvalue.fromJson(Map<String, dynamic> json) => Optionvalue(
         id: json["id"],
         optionId: json["option_id"],
-        valueEn: json["value_en"],
-        valueAr: json["value_ar"],
-        image: json["image"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        deletedAt: json["deleted_at"],
-        nameEn: json["name_en"],
-        nameAr: json["name_ar"],
+        // valueEn: json["value_en"],
+        // valueAr: json["value_ar"],
+        // image: json["image"],
+        // createdAt: DateTime.parse(json["created_at"]),
+        // updatedAt: DateTime.parse(json["updated_at"]),
+        // deletedAt: json["deleted_at"],
+        // nameEn: json["name_en"],
+        nameAr: json["name_ar"] ?? '',
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "option_id": optionId,
-        "value_en": valueEn,
-        "value_ar": valueAr,
-        "image": image,
-        "created_at": createdAt!.toIso8601String(),
-        "updated_at": updatedAt!.toIso8601String(),
-        "deleted_at": deletedAt,
-        "name_en": nameEn,
-        "name_ar": nameAr,
+        // "value_en": valueEn,
+        // "value_ar": valueAr,
+        // "image": image,
+        // "created_at": createdAt!.toIso8601String(),
+        // "updated_at": updatedAt!.toIso8601String(),
+        // "deleted_at": deletedAt,
+        // "name_en": nameEn,
+        "name_ar": nameAr
       };
 }

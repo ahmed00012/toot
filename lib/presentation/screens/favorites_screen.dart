@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:lottie/lottie.dart';
 import 'package:toot/cubits/favorites_cubit/favorites_cubit.dart';
 import 'package:toot/presentation/screens/single_item_screen.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
@@ -47,22 +47,28 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 itemCount: fav.length,
               );
             } else {
-              return AlertDialog(
-                backgroundColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
-                elevation: 0,
-                content: Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: Image.asset(
-                      'assets/images/loading.gif',
-                      height: 0.4.sw,
-                      width: 0.4.sw,
-                    ),
-                  ),
-                ),
-              );
+              return Center(
+                  child: Container(
+                height: 120,
+                width: 120,
+                child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
+              ));
+              // return AlertDialog(
+              //   backgroundColor: Colors.transparent,
+              //   shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(15)),
+              //   elevation: 0,
+              //   content: Center(
+              //     child: ClipRRect(
+              //       borderRadius: BorderRadius.circular(15),
+              //       child: Image.asset(
+              //         'assets/images/loading.gif',
+              //         height: 0.4.sw,
+              //         width: 0.4.sw,
+              //       ),
+              //     ),
+              //   ),
+              // );
             }
           },
         ));
@@ -166,9 +172,9 @@ class _FavoriteItemState extends State<FavoriteItem> {
             Spacer(),
             IconButton(
               icon: Icon(
-                FontAwesomeIcons.trashAlt,
+                Icons.favorite,
                 color: Color(0xffFD8C44),
-                size: 22,
+                size: 30,
               ),
               onPressed: () {
                 BlocProvider.of<FavoritesCubit>(context)

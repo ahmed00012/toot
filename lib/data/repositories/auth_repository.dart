@@ -17,11 +17,10 @@ class AuthRepository {
     return await authWebServices.register(formData);
   }
 
-  Future<String> login({String? phone, String? password}) async {
-    FormData formData = FormData.fromMap({
-      'phone': phone,
-      'password': password,
-    });
+  Future<String> login(
+      {String? phone, String? password, String? fcmToken}) async {
+    FormData formData = FormData.fromMap(
+        {'phone': phone, 'password': password, 'device_id': fcmToken});
     return await authWebServices.login(formData);
   }
 
@@ -30,19 +29,20 @@ class AuthRepository {
     return rawData.map((element) => element['img_url']).toList();
   }
 
-  Future<String> otp({
-    String? phone,
-    String? otp,
-    String? name,
-    String? password,
-    String? email,
-  }) async {
+  Future<String> otp(
+      {String? phone,
+      String? otp,
+      String? name,
+      String? password,
+      String? email,
+      String? fcmToken}) async {
     FormData formData = FormData.fromMap({
       'phone': phone,
       'otp': otp,
       'name': name,
       'password': password,
-      'email': email
+      'email': email,
+      'device_id': fcmToken
     });
     return await authWebServices.otp(formData);
   }

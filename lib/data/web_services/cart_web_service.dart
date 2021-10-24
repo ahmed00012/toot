@@ -41,11 +41,13 @@ class CartWebServices {
     }
   }
 
-  Future<dynamic> removeFromCart(FormData formData) async {
+  Future removeFromCart(int? id, String? cardToken, bool? lastItem) async {
     try {
-      Response response = await dio.post('cart/remove_product', data: formData);
-      print(response.data);
-      return response.data;
+      Response response = await dio.post('cart/remove_product', data: {
+        "product_id": "$id",
+        "cart_token": "$cardToken",
+      });
+      if (lastItem!) LocalStorage.removeData(key: 'cart_token');
     } on DioError catch (e) {
       print(e.response!.data);
       throw e.response!.data;
@@ -53,20 +55,23 @@ class CartWebServices {
   }
 
   Future<dynamic> fetchCart() async {
-    try {
-      String? cartToken = LocalStorage.getData(key: 'cart_token');
-      print(cartToken);
-      Response response = await dio.get('cart/get_cart/${cartToken ?? ''}');
-      if (response.data['success'] == 0) {
-        throw response.data['message'];
-      } else {
-        print(response.data);
-        return response.data;
-      }
-    } on DioError catch (e) {
-      print(e.response!.data);
-      throw e.response!.data;
-    }
+    // try {
+    String? cartToken = LocalStorage.getData(key: 'cart_token');
+    String? token = LocalStorage.getData(key: 'token');
+    print("cartToken  => $cartToken");
+    print("Token  => $token");
+    Response response = await dio.get('cart/get_cart/$cartToken');
+    print(response.data);
+    return response.data;
+    //     throw response.data['message'];
+    //   } else {
+    //     print(response.data);
+    //     return response.data;
+    //   }
+    // } on DioError catch (e) {
+    //   print(e.response!.data);
+    //   throw e.response!.data;
+    // }
   }
 
   Future<dynamic> fetchAddress() async {
@@ -168,5 +173,11 @@ class CartWebServices {
       print(e.response!.data);
       throw e.response!.data;
     }
+  }
+
+  Future<dynamic> orderStatus(int id) async {
+    Response response = await dio.get('orders/$id/details');
+
+    return response.data;
   }
 }

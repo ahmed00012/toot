@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:toot/data/models/item_details.dart';
 
 import '../local_storage.dart';
 
@@ -41,6 +42,16 @@ class ProductWebServices {
       print(e.toString());
       throw e.response!.data;
     }
+  }
+
+  Future<List<ItemDetails>> fetchPanner() async {
+    Response response = await dio.get('sliders');
+    var body = response.data;
+    List<ItemDetails> items = [];
+    for (int i = 0; i < body['data'].length; i++)
+      items.add(ItemDetails.fromJson2(body['data'][i]));
+
+    return items;
   }
 
   Future<dynamic> fetchShopCategories({int? shopId}) async {

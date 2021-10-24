@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
 import 'package:toot/data/local_storage.dart';
 import 'package:toot/presentation/widgets/cart_item.dart';
@@ -35,7 +36,6 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
         listener: (_, state) {
           if (state is OrderConfirmed) {
             final num = state.num;
-            print(num);
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
@@ -185,7 +185,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         title: 'تأكيد الطلب',
                         function: () {
                           BlocProvider.of<CartCubit>(context).confirmOrder();
-                          LocalStorage.removeData(key: 'cart_token');
+                          LocalStorage.saveData(key: 'cart_token', value: '');
                         }),
                     SizedBox(
                       height: 0.05.sh,
@@ -195,22 +195,28 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
               ),
             );
           } else {
-            return AlertDialog(
-              backgroundColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              elevation: 0,
-              content: Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image.asset(
-                    'assets/images/loading.gif',
-                    height: 0.4.sw,
-                    width: 0.4.sw,
-                  ),
-                ),
-              ),
-            );
+            return Center(
+                child: Container(
+              height: 120,
+              width: 120,
+              child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
+            ));
+            // return AlertDialog(
+            //   backgroundColor: Colors.transparent,
+            //   shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(15)),
+            //   elevation: 0,
+            //   content: Center(
+            //     child: ClipRRect(
+            //       borderRadius: BorderRadius.circular(15),
+            //       child: Image.asset(
+            //         'assets/images/loading.gif',
+            //         height: 0.4.sw,
+            //         width: 0.4.sw,
+            //       ),
+            //     ),
+            //   ),
+            // );
           }
         },
       ),

@@ -24,7 +24,7 @@ class _BottomNavBarState extends State<BottomNavBar>
   Animation<double>? animation;
   late CurvedAnimation curve;
   PageController _pageController = PageController(initialPage: 0);
-  int currentTab = 0;
+  int? currentTab;
   final autoSizeGroup = AutoSizeGroup();
 
   final List<IconData> iconList = [
@@ -54,6 +54,7 @@ class _BottomNavBarState extends State<BottomNavBar>
 
   @override
   void initState() {
+    currentTab = 0;
     _animationController = AnimationController(
       duration: Duration(seconds: 1),
       vsync: this,
@@ -128,54 +129,59 @@ class _BottomNavBarState extends State<BottomNavBar>
       ),
       floatingActionButtonLocation:
           FloatingActionButtonLocation.miniCenterDocked,
-      bottomNavigationBar: AnimatedBottomNavigationBar.builder(
-          itemCount: iconList.length,
-          tabBuilder: (int index, bool isActive) {
-            final color = isActive ? Color(Constants.mainColor) : Colors.grey;
-            return Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FaIcon(
-                    iconList[index],
-                    color: color,
-                    size: 20,
-                  ),
-                  SizedBox(height: 4),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: AutoSizeText(
-                      // Localizations.localeOf(context).languageCode == "ar"
-                      //     ? iconTitlesAr[index]
-                      iconTitlesAR[index],
-                      maxLines: 1,
-                      style: TextStyle(color: color, fontSize: 8),
-                      group: autoSizeGroup,
+      extendBody: true,
+      bottomNavigationBar: Container(
+        height: 70,
+        child: AnimatedBottomNavigationBar.builder(
+            itemCount: iconList.length,
+            tabBuilder: (int index, bool isActive) {
+              final color = isActive ? Color(Constants.mainColor) : Colors.grey;
+              return Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FaIcon(
+                      iconList[index],
+                      color: color,
+                      size: 20,
                     ),
-                  )
-                ],
-              ),
-            );
-          },
-          backgroundColor: Colors.white,
-          activeIndex: currentTab,
-          splashColor: Color(Constants.mainColor),
-          notchAndCornersAnimation: animation,
-          splashSpeedInMilliseconds: 300,
-          notchSmoothness: NotchSmoothness.softEdge,
-          gapLocation: GapLocation.center,
-          height: MediaQuery.of(context).size.height * 0.1,
-          // leftCornerRadius: 32,
-          // rightCornerRadius: 32,
-          onTap: (index) async {
-            if (LocalStorage.getData(key: 'token') == null && index == 1) {
-              _showDialog(context, 'لا يمكن عرض المفضلة يجب عليك التسجيل اولا');
-            } else {
-              setState(() {
-                this._onItemTapped(index);
-              });
-            }
-          }),
+                    SizedBox(height: 4),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: AutoSizeText(
+                        // Localizations.localeOf(context).languageCode == "ar"
+                        //     ? iconTitlesAr[index]
+                        iconTitlesAR[index],
+                        maxLines: 1,
+                        style: TextStyle(color: color, fontSize: 8),
+                        group: autoSizeGroup,
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+            backgroundColor: Colors.white,
+            activeIndex: currentTab!,
+            splashColor: Color(Constants.mainColor),
+            notchAndCornersAnimation: animation,
+            splashSpeedInMilliseconds: 300,
+            notchSmoothness: NotchSmoothness.softEdge,
+            gapLocation: GapLocation.center,
+            height: MediaQuery.of(context).size.height * 0.1,
+            // leftCornerRadius: 32,
+            // rightCornerRadius: 32,
+            onTap: (index) async {
+              if (LocalStorage.getData(key: 'token') == null && index == 1) {
+                _showDialog(
+                    context, 'لا يمكن عرض المفضلة يجب عليك التسجيل اولا');
+              } else {
+                setState(() {
+                  this._onItemTapped(index);
+                });
+              }
+            }),
+      ),
     );
   }
 }

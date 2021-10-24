@@ -3,34 +3,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
-import 'package:toot/cubits/favorites_cubit/favorites_cubit.dart';
 import 'package:toot/cubits/product_cubit/product_cubit.dart';
-import 'package:toot/data/local_storage.dart';
 import 'package:toot/data/models/check_box_state.dart';
-import 'package:toot/presentation/screens/auth_screen.dart';
 import 'package:toot/presentation/screens/cart_screen.dart';
-import 'package:toot/presentation/widgets/blurry_dialog.dart';
+import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 
 import '../../constants.dart';
 
 class SingleItemScreen extends StatefulWidget {
   final int id;
-  final String title;
-  final double price;
-  final int shopId;
-  final bool isFav;
+  final String? title;
+  final double? price;
+  final int? shopId;
+  final bool? isFav;
   final bool? isEditable;
   final bool? removeFav;
+  bool? fromPanner;
 
   SingleItemScreen(
       {required this.id,
-      required this.title,
-      required this.price,
-      required this.shopId,
-      required this.isFav,
+      this.title,
+      this.price,
+      this.shopId,
+      this.isFav,
       this.removeFav = false,
-      this.isEditable = false});
+      this.isEditable = false,
+      this.fromPanner});
 
   @override
   _SingleItemScreenState createState() => _SingleItemScreenState();
@@ -67,34 +67,40 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
     chosenExtra.add(chosenId);
   }
 
-  _showDialog(BuildContext context, String title) {
-    VoidCallback continueCallBack = () => {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (_) => AuthScreen())),
-          // code on continue comes here
-        };
-
-    BlurryDialog alert = BlurryDialog('التسجيل اولا', title, continueCallBack);
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
+  // _showDialog(BuildContext context, String title) {
+  //   VoidCallback continueCallBack = () => {
+  //         Navigator.of(context)
+  //             .push(MaterialPageRoute(builder: (_) => AuthScreen())),
+  //         // code on continue comes here
+  //       };
+  //
+  //   BlurryDialog alert = BlurryDialog('التسجيل اولا', title, continueCallBack);
+  //
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return alert;
+  //     },
+  //   );
+  // }
 
   @override
   void initState() {
+    print(widget.fromPanner);
     BlocProvider.of<ProductCubit>(context).fetchItemDetails(widget.id);
-    price = widget.price;
-    this.isFav = widget.isFav;
+    price = widget.price!;
+    //  this.isFav = widget.isFav!;
     super.initState();
   }
 
   Future<bool> _willPopCallback() async {
     // BlocProvider.of<AuthCubit>(context).emit(AuthInitial());
-    return true; // return true if the route to be popped
+    // Navigator.pop(context);
+    if (widget.fromPanner != null)
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => BottomNavBar()));
+
+    return Future.value(true);
   }
 
   @override
@@ -102,7 +108,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.title,
+          widget.title!,
           style: TextStyle(
               color: Color(Constants.mainColor), fontWeight: FontWeight.w300),
         ),
@@ -117,29 +123,29 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
             Navigator.of(context).pop();
           },
         ),
-        actions: [
-          Visibility(
-            visible: !widget.removeFav!,
-            child: IconButton(
-              icon: Icon(
-                isFav ? Icons.favorite : Icons.favorite_border_outlined,
-                color: Colors.red,
-              ),
-              onPressed: () async {
-                if (LocalStorage.getData(key: 'token') == null) {
-                  _showDialog(context,
-                      'لا يمكن الاضافه الي المفضلة يجب عليك التسجيل اولا');
-                } else {
-                  BlocProvider.of<FavoritesCubit>(context)
-                      .toggleFavoriteStatus(itemId: widget.id)
-                      .then((value) => setState(() {
-                            isFav = !isFav;
-                          }));
-                }
-              },
-            ),
-          )
-        ],
+        // actions: [
+        //   Visibility(
+        //     visible: !widget.removeFav!,
+        //     child: IconButton(
+        //       icon: Icon(
+        //         isFav ? Icons.favorite : Icons.favorite_border_outlined,
+        //         color: Colors.red,
+        //       ),
+        //       onPressed: () async {
+        //         if (LocalStorage.getData(key: 'token') == null) {
+        //           _showDialog(context,
+        //               'لا يمكن الاضافه الي المفضلة يجب عليك التسجيل اولا');
+        //         } else {
+        //           BlocProvider.of<FavoritesCubit>(context)
+        //               .toggleFavoriteStatus(itemId: widget.id)
+        //               .then((value) => setState(() {
+        //                     isFav = !isFav;
+        //                   }));
+        //         }
+        //       },
+        //     ),
+        //   )
+        // ],
       ),
       body: WillPopScope(
         onWillPop: _willPopCallback,
@@ -251,10 +257,15 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                             ),
                                       Visibility(
                                         visible: price != 0.00,
-                                        child: Text(' لكل/ ${item.unit}',
-                                            style: TextStyle(
-                                              color: Color(0xff4A4B4D),
-                                            )),
+                                        child: item.unit.toString() != "null"
+                                            ? Text(' لكل/ ${item.unit}',
+                                                style: TextStyle(
+                                                  color: Color(0xff4A4B4D),
+                                                ))
+                                            : Text('لكل/ كيلو',
+                                                style: TextStyle(
+                                                  color: Color(0xff4A4B4D),
+                                                )),
                                       ),
                                     ],
                                   ),
@@ -267,7 +278,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 12.0),
                                 child: Text(
-                                  ' يمكنك اختيار ${item.unit} :',
+                                  ' يمكنك اختيار [ 1 اختيار ] :',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w800,
                                       color: Color(0xff4A4B4D),
@@ -519,22 +530,28 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                   ),
                 ));
           } else {
-            return AlertDialog(
-              backgroundColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              elevation: 0,
-              content: Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image.asset(
-                    'assets/images/loading.gif',
-                    height: 0.4.sw,
-                    width: 0.4.sw,
-                  ),
-                ),
-              ),
-            );
+            return Center(
+                child: Container(
+              height: 120,
+              width: 120,
+              child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
+            ));
+            // return AlertDialog(
+            //   backgroundColor: Colors.transparent,
+            //   shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(15)),
+            //   elevation: 0,
+            //   content: Center(
+            //     child: ClipRRect(
+            //       borderRadius: BorderRadius.circular(15),
+            //       child: Image.asset(
+            //         'assets/images/loading.gif',
+            //         height: 0.4.sw,
+            //         width: 0.4.sw,
+            //       ),
+            //     ),
+            //   ),
+            // );
           }
         }),
       ),

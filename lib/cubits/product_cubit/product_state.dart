@@ -8,7 +8,8 @@ class CategoriesLoading extends ProductState {}
 
 class CategoriesLoaded extends ProductState {
   final List<dynamic> categories;
-  CategoriesLoaded({required this.categories});
+  final List<ItemDetails>? items;
+  CategoriesLoaded({required this.categories, this.items});
 }
 
 class ShopCategoriesLoading extends ProductState {}

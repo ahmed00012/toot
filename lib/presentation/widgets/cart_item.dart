@@ -17,6 +17,7 @@ class CartItem extends StatelessWidget {
   final int? shopId;
   final List? addons;
   final List? extra;
+  bool? lastItem;
   CartItem(
       {required this.image,
       required this.title,
@@ -26,7 +27,8 @@ class CartItem extends StatelessWidget {
       required this.id,
       required this.shopId,
       this.extra,
-      this.addons});
+      this.addons,
+      this.lastItem});
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +136,7 @@ class CartItem extends StatelessWidget {
                             )
                           : Column(
                               children: addons!
-                                  .map((e) => Text(e.addon.nameAr))
+                                  .map((e) => Text(e.addon!.nameAr.toString()))
                                   .toList(),
                             ),
                     ],
@@ -174,7 +176,7 @@ class CartItem extends StatelessWidget {
               icon: Icons.delete,
               onTap: () {
                 BlocProvider.of<CartCubit>(context)
-                    .removeFromCart(productId: id);
+                    .removeFromCart(productId: id, lastItem: lastItem);
               },
             ),
           ],

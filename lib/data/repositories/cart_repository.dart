@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:toot/data/models/address.dart';
 import 'package:toot/data/models/cart_item.dart';
 import 'package:toot/data/models/info.dart';
+import 'package:toot/data/models/order.dart';
 import 'package:toot/data/models/payment.dart';
 import 'package:toot/data/models/promo_status.dart';
 import 'package:toot/data/web_services/cart_web_service.dart';
@@ -28,15 +29,21 @@ class CartRepository {
     return await cartWebServices.addToCart(formData);
   }
 
-  Future<dynamic> removeFromCart({int? productId, String? cartToken}) async {
-    FormData formData =
-        FormData.fromMap({'product_id': productId, 'cart_token': cartToken});
-    return await cartWebServices.removeFromCart(formData);
+  Future<dynamic> removeFromCart(
+      {int? productId, String? cartToken, bool? lastItem}) async {
+    print(lastItem);
+    // FormData formData =
+    //     FormData.fromMap({'product_id': productId, 'cart_token': cartToken});
+    return await cartWebServices.removeFromCart(productId, cartToken, lastItem);
   }
 
   Future<dynamic> fetchCart() async {
     final rawData = await cartWebServices.fetchCart();
-    return CartItem.fromJson(rawData);
+    print("rawData $rawData");
+    if (rawData != null && rawData['success'] != "0")
+      return CartItem.fromJson(rawData);
+    else
+      return "Empty";
   }
 
   Future<dynamic> fetchAddress() async {
@@ -102,5 +109,11 @@ class CartRepository {
     FormData formData =
         FormData.fromMap({'date': date, 'time_id': id, 'cart_token': token});
     return await cartWebServices.confirmInfoDateAndTime(formData);
+  }
+
+  Future<dynamic> orderStatus(int? id) async {
+    var data = await cartWebServices.orderStatus(id!);
+
+    return Order.fromJson(data);
   }
 }

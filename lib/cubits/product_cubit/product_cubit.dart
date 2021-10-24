@@ -39,16 +39,24 @@ class ProductCubit extends Cubit<ProductState> {
     }
   }
 
-  Future<void> fetchCategories({double? lat, double? long}) async {
+  Future<void> fetchCategories() async {
     emit(CategoriesLoading());
-    await getLocation();
-    productRepository.fetchCategories(long: long, lat: lat).then((categories) {
-      emit(
-        CategoriesLoaded(categories: categories),
-      );
-    }).catchError((e) {
-      emit(ErrorOccur(error: e.toString()));
-    });
+
+    getLocation();
+    List<ItemDetails> items = await productRepository.fetchPanner();
+    var categories = await productRepository.fetchCategories(
+        long: LocalStorage.getData(key: 'long'),
+        lat: LocalStorage.getData(key: 'lat'));
+    emit(
+      CategoriesLoaded(categories: categories, items: items),
+    );
+    // productRepository.fetchCategories(long: long, lat: lat).then((categories) {
+    //   emit(
+    //     CategoriesLoaded(categories: categories, items: items),
+    //   );
+    // }).catchError((e) {
+    //   emit(ErrorOccur(error: e.toString()));
+    // });
   }
 
   Future<void> fetchShopCategories({int? shopId}) async {

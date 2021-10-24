@@ -67,16 +67,33 @@ class SettingsScreen extends StatelessWidget {
                 title: 'اتصل بنا',
                 image: 'assets/images/Group 1302.png',
               ),
-              SettingsItem(
-                title: 'تسجيل الخروج',
-                image: 'assets/images/icon-sign-out.png',
-                function: () async {
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => AuthScreen()));
-                  LocalStorage.removeData(key: 'token');
-                  LocalStorage.removeData(key: 'cart_token');
-                },
-              ),
+              LocalStorage.getData(key: 'isLogin') != null &&
+                      LocalStorage.getData(key: 'isLogin')
+                  ? SettingsItem(
+                      title: 'تسجيل الخروج',
+                      image: 'assets/images/icon-sign-out.png',
+                      function: () async {
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => AuthScreen()),
+                            (Route<dynamic> route) => false);
+                        // LocalStorage.removeData(key: 'token');
+                        // LocalStorage.removeData(key: 'cart_token');
+                        LocalStorage.saveData(key: 'isLogin', value: false);
+                        LocalStorage.saveData(key: 'token', value: '');
+                        LocalStorage.saveData(key: 'cart_token', value: '');
+                      },
+                    )
+                  : SettingsItem(
+                      title: 'تسجيل الدخول',
+                      image: 'assets/images/enter.png',
+                      function: () async {
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => AuthScreen()),
+                            (Route<dynamic> route) => false);
+                      },
+                    ),
             ],
           ),
         ),

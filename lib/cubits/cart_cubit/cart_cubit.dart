@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:toot/data/local_storage.dart';
 import 'package:toot/data/models/cart_item.dart';
 import 'package:toot/data/models/info.dart';
+import 'package:toot/data/models/order.dart';
 import 'package:toot/data/repositories/cart_repository.dart';
 import 'package:toot/data/web_services/cart_web_service.dart';
 
@@ -24,7 +27,7 @@ class CartCubit extends Cubit<CartState> {
     super.onError(error, stackTrace);
   }
 
-  String? cartToken = LocalStorage.getData(key: 'cart_token');
+  // String? cartToken = LocalStorage.getData(key: 'cart_token');
 
   Future<void> addToCart(
       {int? shopId,
@@ -34,41 +37,48 @@ class CartCubit extends Cubit<CartState> {
       List? extras}) async {
     emit(CartLoading());
 
-    cartRepository
-        .addToCart(
-            productId: productId,
-            quantity: quantity,
-            shopId: shopId,
-            cartToken: cartToken,
-            extras: extras,
-            options: options)
-        .then((value) async {
-      emit(AddedToCart());
-      LocalStorage.saveData(key: 'cart_token', value: value['cart']['token']);
-    }).catchError((e) {
-      emit(CartError(error: e.toString()));
-    });
+    var value = await cartRepository.addToCart(
+        productId: productId,
+        quantity: quantity,
+        shopId: shopId,
+        // cartToken: cartToken,
+        extras: extras,
+        options: options);
+    await LocalStorage.saveData(
+        key: 'cart_token', value: value['cart']['token']);
+    print("card ${LocalStorage.getData(key: 'cart_token')}");
+    emit(AddedToCart());
   }
 
-  Future<void> removeFromCart({int? productId}) async {
-    cartRepository
-        .removeFromCart(productId: productId, cartToken: cartToken)
-        .then((value) async {
-      fetchCart();
-    }).catchError((e) {
-      emit(CartError(error: e.toString()));
-    });
+  Future<void> removeFromCart({int? productId, bool? lastItem}) async {
+    await cartRepository.removeFromCart(
+        productId: productId,
+        cartToken: LocalStorage.getData(key: 'cart_token'),
+        lastItem: lastItem);
+    fetchCart();
+    //     .then((value) async {
+    //
+    // }).catchError((e) {
+    //   emit(CartError(error: e.toString()));
+    // });
   }
 
   Future<void> fetchCart() async {
     emit(CartLoading());
-    cartRepository
-        .fetchCart()
-        .then((cartDetails) => emit(CartLoaded(cartDetails: cartDetails)))
-        .catchError((e) {
-      print(e.toString());
-      emit(CartError(error: e.toString()));
-    });
+    var cartDetails = await cartRepository.fetchCart();
+    print("cartDetails $cartDetails");
+    if (cartDetails != "Empty")
+      emit(CartLoaded(cartDetails: cartDetails));
+    else
+      emit(CartEmpty());
+    log(cartDetails.toString());
+    // cartRepository.fetchCart().then((cartDetails) {
+    //   print(cartDetails.length);
+    //
+    // }).catchError((e) {
+    //   print(e.toString());
+    //   emit(CartError(error: e.toString()));
+    // });
   }
 
   Future<void> fetchAddress() async {
@@ -87,7 +97,7 @@ class CartCubit extends Cubit<CartState> {
         .addAddress(
       address: address,
       district: district,
-      cartToken: cartToken,
+      cartToken: LocalStorage.getData(key: 'cart_token'),
       lng: long,
       lat: lat,
     )
@@ -97,8 +107,11 @@ class CartCubit extends Cubit<CartState> {
   }
 
   Future<dynamic> selectAddress({int? addressId}) async {
+    print("card ${LocalStorage.getData(key: 'cart_token')}");
     cartRepository
-        .selectAddress(cartToken: cartToken, addressId: addressId)
+        .selectAddress(
+            cartToken: LocalStorage.getData(key: 'cart_token'),
+            addressId: addressId)
         .catchError((e) {
       emit(CartError(error: e.toString()));
     });
@@ -116,7 +129,8 @@ class CartCubit extends Cubit<CartState> {
 
   Future<void> selectPayment({String? method}) async {
     cartRepository
-        .selectPayment(cartToken: cartToken, method: method)
+        .selectPayment(
+            cartToken: LocalStorage.getData(key: 'cart_token'), method: method)
         .catchError((e) {
       emit(CartError(error: e.toString()));
     });
@@ -124,17 +138,17 @@ class CartCubit extends Cubit<CartState> {
 
   Future confirmOrder() async {
     emit(CartLoading());
-    cartRepository.confirmOrder(cartToken: cartToken).then((value) {
-      emit(OrderConfirmed(num: value['order']['id']));
-    }).catchError((e) {
-      print(e);
-      emit(CartError(error: e.toString()));
-    });
+
+    var value = await cartRepository.confirmOrder(
+        cartToken: LocalStorage.getData(key: 'cart_token'));
+    emit(OrderConfirmed(num: value['order']['id']));
+    LocalStorage.saveData(key: 'cart_token', value: '');
   }
 
   Future<dynamic> promoCode({String? code}) async {
     cartRepository
-        .promoCode(cartToken: cartToken, code: code)
+        .promoCode(
+            cartToken: LocalStorage.getData(key: 'cart_token'), code: code)
         .then((promoStatus) => emit(PromoLoaded(promo: promoStatus)))
         .catchError((e) {
       emit(CartError(error: e['message'].toString()));
@@ -153,9 +167,16 @@ class CartCubit extends Cubit<CartState> {
 
   Future<void> confirmInfoDateAndTime({String? date, int? id}) async {
     cartRepository
-        .confirmInfoDateAndTime(token: cartToken, id: id, date: date)
+        .confirmInfoDateAndTime(
+            token: LocalStorage.getData(key: 'cart_token'), id: id, date: date)
         .catchError((e) {
       emit(CartError(error: e.toString()));
     });
+  }
+
+  Future<void> fetchOrderStatus(int? id) async {
+    emit(OrderStatusLoading());
+    Order orderStatus = await cartRepository.orderStatus(id);
+    emit(OrderStatusLoaded(order: orderStatus));
   }
 }

@@ -1,137 +1,174 @@
 import 'package:flutter/material.dart';
-import 'package:im_stepper/stepper.dart';
-import 'package:toot/presentation/widgets/customised_appbar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
+import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
+import 'package:toot/presentation/widgets/customised_appbar.dart';
 import 'package:toot/presentation/widgets/indigo_elevated_button.dart';
 
-import '../../constants.dart';
 import 'orders_screen.dart';
 
 class OrdersDetailsScreen extends StatefulWidget {
+  int id;
+  OrdersDetailsScreen({required this.id});
   @override
   _OrdersDetailsScreenState createState() => _OrdersDetailsScreenState();
 }
 
 class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
   @override
+  void initState() {
+    BlocProvider.of<CartCubit>(context).fetchOrderStatus(widget.id);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: BuildAppBar(
-        title: 'حالة الطلب',
-        isBack: false,
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 0.04.sw),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Center(
-                  child: Image.asset(
-                'assets/images/order status.gif',
-                height: 0.26.sh,
-                fit: BoxFit.fill,
-              )),
-              SizedBox(
-                height: 0.01.sh,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 0.2.sw,
-                    height: 0.40.sh,
-                    child: IconStepper(
-                      enableStepTapping: false,
-                      stepColor: Colors.grey.shade50,
-                      activeStepColor: Colors.grey.shade200,
-                      lineColor: Color(0xff748A9D),
-                      activeStepBorderWidth: 1.5,
-                      lineLength: 50,
-                      activeStepBorderColor: Colors.grey.shade500,
-                      activeStep: 0,
-                      scrollingDisabled: true,
-                      direction: Axis.vertical,
-                      enableNextPreviousButtons: false,
-                      icons: [
-                        Icon(
-                          Icons.shopping_cart,
-                          color: Color(Constants.mainColor),
-                        ),
-                        Icon(
-                          Icons.settings,
-                          color: Colors.grey.shade400,
-                        ),
-                        Icon(
-                          Icons.delivery_dining,
-                          color: Colors.grey.shade400,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 0.40.sh,
-                    padding: EdgeInsets.symmetric(vertical: 0.028.sh),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('تم ارسال الطلب بنجاح'),
-                            Text('152625#    10.20   13/12/2021')
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('جاري تجهيز الطلب',
-                                style: TextStyle(color: Colors.grey)),
-                            Text(
-                              '152625#    10.20   13/12/2021',
-                              style: TextStyle(color: Colors.grey),
-                            )
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('جاري توصيل الطلب',
-                                style: TextStyle(color: Colors.grey)),
-                            Text(
-                              '152625#    10.20   13/12/2021',
-                              style: TextStyle(color: Colors.grey),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 0.05.sh),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    BuildElevatedButton(
-                      title: 'تحديث',
-                      function: () {},
-                    ),
-                    BuildElevatedButton(
-                      title: 'طلباتي',
-                      function: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => OrdersScreen()));
-                      },
-                    )
-                  ],
-                ),
-              )
-            ],
-          ),
+        backgroundColor: Colors.white,
+        appBar: BuildAppBar(
+          title: 'حالة الطلب',
+          isBack: false,
         ),
-      ),
-    );
+        body: BlocBuilder<CartCubit, CartState>(builder: (context, state) {
+          if (state is OrderStatusLoaded) {
+            return ListView(
+              shrinkWrap: true,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 0.04.sw),
+                  child: Column(
+                    children: [
+                      Center(
+                          child: Image.asset(
+                        'assets/images/order status.gif',
+                        height: 0.26.sh,
+                        fit: BoxFit.fill,
+                      )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      ListView(
+                        shrinkWrap: true,
+                        children: [
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Column(
+                            children: [
+                              state.order.expectedTime.toString() != "null"
+                                  ? Text(
+                                      'الوقت المتوقع لاستلام الطلب : ' +
+                                          state.order.expectedTime.toString() +
+                                          ' ' +
+                                          'دقيقة',
+                                      style: TextStyle(fontSize: 16),
+                                    )
+                                  : Container(),
+                              Text(
+                                'رقم الطلب' + ' ' + widget.id.toString(),
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              Container(
+                                height: MediaQuery.of(context).size.height / 2,
+                                child: ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: ScrollPhysics(),
+                                    itemCount:
+                                        state.order.statusHistories!.length,
+                                    padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Container(
+                                        alignment: Alignment.center,
+                                        margin: EdgeInsets.all(
+                                          20,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Expanded(
+                                              child: SizedBox(),
+                                              flex: 2,
+                                            ),
+                                            Container(
+                                              width: 50,
+                                              child: Image.network(
+                                                '${state.order.statusHistories![index].status!.image}',
+                                                fit: BoxFit.contain,
+                                                height: 35,
+                                                width: 35,
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 5,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    "${state.order.statusHistories![index].status!.name}",
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  Text(
+                                                    "${state.order.statusHistories![index].status!.createdAt}",
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: SizedBox(),
+                                              flex: 2,
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 0.01.sh),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            BuildElevatedButton(
+                              title: 'تحديث',
+                              function: () {
+                                BlocProvider.of<CartCubit>(context)
+                                    .fetchOrderStatus(widget.id);
+                              },
+                            ),
+                            BuildElevatedButton(
+                              title: 'طلباتي',
+                              function: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (_) => OrdersScreen()));
+                              },
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 40,
+                      )
+                    ],
+                  ),
+                )
+              ],
+            );
+          } else
+            return Center(
+                child: Container(
+              height: 120,
+              width: 120,
+              child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
+            ));
+        }));
   }
 }

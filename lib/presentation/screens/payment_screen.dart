@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 import 'package:toot/presentation/widgets/delivery_app_bar.dart';
@@ -84,36 +86,62 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     title: 'الاستمرار',
                     function: () {
                       print(selectionMethod);
-                      BlocProvider.of<CartCubit>(context)
-                          .selectPayment(method: selectionMethod);
-                      Navigator.of(context)
-                          .push(
-                            MaterialPageRoute(
-                              builder: (_) => OrderSummaryScreen(),
+
+                      if (selections.contains(true)) {
+                        BlocProvider.of<CartCubit>(context)
+                            .selectPayment(method: selectionMethod);
+                        Navigator.of(context)
+                            .push(
+                              MaterialPageRoute(
+                                builder: (_) => OrderSummaryScreen(),
+                              ),
+                            )
+                            .then((value) => BlocProvider.of<CartCubit>(context)
+                                .emit(
+                                    PaymentsLoaded(payments: paymentsMethods)));
+                      } else
+                        showSimpleNotification(
+                            Container(
+                              height: 55,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  'من فضلك اختر طريقة الدفع المناسبة لك',
+                                  style: TextStyle(
+                                      color: Colors.indigo,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
                             ),
-                          )
-                          .then((value) => BlocProvider.of<CartCubit>(context)
-                              .emit(PaymentsLoaded(payments: paymentsMethods)));
+                            duration: Duration(seconds: 3),
+                            background: Colors.white);
                     })
               ],
             );
           } else {
-            return AlertDialog(
-              backgroundColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              elevation: 0,
-              content: Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image.asset(
-                    'assets/images/loading.gif',
-                    height: 0.4.sw,
-                    width: 0.4.sw,
-                  ),
-                ),
-              ),
-            );
+            return Center(
+                child: Container(
+              height: 120,
+              width: 120,
+              child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
+            ));
+            // return AlertDialog(
+            //   backgroundColor: Colors.transparent,
+            //   shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(15)),
+            //   elevation: 0,
+            //   content: Center(
+            //     child: ClipRRect(
+            //       borderRadius: BorderRadius.circular(15),
+            //       child: Image.asset(
+            //         'assets/images/loading.gif',
+            //         height: 0.4.sw,
+            //         width: 0.4.sw,
+            //       ),
+            //     ),
+            //   ),
+            // );
           }
         },
       ),

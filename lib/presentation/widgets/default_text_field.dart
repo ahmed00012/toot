@@ -7,8 +7,9 @@ class BuildTextField extends StatelessWidget {
   final Function? onSaved;
   final Function? validator;
   final TextEditingController? controller;
-  final bool isObscure;
+  bool isObscure;
   final bool isNumeric;
+  final bool? password;
 
   BuildTextField(
       {required this.hint,
@@ -17,7 +18,8 @@ class BuildTextField extends StatelessWidget {
       this.validator,
       this.controller,
       this.isObscure = false,
-      this.isNumeric = false});
+      this.isNumeric = false,
+      this.password});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class BuildTextField extends StatelessWidget {
               filled: true,
               fillColor: Color(0xffF0F4F8),
               hintText: hint,
-              prefixIcon: Image.asset(
+              icon: Image.asset(
                 icon,
                 height: 50,
                 width: 50,
