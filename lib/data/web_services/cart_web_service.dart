@@ -7,6 +7,24 @@ import '../local_storage.dart';
 class CartWebServices {
   late Dio dio;
 
+  getHeaderWithInToken() {
+    return {
+      'Accept': 'application/json',
+      'Content-Language': 'ar',
+      'X-Requested-With': 'XMLHttpRequest',
+      HttpHeaders.authorizationHeader:
+          "Bearer " + LocalStorage.getData(key: 'token')
+    };
+  }
+
+  getHeaderWithOutToken() {
+    return {
+      'Accept': 'application/json',
+      'Content-Language': 'ar',
+      'X-Requested-With': 'XMLHttpRequest'
+    };
+  }
+
   CartWebServices() {
     BaseOptions options = BaseOptions(
         baseUrl: 'https://toot.work/api/',
@@ -14,18 +32,8 @@ class CartWebServices {
         connectTimeout: 20 * 1000, // 60 seconds,
         receiveTimeout: 20 * 1000,
         headers: LocalStorage.getData(key: 'token') == null
-            ? {
-                'Accept': 'application/json',
-                'Content-Language': 'ar',
-                'X-Requested-With': 'XMLHttpRequest',
-              }
-            : {
-                'Accept': 'application/json',
-                'Content-Language': 'ar',
-                'X-Requested-With': 'XMLHttpRequest',
-                HttpHeaders.authorizationHeader:
-                    "Bearer " + LocalStorage.getData(key: 'token')
-              });
+            ? getHeaderWithOutToken()
+            : getHeaderWithInToken());
 
     dio = Dio(options);
   }
