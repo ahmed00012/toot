@@ -13,8 +13,8 @@ class ProductRepository {
     return rawData.map((category) => Category.fromJson(category)).toList();
   }
 
-  Future<List<ItemDetails>> fetchPanner() async {
-    final rawData = await productWebServices.fetchPanner();
+  Future<List<ItemDetails>> fetchBanner() async {
+    final rawData = await productWebServices.fetchBanner();
     return rawData;
   }
 

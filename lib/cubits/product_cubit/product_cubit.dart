@@ -43,7 +43,7 @@ class ProductCubit extends Cubit<ProductState> {
     emit(CategoriesLoading());
 
     getLocation();
-    List<ItemDetails> items = await productRepository.fetchPanner();
+    List<ItemDetails> items = await productRepository.fetchBanner();
     var categories = await productRepository.fetchCategories(
         long: LocalStorage.getData(key: 'long'),
         lat: LocalStorage.getData(key: 'lat'));

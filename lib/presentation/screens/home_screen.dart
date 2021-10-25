@@ -20,12 +20,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<String> imagesBannerList = [
-    'assets/images/main_pic.png',
-    'assets/images/main_pic.png',
-    'assets/images/main_pic.png',
-  ];
-
   int current = 0;
   DateTime? currentBackPressTime;
 

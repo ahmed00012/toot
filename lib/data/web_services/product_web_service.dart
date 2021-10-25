@@ -7,6 +7,23 @@ import '../local_storage.dart';
 
 class ProductWebServices {
   late Dio dio;
+  getHeaderWithInToken() {
+    return {
+      'Accept': 'application/json',
+      'Content-Language': 'ar',
+      'X-Requested-With': 'XMLHttpRequest',
+      HttpHeaders.authorizationHeader:
+          "Bearer " + LocalStorage.getData(key: 'token')
+    };
+  }
+
+  getHeaderWithOutToken() {
+    return {
+      'Accept': 'application/json',
+      'Content-Language': 'ar',
+      'X-Requested-With': 'XMLHttpRequest'
+    };
+  }
 
   ProductWebServices() {
     BaseOptions options = BaseOptions(
@@ -15,18 +32,8 @@ class ProductWebServices {
         connectTimeout: 20 * 1000, // 60 seconds,
         receiveTimeout: 20 * 1000,
         headers: LocalStorage.getData(key: 'token') == null
-            ? {
-                'Content-Type': 'application/json',
-                'Content-Language': 'ar',
-                'X-Requested-With': 'XMLHttpRequest',
-              }
-            : {
-                'Content-Type': 'application/json',
-                'Content-Language': 'ar',
-                'X-Requested-With': 'XMLHttpRequest',
-                HttpHeaders.authorizationHeader:
-                    "Bearer " + LocalStorage.getData(key: 'token')
-              });
+            ? getHeaderWithOutToken()
+            : getHeaderWithInToken());
 
     dio = Dio(options);
   }
@@ -44,7 +51,7 @@ class ProductWebServices {
     }
   }
 
-  Future<List<ItemDetails>> fetchPanner() async {
+  Future<List<ItemDetails>> fetchBanner() async {
     Response response = await dio.get('sliders');
     var body = response.data;
     List<ItemDetails> items = [];

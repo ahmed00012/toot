@@ -6,6 +6,23 @@ import '../local_storage.dart';
 
 class FavoritesWebServices {
   late Dio dio;
+  getHeaderWithInToken() {
+    return {
+      'Accept': 'application/json',
+      'Content-Language': 'ar',
+      'X-Requested-With': 'XMLHttpRequest',
+      HttpHeaders.authorizationHeader:
+          "Bearer " + LocalStorage.getData(key: 'token')
+    };
+  }
+
+  getHeaderWithOutToken() {
+    return {
+      'Accept': 'application/json',
+      'Content-Language': 'ar',
+      'X-Requested-With': 'XMLHttpRequest'
+    };
+  }
 
   FavoritesWebServices() {
     BaseOptions options = BaseOptions(
@@ -14,18 +31,8 @@ class FavoritesWebServices {
         connectTimeout: 20 * 1000, // 60 seconds,
         receiveTimeout: 20 * 1000,
         headers: LocalStorage.getData(key: 'token') == null
-            ? {
-                'Accept': 'application/json',
-                'Content-Language': 'ar',
-                'X-Requested-With': 'XMLHttpRequest',
-              }
-            : {
-                'Accept': 'application/json',
-                'Content-Language': 'ar',
-                'X-Requested-With': 'XMLHttpRequest',
-                HttpHeaders.authorizationHeader:
-                    "Bearer " + LocalStorage.getData(key: 'token')
-              });
+            ? getHeaderWithOutToken()
+            : getHeaderWithInToken());
 
     dio = Dio(options);
   }

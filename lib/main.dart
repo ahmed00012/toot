@@ -30,7 +30,19 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print('A bg message just showed up :  ${message.messageId}');
+  print('Handling a background message ${message.messageId}');
+  print(message.data);
+  flutterLocalNotificationsPlugin.show(
+      message.data.hashCode,
+      message.data['title'],
+      message.data['body'],
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          channel.id,
+          channel.name,
+          channelDescription: channel.description,
+        ),
+      ));
 }
 
 Future<void> main() async {
@@ -79,6 +91,12 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     getToken();
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
@@ -95,7 +113,7 @@ class _MyAppState extends State<MyApp> {
                 channelDescription: channel.description,
                 color: Colors.blue,
                 playSound: true,
-                icon: '@mipmap/ic_launcher',
+                icon: android.smallIcon,
               ),
             ));
       }
