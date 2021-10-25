@@ -68,4 +68,50 @@ class AuthWebServices {
       print(e.response!.data);
     }
   }
+
+  Future<bool> forgetPassword(FormData formData) async {
+    try {
+      Response response =
+          await dio.post('auth/forget-password', data: formData);
+      if (response.data['success'] == '1') {
+        return true;
+      } else {
+        throw response.data['message'];
+      }
+    } on DioError catch (e) {
+      print(e.response!.data);
+      return false;
+    }
+  }
+
+  Future<bool> verifyForgetPassword(FormData formData) async {
+    try {
+      Response response =
+          await dio.post('auth/verify-forget-password', data: formData);
+      print(response.data);
+      if (response.data['success'] == '1') {
+        return true;
+      } else {
+        throw response.data['message'];
+      }
+    } on DioError catch (e) {
+      print(e.response!.data);
+      return false;
+    }
+  }
+
+  Future<bool> newPassword(FormData formData) async {
+    try {
+      Response response = await dio.post('auth/new-password', data: formData);
+      print(response.data);
+      if (response.data['success'] == '1') {
+        return true;
+      } else {
+        throw response.data['message'];
+      }
+    } on DioError catch (e) {
+      print(e.response!.data);
+      return false;
+    }
+  }
 }

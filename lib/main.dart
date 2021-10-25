@@ -70,10 +70,16 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String? fcmToken;
+  getToken() async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    print(token);
+    LocalStorage.saveData(key: 'token_fcm', value: token);
+  }
+
   @override
   void initState() {
-    super.initState();
+    getToken();
+
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
@@ -115,12 +121,7 @@ class _MyAppState extends State<MyApp> {
             });
       }
     });
-
-    FirebaseMessaging.instance.getToken().then((value) {
-      fcmToken = value;
-    });
-
-    LocalStorage.saveData(key: 'token_fcm', value: fcmToken);
+    super.initState();
   }
 
   @override

@@ -32,7 +32,6 @@ class FavoritesWebServices {
 
   Future<bool> toggleFavoriteStatus(FormData formData) async {
     try {
-      print(dio.options.headers);
       Response response =
           await dio.post('customer/favourite/toggle', data: formData);
       print(response.data);

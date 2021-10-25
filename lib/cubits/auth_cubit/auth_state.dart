@@ -20,4 +20,10 @@ class AuthError extends AuthState {
   AuthError({required this.error});
 }
 
+class ForgetPasswordSuccess extends AuthState {}
+
+class VerifyForgetPasswordSuccess extends AuthState {}
+
+class NewPasswordSetSuccessfully extends AuthState {}
+
 class OtpSuccess extends AuthState {}

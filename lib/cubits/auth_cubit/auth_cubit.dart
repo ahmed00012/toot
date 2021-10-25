@@ -90,4 +90,50 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthError(error: e.toString()));
     });
   }
+
+  Future<void> forgetPassword({
+    String? phone,
+  }) async {
+    await authRepository
+        .forgetPassword(
+      phone: phone,
+    )
+        .then((value) async {
+      if (value == true) {
+        print('forgetPassword done !');
+        emit(ForgetPasswordSuccess());
+      }
+    }).catchError((e) {
+      emit(AuthError(error: e.toString()));
+    });
+  }
+
+  Future<void> verifyForgetPassword({String? phone, String? otp}) async {
+    await authRepository
+        .verifyForgetPassword(phone: phone, otp: otp)
+        .then((value) async {
+      if (value == true) {
+        print('verifyForgetPassword done !');
+        emit(VerifyForgetPasswordSuccess());
+      }
+    }).catchError((e) {
+      emit(AuthError(error: e.toString()));
+    });
+  }
+
+  Future<void> newPassword({
+    String? phone,
+    String? password,
+  }) async {
+    await authRepository
+        .newPassword(phone: phone, password: password)
+        .then((value) async {
+      if (value == true) {
+        print('newPassword done !');
+        emit(NewPasswordSetSuccessfully());
+      }
+    }).catchError((e) {
+      emit(AuthError(error: e.toString()));
+    });
+  }
 }

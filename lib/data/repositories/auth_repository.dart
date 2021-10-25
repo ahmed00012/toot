@@ -46,4 +46,30 @@ class AuthRepository {
     });
     return await authWebServices.otp(formData);
   }
+
+  Future<bool> forgetPassword({String? phone}) async {
+    FormData formData = FormData.fromMap({
+      'phone': phone,
+    });
+    return await authWebServices.otp(formData);
+  }
+
+  Future<bool> verifyForgetPassword({String? phone, String? otp}) async {
+    FormData formData = FormData.fromMap({
+      'phone': phone,
+      'otp': otp,
+    });
+    return await authWebServices.otp(formData);
+  }
+
+  Future<bool> newPassword({
+    String? phone,
+    String? password,
+  }) async {
+    FormData formData = FormData.fromMap({
+      'phone': phone,
+      'password': password,
+    });
+    return await authWebServices.otp(formData);
+  }
 }
