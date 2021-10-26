@@ -9,8 +9,9 @@ import 'package:toot/presentation/widgets/indigo_elevated_button.dart';
 import 'orders_screen.dart';
 
 class OrdersDetailsScreen extends StatefulWidget {
-  int id;
+  final int id;
   OrdersDetailsScreen({required this.id});
+
   @override
   _OrdersDetailsScreenState createState() => _OrdersDetailsScreenState();
 }
@@ -30,137 +31,127 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
           title: 'حالة الطلب',
           isBack: false,
         ),
+        bottomSheet: Container(
+          color: Colors.white,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 0.025.sh),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                BuildElevatedButton(
+                  title: 'تحديث',
+                  function: () {
+                    BlocProvider.of<CartCubit>(context)
+                        .fetchOrderStatus(widget.id);
+                  },
+                ),
+                BuildElevatedButton(
+                  title: 'طلباتي',
+                  function: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => OrdersScreen()));
+                  },
+                )
+              ],
+            ),
+          ),
+        ),
         body: BlocBuilder<CartCubit, CartState>(builder: (context, state) {
           if (state is OrderStatusLoaded) {
-            return ListView(
-              shrinkWrap: true,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 0.04.sw),
-                  child: Column(
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 0.04.sw),
+              child: Column(
+                children: [
+                  Center(
+                      child: Image.asset(
+                    'assets/images/order status.gif',
+                    height: 0.26.sh,
+                    fit: BoxFit.fill,
+                  )),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  ListView(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
                     children: [
-                      Center(
-                          child: Image.asset(
-                        'assets/images/order status.gif',
-                        height: 0.26.sh,
-                        fit: BoxFit.fill,
-                      )),
                       SizedBox(
-                        height: 20,
+                        height: 5,
                       ),
-                      ListView(
-                        shrinkWrap: true,
+                      Column(
                         children: [
-                          SizedBox(
-                            height: 5,
+                          state.order.expectedTime.toString() != "null"
+                              ? Text(
+                                  'الوقت المتوقع لاستلام الطلب : ' +
+                                      state.order.expectedTime.toString() +
+                                      ' ' +
+                                      'دقيقة',
+                                  style: TextStyle(fontSize: 16),
+                                )
+                              : Container(),
+                          Text(
+                            'رقم الطلب' + ' ' + widget.id.toString(),
+                            style: TextStyle(fontSize: 16),
                           ),
-                          Column(
-                            children: [
-                              state.order.expectedTime.toString() != "null"
-                                  ? Text(
-                                      'الوقت المتوقع لاستلام الطلب : ' +
-                                          state.order.expectedTime.toString() +
-                                          ' ' +
-                                          'دقيقة',
-                                      style: TextStyle(fontSize: 16),
-                                    )
-                                  : Container(),
-                              Text(
-                                'رقم الطلب' + ' ' + widget.id.toString(),
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              Container(
-                                height: MediaQuery.of(context).size.height / 2,
-                                child: ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: ScrollPhysics(),
-                                    itemCount:
-                                        state.order.statusHistories!.length,
-                                    padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Container(
-                                        alignment: Alignment.center,
-                                        margin: EdgeInsets.all(
-                                          20,
+                          ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: state.order.statusHistories!.length,
+                              padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                              itemBuilder: (BuildContext context, int index) {
+                                return Container(
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.all(
+                                    20,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: SizedBox(),
+                                        flex: 2,
+                                      ),
+                                      Container(
+                                        width: 50,
+                                        child: Image.network(
+                                          '${state.order.statusHistories![index].status!.image}',
+                                          fit: BoxFit.contain,
+                                          height: 35,
+                                          width: 35,
                                         ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                      ),
+                                      Expanded(
+                                        flex: 5,
+                                        child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
-                                            Expanded(
-                                              child: SizedBox(),
-                                              flex: 2,
+                                            Text(
+                                              "${state.order.statusHistories![index].status!.name}",
+                                              textAlign: TextAlign.center,
                                             ),
-                                            Container(
-                                              width: 50,
-                                              child: Image.network(
-                                                '${state.order.statusHistories![index].status!.image}',
-                                                fit: BoxFit.contain,
-                                                height: 35,
-                                                width: 35,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              flex: 5,
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "${state.order.statusHistories![index].status!.name}",
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                  Text(
-                                                    "${state.order.statusHistories![index].status!.createdAt}",
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: SizedBox(),
-                                              flex: 2,
+                                            Text(
+                                              "${state.order.statusHistories![index].status!.createdAt}",
                                             ),
                                           ],
                                         ),
-                                      );
-                                    }),
-                              ),
-                            ],
-                          )
+                                      ),
+                                      Expanded(
+                                        child: SizedBox(),
+                                        flex: 2,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }),
                         ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 0.01.sh),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            BuildElevatedButton(
-                              title: 'تحديث',
-                              function: () {
-                                BlocProvider.of<CartCubit>(context)
-                                    .fetchOrderStatus(widget.id);
-                              },
-                            ),
-                            BuildElevatedButton(
-                              title: 'طلباتي',
-                              function: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (_) => OrdersScreen()));
-                              },
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 40,
                       )
                     ],
                   ),
-                )
-              ],
+                ],
+              ),
             );
           } else
             return Center(

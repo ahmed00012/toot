@@ -2,8 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:toot/data/models/address.dart';
 import 'package:toot/data/models/cart_item.dart';
 import 'package:toot/data/models/info.dart';
+import 'package:toot/data/models/last_order.dart';
 import 'package:toot/data/models/order.dart';
 import 'package:toot/data/models/payment.dart';
+import 'package:toot/data/models/points.dart';
 import 'package:toot/data/models/promo_status.dart';
 import 'package:toot/data/web_services/cart_web_service.dart';
 
@@ -115,5 +117,15 @@ class CartRepository {
     var data = await cartWebServices.orderStatus(id!);
 
     return Order.fromJson(data);
+  }
+
+  Future<dynamic> fetchLastOrders() async {
+    final rawData = await cartWebServices.fetchLastOrders();
+    return rawData.map((order) => LastOrder.fromJson(order)).toList();
+  }
+
+  Future<dynamic> fetchMyPoints() async {
+    final rawData = await cartWebServices.fetchMyPoints();
+    return Points.fromJson(rawData);
   }
 }

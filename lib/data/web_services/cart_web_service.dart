@@ -184,8 +184,34 @@ class CartWebServices {
   }
 
   Future<dynamic> orderStatus(int id) async {
-    Response response = await dio.get('orders/$id/details');
+    try {
+      Response response = await dio.get('orders/$id/details');
+      return response.data;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      throw e.response!.data;
+    }
+  }
 
-    return response.data;
+  Future<dynamic> fetchLastOrders() async {
+    try {
+      Response response = await dio.get('customer/orders');
+      print(response.data);
+      return response.data;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      throw e.response!.data;
+    }
+  }
+
+  Future<dynamic> fetchMyPoints() async {
+    try {
+      Response response = await dio.get('customer/points');
+      print(response.data);
+      return response.data;
+    } on DioError catch (e) {
+      print(e.response!.data);
+      throw e.response!.data;
+    }
   }
 }

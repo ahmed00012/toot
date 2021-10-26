@@ -52,3 +52,17 @@ class CartError extends CartState {
   final String error;
   CartError({required this.error});
 }
+
+class LastOrdersLoading extends CartState {}
+
+class LastOrdersLoaded extends CartState {
+  final List orders;
+  LastOrdersLoaded({required this.orders});
+}
+
+class MyPointsLoading extends CartState {}
+
+class MyPointsLoaded extends CartState {
+  final Points points;
+  MyPointsLoaded({required this.points});
+}

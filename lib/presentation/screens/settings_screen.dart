@@ -6,9 +6,26 @@ import 'package:toot/presentation/screens/chat_screen.dart';
 import 'package:toot/presentation/screens/orders_screen.dart';
 import 'package:toot/presentation/screens/points_screen.dart';
 import 'package:toot/presentation/screens/profile_screen.dart';
+import 'package:toot/presentation/widgets/blurry_dialog.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
 
 class SettingsScreen extends StatelessWidget {
+  _showDialog(BuildContext context, String title) {
+    VoidCallback continueCallBack = () => {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => AuthScreen())),
+          // code on continue comes here
+        };
+    BlurryDialog alert = BlurryDialog('التسجيل اولا', title, continueCallBack);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,8 +52,13 @@ class SettingsScreen extends StatelessWidget {
                 title: 'طلباتي',
                 image: 'assets/images/icon-cart.png',
                 function: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => OrdersScreen()));
+                  if (LocalStorage.getData(key: 'token') == '') {
+                    _showDialog(
+                        context, 'لا يمكن عرض المفضلة يجب عليك التسجيل اولا');
+                  } else {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => OrdersScreen()));
+                  }
                 },
               ),
               SettingsItem(
@@ -59,8 +81,14 @@ class SettingsScreen extends StatelessWidget {
                 title: 'نقاطي',
                 image: 'assets/images/cdf.png',
                 function: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => PointsScreen()));
+                  print(LocalStorage.getData(key: 'token'));
+                  if (LocalStorage.getData(key: 'token') == '') {
+                    _showDialog(
+                        context, 'لا يمكن عرض المفضلة يجب عليك التسجيل اولا');
+                  } else {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => PointsScreen()));
+                  }
                 },
               ),
               SettingsItem(

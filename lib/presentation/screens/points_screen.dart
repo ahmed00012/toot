@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
+import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
 import 'package:toot/presentation/widgets/indigo_elevated_button.dart';
 
@@ -9,66 +12,90 @@ import '../../constants.dart';
 class PointsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<CartCubit>(context).fetchMyPoints();
     return Scaffold(
       appBar: BuildAppBar(
         title: 'نقاطي',
         isBack: false,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 0.04.sh,
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-                height: 0.304.sh,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Color(Constants.mainColor))),
+      body: BlocBuilder<CartCubit, CartState>(
+        builder: (context, state) {
+          if (state is MyPointsLoaded) {
+            final points = state.points;
+            return SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.0),
                 child: Column(
                   children: [
-                    BuildPointsDetailsRow(
-                      title: 'مجموع النقاط المكتسبة:',
-                      number: '55',
+                    SizedBox(
+                      height: 0.04.sh,
                     ),
-                    BuildPointsDetailsRow(
-                      title: 'مجموع النقاط المستخدمة:',
-                      number: '0',
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 15),
+                      height: 0.304.sh,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border:
+                              Border.all(color: Color(Constants.mainColor))),
+                      child: Column(
+                        children: [
+                          BuildPointsDetailsRow(
+                            title: 'مجموع النقاط المكتسبة:',
+                            number: points.totalPoints.toString(),
+                          ),
+                          BuildPointsDetailsRow(
+                            title: 'الحد الادني لتحويل النقاط :',
+                            number: points.pointsLimit.toString(),
+                          ),
+                          BuildPointsDetailsRow(
+                            title: 'النقاط المتبقية :',
+                            number: points.balance.toString(),
+                          ),
+                          BuildElevatedButton(
+                            title: 'استخدام نقاطي',
+                            function: () {},
+                          )
+                        ],
+                      ),
                     ),
-                    BuildPointsDetailsRow(
-                      title: 'النقاط المتبقية :',
-                      number: '55',
+                    SizedBox(
+                      height: 10,
                     ),
-                    BuildElevatedButton(
-                      title: 'استخدام نقاطي',
-                      function: () {},
+                    ListView.builder(
+                      itemCount: points.points!.length,
+                      shrinkWrap: true,
+                      physics: ClampingScrollPhysics(),
+                      itemBuilder: (context, index) => BuildItemDetailsCard(
+                        converted: points.points![index].converted!,
+                        orderId: points.points![index].orderId!,
+                        points: points.points![index].points!,
+                      ),
                     )
                   ],
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
-              BuildItemDetailsCard(),
-              BuildItemDetailsCard(),
-              BuildItemDetailsCard(),
-              BuildItemDetailsCard(),
-            ],
-          ),
-        ),
+            );
+          } else {
+            return Center(
+                child: Container(
+              height: 120,
+              width: 120,
+              child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
+            ));
+          }
+        },
       ),
     );
   }
 }
 
 class BuildItemDetailsCard extends StatelessWidget {
-  const BuildItemDetailsCard({
-    Key? key,
-  }) : super(key: key);
-
+  final int orderId;
+  final int points;
+  final int converted;
+  BuildItemDetailsCard(
+      {required this.points, required this.converted, required this.orderId});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -89,21 +116,21 @@ class BuildItemDetailsCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
-                    'رقم الطلب    140',
+                    ' رقم الطلب   $orderId',
                     style: TextStyle(fontSize: 14.sp),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
-                    'نقاط الطلب    22',
+                    ' نقاط الطلب$points',
                     style: TextStyle(fontSize: 14.sp),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
-                    'النقاط المستخدمة     0',
+                    converted == 0 ? 'النقاط غير مستخدمة' : 'النقاط استخدمت',
                     style: TextStyle(fontSize: 14.sp),
                   ),
                 ),
@@ -116,7 +143,7 @@ class BuildItemDetailsCard extends StatelessWidget {
                   shape: BoxShape.circle, color: Color(Constants.mainColor)),
               child: Center(
                   child: Text(
-                '11 نقطة',
+                '$pointsنقطة ',
                 style: TextStyle(
                     fontSize: 18.sp,
                     color: Colors.white,
@@ -133,6 +160,7 @@ class BuildItemDetailsCard extends StatelessWidget {
 class BuildPointsDetailsRow extends StatelessWidget {
   final String title;
   final String number;
+
   BuildPointsDetailsRow({required this.number, required this.title});
 
   @override

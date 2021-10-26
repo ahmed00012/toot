@@ -30,4 +30,9 @@ class ProductRepository {
     final rawData = await productWebServices.fetchItemDetails(itemId);
     return ItemDetails.fromJson(rawData);
   }
+
+  // Future<dynamic> fetchOffers(int pageNum) async {
+  //   final rawData = await productWebServices.fetchOffers(pageNum);
+  //   return rawData.map((offer) => Offer.fromJson(offer)).toList();
+  // }
 }

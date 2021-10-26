@@ -96,4 +96,15 @@ class ProductWebServices {
       throw e.response!.data;
     }
   }
+
+  Future<dynamic> fetchOffers(int pageNum) async {
+    try {
+      Response response = await dio.get('customer/notifications?page=$pageNum');
+      print(response.data['data']);
+      return response.data['data'];
+    } on DioError catch (e) {
+      print(e.response!.data);
+      throw e.response!.data;
+    }
+  }
 }

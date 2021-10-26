@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:toot/presentation/widgets/customised_appbar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:toot/presentation/widgets/customised_appbar.dart';
 
 import '../../constants.dart';
 
 class SingleNotificationScreen extends StatelessWidget {
+  final String title;
+  final String details;
+  final String image;
+  final int id;
+  SingleNotificationScreen(
+      {required this.id,
+      required this.image,
+      required this.title,
+      required this.details});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,8 +32,8 @@ class SingleNotificationScreen extends StatelessWidget {
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(15),
                         topLeft: Radius.circular(15)),
-                    child: Image.asset(
-                      'assets/images/notifications.png',
+                    child: Image.network(
+                      image,
                       width: 1.sw,
                       height: 0.3.sh,
                       fit: BoxFit.cover,
@@ -34,14 +43,14 @@ class SingleNotificationScreen extends StatelessWidget {
                 height: 10,
               ),
               Text(
-                'تنيبه جديد',
+                title,
                 style: TextStyle(
                     color: Color(Constants.mainColor),
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w100),
               ),
               Text(
-                'عرض مميز يمكن الاستفاده منه الان',
+                details,
                 style: TextStyle(color: Colors.grey.shade500, fontSize: 16.sp),
               )
             ],

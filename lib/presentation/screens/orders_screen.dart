@@ -1,39 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:toot/constants.dart';
+import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
+import 'package:toot/data/models/last_order.dart';
 import 'package:toot/presentation/screens/orders_details_screen.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
 
-class OrdersScreen extends StatelessWidget {
+class OrdersScreen extends StatefulWidget {
   const OrdersScreen({Key? key}) : super(key: key);
 
   @override
+  State<OrdersScreen> createState() => _OrdersScreenState();
+}
+
+class _OrdersScreenState extends State<OrdersScreen> {
+  @override
   Widget build(BuildContext context) {
+    BlocProvider.of<CartCubit>(context).fetchLastOrders();
     return Scaffold(
       appBar: BuildAppBar(
         title: 'طلباتك',
         isBack: false,
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 0.05.sw),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              OrderItem(),
-              OrderItem(),
-              OrderItem(),
-            ],
-          ),
-        ),
+      body: BlocBuilder<CartCubit, CartState>(
+        builder: (context, state) {
+          if (state is LastOrdersLoaded) {
+            final orders = state.orders;
+            return ListView.builder(
+                itemCount: orders.length,
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+                itemBuilder: (context, index) => OrderItem(
+                      id: orders[index].id!,
+                      cart: orders[index].cart!,
+                      function: () async {
+                        setState(() {});
+                      },
+                    ));
+          } else {
+            return Center(
+                child: Container(
+              height: 120,
+              width: 120,
+              child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
+            ));
+          }
+        },
       ),
     );
   }
 }
 
 class OrderItem extends StatefulWidget {
+  final int id;
+  final Cart cart;
+  final Function function;
+
+  OrderItem({required this.id, required this.cart, required this.function});
+
   @override
   _OrderItemState createState() => _OrderItemState();
 }
@@ -50,22 +76,21 @@ class _OrderItemState extends State<OrderItem> {
         });
       },
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 8),
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        height: isExtended ? 0.4.sh : 0.09.sh,
+        margin: EdgeInsets.symmetric(vertical: 0.02.sh, horizontal: 10),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0.03.sh),
         width: 0.95.sw,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15), color: Color(0xffF0F4F8)),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'طلب #5678',
+                    ' طلب #${widget.id}',
                     style:
                         TextStyle(fontSize: 18.sp, color: Colors.grey.shade600),
                   ),
@@ -82,90 +107,32 @@ class _OrderItemState extends State<OrderItem> {
                         SizedBox(
                           height: 10,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'CUPCAKE',
-                                style: TextStyle(
-                                    fontSize: 18.sp,
-                                    color: Colors.grey.shade600),
-                              ),
-                              Text(
-                                'SR 0.80',
-                                style: TextStyle(
-                                    fontSize: 18.sp,
-                                    color: Colors.grey.shade600),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'CUPCAKE',
-                                style: TextStyle(
-                                    fontSize: 18.sp,
-                                    color: Colors.grey.shade600),
-                              ),
-                              Text(
-                                'SR 0.80',
-                                style: TextStyle(
-                                    fontSize: 18.sp,
-                                    color: Colors.grey.shade600),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'CUPCAKE',
-                                style: TextStyle(
-                                    fontSize: 18.sp,
-                                    color: Colors.grey.shade600),
-                              ),
-                              Text(
-                                'SR 0.80',
-                                style: TextStyle(
-                                    fontSize: 18.sp,
-                                    color: Colors.grey.shade600),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'CUPCAKE',
-                                style: TextStyle(
-                                    fontSize: 18.sp,
-                                    color: Colors.grey.shade600),
-                              ),
-                              Text(
-                                'SR 0.80',
-                                style: TextStyle(
-                                    fontSize: 18.sp,
-                                    color: Colors.grey.shade600),
-                              ),
-                            ],
-                          ),
-                        ),
+                        ...widget.cart.items!
+                            .map((e) => Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        e.productName!,
+                                        style: TextStyle(
+                                            fontSize: 16.sp,
+                                            color: Colors.grey.shade600,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        'SR ${e.price}',
+                                        style: TextStyle(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey.shade600),
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                            .toList(),
                         SizedBox(
                           height: 10,
                         ),
@@ -176,15 +143,23 @@ class _OrderItemState extends State<OrderItem> {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (_) => OrdersDetailsScreen(
-                                          id: 32,
-                                        )));
+                                Navigator.of(context)
+                                    .push(
+                                  MaterialPageRoute(
+                                    builder: (context) => OrdersDetailsScreen(
+                                      id: widget.id,
+                                    ),
+                                  ),
+                                )
+                                    .then((value) {
+                                  return widget.function();
+                                });
                               },
                               child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Shipped',
+                                    widget.cart.status!.name!,
                                     style: TextStyle(
                                         decoration: TextDecoration.underline,
                                         color: Colors.lightGreen,
@@ -217,7 +192,7 @@ class _OrderItemState extends State<OrderItem> {
                                       width: 10,
                                     ),
                                     Text(
-                                      'SR  4.99',
+                                      'SR  ${widget.cart.deliveryFee}',
                                       style: TextStyle(
                                           color: Colors.grey.shade700,
                                           fontSize: 20.sp),
@@ -245,7 +220,7 @@ class _OrderItemState extends State<OrderItem> {
                                       width: 10,
                                     ),
                                     Text(
-                                      'SR 14.29',
+                                      'SR ${widget.cart.total}',
                                       style: TextStyle(
                                           color: Colors.grey.shade700,
                                           fontSize: 20.sp),

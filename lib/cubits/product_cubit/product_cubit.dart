@@ -25,6 +25,7 @@ class ProductCubit extends Cubit<ProductState> {
 
   late double latitude;
   late double longitude;
+  List? offers;
 
   Future<void> getLocation() async {
     try {
@@ -41,7 +42,6 @@ class ProductCubit extends Cubit<ProductState> {
 
   Future<void> fetchCategories() async {
     emit(CategoriesLoading());
-
     getLocation();
     List<ItemDetails> items = await productRepository.fetchBanner();
     var categories = await productRepository.fetchCategories(
@@ -82,4 +82,12 @@ class ProductCubit extends Cubit<ProductState> {
       emit(ErrorOccur(error: e.toString()));
     });
   }
+
+  // Future<dynamic> fetchOffers(int pageNum) async {
+  //   try {
+  //     productRepository.fetchOffers(pageNum).then((fetchOffer) => fetchOffer);
+  //   } catch (e) {
+  //     emit(ErrorOccur(error: e.toString()));
+  //   }
+  // }
 }

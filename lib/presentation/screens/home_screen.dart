@@ -119,22 +119,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 120,
                 child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
               ));
-              // return AlertDialog(
-              //   backgroundColor: Colors.transparent,
-              //   shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.circular(15)),
-              //   elevation: 0,
-              //   content: Center(
-              //     child: ClipRRect(
-              //       borderRadius: BorderRadius.circular(15),
-              //       child: Image.asset(
-              //         'assets/images/loading.gif',
-              //         height: 0.4.sw,
-              //         width: 0.4.sw,
-              //       ),
-              //     ),
-              //   ),
-              // );
             }
           })),
     );

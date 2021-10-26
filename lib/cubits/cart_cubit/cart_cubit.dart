@@ -6,6 +6,7 @@ import 'package:toot/data/local_storage.dart';
 import 'package:toot/data/models/cart_item.dart';
 import 'package:toot/data/models/info.dart';
 import 'package:toot/data/models/order.dart';
+import 'package:toot/data/models/points.dart';
 import 'package:toot/data/repositories/cart_repository.dart';
 import 'package:toot/data/web_services/cart_web_service.dart';
 
@@ -178,5 +179,25 @@ class CartCubit extends Cubit<CartState> {
     emit(OrderStatusLoading());
     Order orderStatus = await cartRepository.orderStatus(id);
     emit(OrderStatusLoaded(order: orderStatus));
+  }
+
+  Future<void> fetchLastOrders() async {
+    emit(LastOrdersLoading());
+    cartRepository
+        .fetchLastOrders()
+        .then((orders) => emit(LastOrdersLoaded(orders: orders)))
+        .catchError((e) {
+      emit(CartError(error: e.toString()));
+    });
+  }
+
+  Future<void> fetchMyPoints() async {
+    emit(MyPointsLoading());
+    cartRepository
+        .fetchMyPoints()
+        .then((points) => emit(MyPointsLoaded(points: points)))
+        .catchError((e) {
+      emit(CartError(error: e.toString()));
+    });
   }
 }
