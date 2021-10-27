@@ -39,8 +39,10 @@ class FavoritesWebServices {
 
   Future<bool> toggleFavoriteStatus(FormData formData) async {
     try {
-      Response response =
-          await dio.post('customer/favourite/toggle', data: formData);
+      Response response = await dio.post(
+        'customer/favourite/toggle',
+        data: formData,
+      );
       print(response.data);
       return true;
     } on DioError catch (e) {
@@ -50,9 +52,14 @@ class FavoritesWebServices {
   }
 
   Future<dynamic> fetchFavorites() async {
-    print(dio.options.headers);
+    print(LocalStorage.getData(key: 'token'));
     try {
-      final response = await dio.get('customer/favourite/list');
+      final response = await Dio().get(
+          'https://toot.work/api/customer/favourite/list',
+          options: Options(
+              headers: LocalStorage.getData(key: 'token') == null
+                  ? getHeaderWithOutToken()
+                  : getHeaderWithInToken()));
       return response.data;
     } on DioError catch (e) {
       print(e.response.toString());

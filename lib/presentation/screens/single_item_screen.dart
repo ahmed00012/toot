@@ -40,7 +40,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
   late bool isFav;
   int quantity = 1;
   int? selectedId;
-  String? dropdownPriceValue;
+  String? dropdownPriceValue = '';
   List prices = [];
   List extra = [];
   List chosenExtra = [];
@@ -153,6 +153,10 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
             BlocBuilder<ProductCubit, ProductState>(builder: (context, state) {
           if (state is ItemDetailsLoaded) {
             final item = state.itemDetails;
+            if (item.options!.isNotEmpty) {
+              dropdownPriceValue = item.options![0].price ?? '';
+              selectedId = item.options![0].id ?? 0;
+            }
 
             extra = state.itemDetails.addon!
                 .map((extra) => CheckBoxState(
@@ -303,18 +307,8 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                           borderRadius:
                                               BorderRadius.circular(8),
                                           borderSide: BorderSide.none)),
-                                  validator: (value) => value == null
-                                      ? 'من فضلك اختار من بين الانواع'
-                                      : null,
                                   isExpanded: true,
                                   value: dropdownPriceValue,
-                                  hint: Text(
-                                    item.options!.isNotEmpty
-                                        ? '${item.options![0].textAr!}  ${item.options![0].price.toString()} RS'
-                                        : '',
-                                    style: TextStyle(
-                                        fontSize: 15, color: Color(0xff4A4B4D)),
-                                  ),
                                   icon: Icon(
                                     Icons.keyboard_arrow_down,
                                     size: 28,
@@ -437,17 +431,13 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                                   productId:
                                                       state.itemDetails.id);
                                         }
-                                        print('shopId');
-                                        print(widget.shopId);
                                         await BlocProvider.of<CartCubit>(
                                                 context)
                                             .addToCart(
                                                 shopId: widget.shopId,
                                                 productId: state.itemDetails.id,
                                                 quantity: quantity,
-                                                options: selectedId != null
-                                                    ? [selectedId]
-                                                    : [],
+                                                options: [selectedId],
                                                 extras: chosenExtra)
                                             .then((value) {
                                           ScaffoldMessenger.of(context)

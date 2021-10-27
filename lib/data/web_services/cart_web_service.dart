@@ -68,7 +68,8 @@ class CartWebServices {
     String? token = LocalStorage.getData(key: 'token');
     print("cartToken  => $cartToken");
     print("Token  => $token");
-    Response response = await dio.get('cart/get_cart/$cartToken');
+    Response response = await dio
+        .get('cart/get_cart/${LocalStorage.getData(key: 'cart_token')}');
     print(response.data);
     return response.data;
     //     throw response.data['message'];

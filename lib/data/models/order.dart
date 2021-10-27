@@ -1,6 +1,6 @@
 class Order {
   int? id;
-  int? expectedTime;
+  String? expectedTime;
   int? orderMethodId;
   List<StatusHistories>? statusHistories;
 

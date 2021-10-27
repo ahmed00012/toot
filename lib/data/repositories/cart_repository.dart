@@ -34,6 +34,7 @@ class CartRepository {
   Future<dynamic> removeFromCart(
       {int? productId, String? cartToken, bool? lastItem}) async {
     print(lastItem);
+
     // FormData formData =
     //     FormData.fromMap({'product_id': productId, 'cart_token': cartToken});
     return await cartWebServices.removeFromCart(productId, cartToken, lastItem);

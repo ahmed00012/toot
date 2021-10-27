@@ -53,7 +53,7 @@ class _CartScreenState extends State<CartScreen> {
         builder: (context, state) {
           if (state is CartLoaded) {
             final cartDetails = state.cartDetails;
-
+            print(cartDetails.data);
             // if (state.cartDetails.data == null) {
             //   return Center(
             //     child: Text(
@@ -74,8 +74,15 @@ class _CartScreenState extends State<CartScreen> {
                         physics: ClampingScrollPhysics(),
                         itemCount: cartDetails.data!.items!.length,
                         itemBuilder: (context, index) {
-                          print(cartDetails.data!.items![index].cartitemaddon);
-                          print(cartDetails.data!.items![index].cartitemoption);
+                          if (cartDetails
+                              .data!.items![0].cartitemaddon!.isNotEmpty)
+                            cartDetails.data!.items![index].cartitemaddon!
+                                .removeWhere(
+                                    (element) => element.addon!.nameAr == null);
+                          // print(cartDetails
+                          //     .data!.items![0].cartitemaddon![1].addon!.nameAr);
+                          // print(cartDetails.data!.items![0].cartitemoption![0]
+                          //     .optionvalue!.nameAr);
                           return CartItem(
                             title: cartDetails.data!.items![index].productName,
                             image: cartDetails.data!.items![index].productImage,
@@ -83,9 +90,8 @@ class _CartScreenState extends State<CartScreen> {
                             quantity: cartDetails.data!.items![index].count,
                             id: cartDetails.data!.items![index].productId,
                             shopId: cartDetails.data!.items![index].vendorId,
-                            addons: cartDetails
-                                        .data!.items![index].cartitemaddon !=
-                                    []
+                            addons: cartDetails.data!.items![index]
+                                    .cartitemaddon!.isNotEmpty
                                 ? cartDetails.data!.items![index].cartitemaddon
                                 : [],
                             extra: cartDetails
