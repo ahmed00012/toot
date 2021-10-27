@@ -214,4 +214,15 @@ class CartWebServices {
       throw e.response!.data;
     }
   }
+
+  Future<dynamic> covertPoints() async {
+    try {
+      Response response = await dio.get('customer/convert-points');
+      print(response.data);
+      return response.data['balance'];
+    } on DioError catch (e) {
+      print(e.response!.data);
+      throw e.response!.data;
+    }
+  }
 }

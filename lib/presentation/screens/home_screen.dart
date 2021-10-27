@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 import 'package:toot/constants.dart';
 import 'package:toot/cubits/product_cubit/product_cubit.dart';
+import 'package:toot/data/local_storage.dart';
 import 'package:toot/presentation/screens/single_item_screen.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
 
@@ -23,8 +24,14 @@ class _HomeScreenState extends State<HomeScreen> {
   int current = 0;
   DateTime? currentBackPressTime;
 
+  getLocalStorage() async {
+    await LocalStorage.init();
+    print('home storage init');
+  }
+
   @override
   void initState() {
+    getLocalStorage();
     BlocProvider.of<ProductCubit>(context).fetchCategories();
     super.initState();
   }

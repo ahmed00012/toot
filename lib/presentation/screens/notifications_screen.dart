@@ -62,23 +62,28 @@ class _NotificationScreenState extends State<NotificationScreen>
           shrinkWrap: true,
           physics: ClampingScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1, childAspectRatio: 0.575),
+              crossAxisCount: 1, childAspectRatio: 1.4),
           builderDelegate: PagedChildBuilderDelegate<dynamic>(
               firstPageProgressIndicatorBuilder: (_) {
-                return Center(
-                    child: Container(
-                  height: 120,
-                  width: 120,
-                  child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
-                ));
+                return Container(
+                  height: 0.8.sh,
+                  child: Center(
+                      child: Container(
+                    height: 120,
+                    width: 120,
+                    child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
+                  )),
+                );
               },
               noItemsFoundIndicatorBuilder: (_) {
-                return Center(
-                    child: Container(
-                  height: 120,
-                  width: 120,
-                  child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
-                ));
+                return Container(
+                  height: 0.8.sh,
+                  child: Center(
+                      child: Text(
+                    'لا يوجد تنبيهات حتي الان',
+                    style: TextStyle(fontSize: 20),
+                  )),
+                );
               },
               itemBuilder: (context, item, index) => BuildNotificationItem(
                     title: item.title,
@@ -116,7 +121,7 @@ class BuildNotificationItem extends StatelessWidget {
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),
-        height: 0.4.sh,
+        height: 0.25.sh,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Colors.grey.shade100),
@@ -132,7 +137,7 @@ class BuildNotificationItem extends StatelessWidget {
                       child: Image.network(
                         image,
                         width: 1.sw,
-                        height: 0.3.sh,
+                        height: 0.4.sh,
                         fit: BoxFit.cover,
                       ))
                   : Column(
@@ -140,7 +145,7 @@ class BuildNotificationItem extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.image_not_supported_outlined,
-                          size: 80,
+                          size: 150,
                         ),
                         SizedBox(
                           height: 8,

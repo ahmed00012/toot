@@ -200,4 +200,14 @@ class CartCubit extends Cubit<CartState> {
       emit(CartError(error: e.toString()));
     });
   }
+
+  Future<void> covertPoints() async {
+    emit(NewBalancedLoading());
+    cartRepository
+        .covertPoints()
+        .then((points) => emit(NewBalancedFetched(newBalance: points)))
+        .catchError((e) {
+      emit(CartError(error: e.toString()));
+    });
+  }
 }

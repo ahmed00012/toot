@@ -52,7 +52,8 @@ class SettingsScreen extends StatelessWidget {
                 title: 'طلباتي',
                 image: 'assets/images/icon-cart.png',
                 function: () {
-                  if (LocalStorage.getData(key: 'token') == '') {
+                  if ((LocalStorage.getData(key: 'token') == '' ||
+                      LocalStorage.getData(key: 'token') == null)) {
                     _showDialog(
                         context, 'لا يمكن عرض المفضلة يجب عليك التسجيل اولا');
                   } else {
@@ -82,7 +83,8 @@ class SettingsScreen extends StatelessWidget {
                 image: 'assets/images/cdf.png',
                 function: () {
                   print(LocalStorage.getData(key: 'token'));
-                  if (LocalStorage.getData(key: 'token') == '') {
+                  if ((LocalStorage.getData(key: 'token') == '' ||
+                      LocalStorage.getData(key: 'token') == null)) {
                     _showDialog(
                         context, 'لا يمكن عرض المفضلة يجب عليك التسجيل اولا');
                   } else {

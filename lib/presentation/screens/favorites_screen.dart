@@ -130,12 +130,15 @@ class _FavoriteItemState extends State<FavoriteItem> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
+                Container(
+                  width: 0.4.sw,
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
                     widget.name,
                     style: TextStyle(
-                        fontSize: 16.sp, color: Color(Constants.mainColor)),
+                        fontSize: 16.sp,
+                        color: Color(Constants.mainColor),
+                        overflow: TextOverflow.ellipsis),
                   ),
                 ),
                 Text(

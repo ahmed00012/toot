@@ -35,6 +35,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 itemBuilder: (context, index) => OrderItem(
                       id: orders[index].id!,
                       cart: orders[index].cart!,
+                      cartStatus: orders[index].status!.name!,
                       function: () async {
                         setState(() {});
                       },
@@ -56,9 +57,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
 class OrderItem extends StatefulWidget {
   final int id;
   final Cart cart;
+  final String cartStatus;
   final Function function;
 
-  OrderItem({required this.id, required this.cart, required this.function});
+  OrderItem(
+      {required this.id,
+      required this.cart,
+      required this.function,
+      required this.cartStatus});
 
   @override
   _OrderItemState createState() => _OrderItemState();
@@ -159,11 +165,11 @@ class _OrderItemState extends State<OrderItem> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    widget.cart.status!.name!,
+                                    widget.cartStatus,
                                     style: TextStyle(
                                         decoration: TextDecoration.underline,
                                         color: Colors.lightGreen,
-                                        fontSize: 20.sp),
+                                        fontSize: 15.sp),
                                   ),
                                   SizedBox(
                                     width: 10,

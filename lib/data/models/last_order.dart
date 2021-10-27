@@ -1,19 +1,19 @@
 class LastOrder {
-  LastOrder({
-    this.id,
-    this.uuId,
-    this.userId,
-    this.cartId,
-    this.statusId,
-    this.createdAt,
-    this.updatedAt,
-    this.driverId,
-    this.expectedTime,
-    this.mailSent,
-    this.canDelete,
-    this.cart,
-    this.driver,
-  });
+  LastOrder(
+      {this.id,
+      this.uuId,
+      this.userId,
+      this.cartId,
+      this.statusId,
+      this.createdAt,
+      this.updatedAt,
+      this.driverId,
+      this.expectedTime,
+      this.mailSent,
+      this.canDelete,
+      this.cart,
+      this.driver,
+      this.status});
 
   int? id;
   String? uuId;
@@ -27,6 +27,7 @@ class LastOrder {
   int? mailSent;
   bool? canDelete;
   Cart? cart;
+  LastOrderStatus? status;
   dynamic driver;
 
   factory LastOrder.fromJson(Map<String, dynamic> json) => LastOrder(
@@ -42,6 +43,7 @@ class LastOrder {
         mailSent: json["mail_sent"],
         canDelete: json["can_delete"],
         cart: Cart.fromJson(json["cart"]),
+        status: LastOrderStatus.fromJson(json["status"]),
         driver: json["driver"],
       );
 
@@ -57,6 +59,7 @@ class LastOrder {
         "expected_time": expectedTime,
         "mail_sent": mailSent,
         "can_delete": canDelete,
+        "status": status!.toJson(),
         "cart": cart!.toJson(),
         "driver": driver,
       };
@@ -272,6 +275,87 @@ class Item {
         "product_name": productName,
         "product_image": productImage,
         "weight": weight,
+      };
+}
+
+class LastOrderStatus {
+  LastOrderStatus({
+    this.id,
+    this.name,
+    this.nameEn,
+    this.createdAt,
+    this.updatedAt,
+    this.image,
+    this.orderMethodId,
+  });
+
+  int? id;
+  String? name;
+  String? nameEn;
+  String? createdAt;
+  DateTime? updatedAt;
+  String? image;
+  String? orderMethodId;
+
+  factory LastOrderStatus.fromJson(Map<String, dynamic> json) =>
+      LastOrderStatus(
+        id: json["id"],
+        name: json["name"],
+        nameEn: json["name_en"],
+        createdAt: json["created_at"],
+        updatedAt: DateTime.parse(json["updated_at"]),
+        image: json["image"],
+        orderMethodId: json["order_method_id"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+        "name_en": nameEn,
+        "created_at": createdAt,
+        "updated_at": updatedAt!.toIso8601String(),
+        "image": image,
+        "order_method_id": orderMethodId,
+      };
+}
+
+class StatusClass {
+  StatusClass({
+    this.id,
+    this.name,
+    this.nameEn,
+    this.createdAt,
+    this.updatedAt,
+    this.image,
+    this.orderMethodId,
+  });
+
+  int? id;
+  String? name;
+  String? nameEn;
+  String? createdAt;
+  DateTime? updatedAt;
+  String? image;
+  String? orderMethodId;
+
+  factory StatusClass.fromJson(Map<String, dynamic> json) => StatusClass(
+        id: json["id"],
+        name: json["name"],
+        nameEn: json["name_en"],
+        createdAt: json["created_at"],
+        updatedAt: DateTime.parse(json["updated_at"]),
+        image: json["image"],
+        orderMethodId: json["order_method_id"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+        "name_en": nameEn,
+        "created_at": createdAt,
+        "updated_at": updatedAt!.toIso8601String(),
+        "image": image,
+        "order_method_id": orderMethodId,
       };
 }
 

@@ -128,4 +128,9 @@ class CartRepository {
     final rawData = await cartWebServices.fetchMyPoints();
     return Points.fromJson(rawData);
   }
+
+  Future<dynamic> covertPoints() async {
+    final rawData = await cartWebServices.covertPoints();
+    return rawData;
+  }
 }

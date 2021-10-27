@@ -172,9 +172,9 @@ class _BottomNavBarState extends State<BottomNavBar>
             // leftCornerRadius: 32,
             // rightCornerRadius: 32,
             onTap: (index) async {
-              if (LocalStorage.getData(key: 'token') == null ||
-                  index == 1 ||
-                  index == 2) {
+              if ((LocalStorage.getData(key: 'token') == '' ||
+                      LocalStorage.getData(key: 'token') == null) &&
+                  (index == 1 || index == 2)) {
                 _showDialog(
                     context, 'لا يمكن عرض المفضلة يجب عليك التسجيل اولا');
               } else {
