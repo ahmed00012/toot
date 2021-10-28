@@ -90,7 +90,7 @@ class CartItem extends StatelessWidget {
                         child: Container(
                           width: 0.25.sw,
                           child: Text(
-                            title!,
+                            title ?? 'منتج',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 overflow: TextOverflow.ellipsis,

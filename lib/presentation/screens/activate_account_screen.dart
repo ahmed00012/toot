@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:toot/cubits/auth_cubit/auth_cubit.dart';
+import 'package:toot/presentation/screens/reset_password.dart';
 import 'package:toot/presentation/widgets/blurry_dialog.dart';
 import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 
@@ -16,10 +17,7 @@ class ActivateAccountScreen extends StatefulWidget {
   final String? email;
 
   ActivateAccountScreen(
-      {required this.phone,
-      required this.email,
-      required this.password,
-      required this.name});
+      {required this.phone, this.email, this.password, this.name});
 
   @override
   State<ActivateAccountScreen> createState() => _ActivateAccountScreenState();
@@ -62,8 +60,16 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
             if (state is OtpSuccess) {
               Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) => BottomNavBar()));
+            } else if (state is VerifyForgetPasswordSuccess) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ResetPassword(
+                            phone: widget.phone,
+                          )));
             } else if (state is AuthError) {
               _showDialog(context, state.error);
+              print(state.error);
             }
           },
           child: SingleChildScrollView(
@@ -143,12 +149,17 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
                           ],
 
                           onCompleted: (v) async {
-                            await BlocProvider.of<AuthCubit>(context).otp(
-                                otp: v,
-                                phone: widget.phone,
-                                name: widget.name,
-                                email: widget.email,
-                                password: widget.password);
+                            if (widget.name == null) {
+                              await BlocProvider.of<AuthCubit>(context)
+                                  .verifyForgetPassword(
+                                      otp: v, phone: widget.phone);
+                            } else
+                              await BlocProvider.of<AuthCubit>(context).otp(
+                                  otp: v,
+                                  phone: widget.phone,
+                                  name: widget.name,
+                                  email: widget.email,
+                                  password: widget.password);
                           },
                           // onTap: () {
                           //   print("Pressed");

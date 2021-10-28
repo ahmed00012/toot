@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:toot/cubits/auth_cubit/auth_cubit.dart';
+import 'package:toot/presentation/screens/forget_password.dart';
 import 'package:toot/presentation/widgets/blurry_dialog.dart';
 import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 import 'package:toot/presentation/widgets/default_text_field.dart';
@@ -302,6 +303,14 @@ class _AuthScreenState extends State<AuthScreen> {
                                 : (val) {},
                           ),
                         ),
+                      TextButton(
+                          child: Text('هل نسيت كلمة المرور ؟'),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ForgetPassword()));
+                          }),
                       SizedBox(
                         width: 0.90.sw,
                         child: ElevatedButton(

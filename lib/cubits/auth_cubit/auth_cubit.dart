@@ -94,31 +94,32 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> forgetPassword({
     String? phone,
   }) async {
-    await authRepository
-        .forgetPassword(
+    print('ooo' + phone.toString());
+    await authRepository.forgetPassword(
       phone: phone,
-    )
-        .then((value) async {
-      if (value == true) {
-        print('forgetPassword done !');
-        emit(ForgetPasswordSuccess());
-      }
-    }).catchError((e) {
-      emit(AuthError(error: e.toString()));
-    });
+    );
+    emit(ForgetPasswordSuccess());
   }
 
   Future<void> verifyForgetPassword({String? phone, String? otp}) async {
-    await authRepository
-        .verifyForgetPassword(phone: phone, otp: otp)
-        .then((value) async {
-      if (value == true) {
-        print('verifyForgetPassword done !');
+    try {
+      var verify =
+          await authRepository.verifyForgetPassword(phone: phone, otp: otp);
+      if (verify == true) {
         emit(VerifyForgetPasswordSuccess());
       }
-    }).catchError((e) {
+    } catch (e) {
       emit(AuthError(error: e.toString()));
-    });
+    }
+
+    //     .then((value) async {
+    //   if (value == true) {
+    //     print('verifyForgetPassword done !');
+    //     emit(VerifyForgetPasswordSuccess());
+    //   }
+    // }).catchError((e) {
+    //   emit(AuthError(error: e.toString()));
+    // });
   }
 
   Future<void> newPassword({
