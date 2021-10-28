@@ -6,6 +6,7 @@ import 'package:toot/presentation/widgets/blurry_dialog.dart';
 import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 
 import '../../constants.dart';
+import 'auth_screen.dart';
 
 class ResetPassword extends StatefulWidget {
   String? phone;
@@ -50,7 +51,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             } else if (state is NewPasswordSetSuccessfully)
               Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => BottomNavBar()),
+                  MaterialPageRoute(builder: (context) => AuthScreen()),
                   (route) => false);
           },
           builder: (context, state) => ListView(
