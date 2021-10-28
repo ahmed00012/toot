@@ -25,44 +25,104 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
     importance: Importance.high,
     playSound: true);
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+/// This is called on the beginning of main() to ensure when app is closed
+/// user receives the notifications. Then it's called also in the build method of MyApp
+/// so user receives foreground notifications.
+Future<void> showNotification(RemoteMessage message) async {
+  RemoteNotification? notification = message.notification;
+  AndroidNotification? android = message.notification?.android;
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  print('Handling a background message ${message.messageId}');
-  print(message.data);
-  flutterLocalNotificationsPlugin.show(
-      message.data.hashCode,
-      message.data['title'],
-      message.data['body'],
+  if (notification != null && android != null) {
+    localNotifications.show(
+      notification.hashCode,
+      notification.title,
+      notification.body,
       NotificationDetails(
         android: AndroidNotificationDetails(
           channel.id,
           channel.name,
           channelDescription: channel.description,
+          icon: android.smallIcon,
         ),
-      ));
+      ),
+    );
+  }
 }
+
+/// This is called when user clicks on the notification
+// Future<void> onNotificationClick(RemoteMessage? message) async {
+//   if (message == null || message.data == null) {
+//     return;
+//   }
+//
+//   final Map data = message?.data;
+//
+//
+//
+//   if (data['screen'] != null && data['screen_args'] != null) {
+//     switch (message.data['screen']) {
+//       case 'PostScreen':
+//         PostsProvider _postsProvider = Provider.of(
+//           navigatorKey.currentContext,
+//           listen: false,
+//         );
+//
+//         _postsProvider.fetchPosts(reload: true).then((List<Post> posts) {
+//           Post post = posts.firstWhere((element) {
+//             Map<String, dynamic> _screenArgs =
+//                 jsonDecode(message.data['screen_args']);
+//             return element.id == _screenArgs['post'];
+//           });
+//           Navigator.of(navigatorKey.currentContext)
+//               .pushNamed('/post', arguments: {
+//             'post': post,
+//           });
+//         });
+//
+//         break;
+//     }
+//   }
+// }
+
+final FlutterLocalNotificationsPlugin localNotifications =
+    FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
   await EasyLocalization.ensureInitialized();
   Bloc.observer = MyBlocObserver();
   await LocalStorage.init();
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await Firebase.initializeApp();
 
-  await flutterLocalNotificationsPlugin
+  await localNotifications
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
+  // Permissions for background notifications
+  await FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+  // Permissions for foreground notifications
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
     badge: true,
     sound: true,
   );
+  var initializationSettingsAndroid =
+      new AndroidInitializationSettings('@mipmap/ic_launcher');
+  // Local notification settings, which allows to make foreground notifications
+  await localNotifications.initialize(InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: IOSInitializationSettings(),
+  ));
+
+  // FirebaseMessaging.onMessageOpenedApp.listen(onNotificationClick);
+  // FirebaseMessaging.instance.getInitialMessage().then(onNotificationClick);
+  FirebaseMessaging.onBackgroundMessage(showNotification);
 
   runApp(EasyLocalization(
     child: MyApp(),
@@ -91,54 +151,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     getToken();
-    var initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    var initializationSettings =
-        InitializationSettings(android: initializationSettingsAndroid);
-
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-      if (notification != null && android != null) {
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-                channelDescription: channel.description,
-                color: Colors.blue,
-                playSound: true,
-                icon: android.smallIcon,
-              ),
-            ));
-      }
-    });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-      if (notification != null && android != null) {
-        showDialog(
-            context: context,
-            builder: (_) {
-              return AlertDialog(
-                title: Text(notification.title!),
-                content: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [Text(notification.body!)],
-                  ),
-                ),
-              );
-            });
-      }
-    });
     super.initState();
   }
 
@@ -146,6 +158,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+    FirebaseMessaging.onMessage.listen(showNotification);
+    // FirebaseMessaging.onMessageOpenedApp.listen(onNotificationClick);
+    // FirebaseMessaging.instance.getInitialMessage().then(onNotificationClick);
     return ScreenUtilInit(
       designSize: Size(411, 683),
       builder: () => MultiBlocProvider(
