@@ -61,7 +61,7 @@ class _NotificationScreenState extends State<NotificationScreen>
           shrinkWrap: true,
           physics: ClampingScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1, childAspectRatio: 1.4),
+              crossAxisCount: 1, childAspectRatio: 1.3),
           builderDelegate: PagedChildBuilderDelegate<dynamic>(
               firstPageProgressIndicatorBuilder: (_) {
                 return Container(
@@ -120,7 +120,6 @@ class BuildNotificationItem extends StatelessWidget {
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),
-        height: 0.25.sh,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Colors.grey.shade100),
