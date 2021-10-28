@@ -43,7 +43,6 @@ class _NotificationScreenState extends State<NotificationScreen>
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(context, pageKey);
     });
-
     super.initState();
   }
 

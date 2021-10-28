@@ -57,7 +57,6 @@ class ProductWebServices {
     List<ItemDetails> items = [];
     for (int i = 0; i < body['data'].length; i++)
       items.add(ItemDetails.fromJson2(body['data'][i]));
-
     return items;
   }
 

@@ -1,8 +1,6 @@
+import 'package:awesome_card/credit_card.dart';
+import 'package:awesome_card/style/card_background.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_credit_card/flutter_credit_card.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_switch/flutter_switch.dart';
-import 'package:toot/presentation/widgets/default_indigo_button.dart';
 
 import '../../constants.dart';
 
@@ -13,152 +11,153 @@ class AddVisaScreen extends StatefulWidget {
 
 class _AddVisaScreenState extends State<AddVisaScreen> {
   String cardNumber = '';
-
-  String expiryDate = '';
-
   String cardHolderName = '';
+  String expiryDate = '';
+  String cvv = '';
+  bool showBack = false;
 
-  String cvvCode = '';
+  late FocusNode _focusNode;
 
-  bool isCvvFocused = false;
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      setState(() {
+        _focusNode.hasFocus ? showBack = true : showBack = false;
+      });
+    });
+  }
 
-  bool useBackgroundImage = false;
-
-  OutlineInputBorder? border;
-
-  bool notificationsBool = false;
-
-  GlobalKey<FormState>? _formKey = GlobalKey<FormState>();
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'اضافة فيزا',
-            style: TextStyle(
-                color: Color(Constants.mainColor), fontWeight: FontWeight.w300),
-          ),
-          leading: IconButton(
-            icon: Icon(
-              Icons.close,
-              size: 25,
-              color: Color(Constants.mainColor),
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              'اضافة فيزا',
+              style: TextStyle(
+                  color: Color(Constants.mainColor),
+                  fontWeight: FontWeight.w300),
             ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+            leading: IconButton(
+              icon: Icon(
+                Icons.close,
+                size: 25,
+                color: Color(Constants.mainColor),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            centerTitle: true,
+            elevation: 0,
+            backgroundColor: Colors.white,
           ),
-          centerTitle: true,
-          elevation: 0,
           backgroundColor: Colors.white,
-        ),
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: Container(
-            height: 1.sh,
+          body: SingleChildScrollView(
             child: Column(
-              children: [
-                CreditCardWidget(
-                  cardNumber: cardNumber,
-                  expiryDate: expiryDate,
-                  height: 0.3.sh,
-                  width: 1.1.sw,
-                  isSwipeGestureEnabled: true,
-                  cardHolderName: cardHolderName,
-                  cardBgColor: Colors.black,
-                  cvvCode: cvvCode,
-                  showBackView: !notificationsBool,
-                  onCreditCardWidgetChange: (creditCardBrand) {},
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  height: 40,
                 ),
-                CreditCardForm(
-                  formKey: _formKey!, // Required
-                  onCreditCardModelChange:
-                      (CreditCardModel data) {}, // Required
-                  themeColor: Color(Constants.mainColor),
-                  obscureCvv: true,
-                  obscureNumber: true,
-                  isHolderNameVisible: true,
-                  isCardNumberVisible: true,
-                  isExpiryDateVisible: true,
-                  cardNumberDecoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'رقم البطاقة',
-                    hintText: 'XXXX XXXX XXXX XXXX',
-                  ),
-                  expiryDateDecoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'تاريخ الانتهاء',
-                    hintText: 'XX/XX',
-                  ),
-                  cvvCodeDecoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'CVV',
-                    hintText: 'XXX',
-                  ),
-                  cardHolderDecoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'اسم حامل البطاقة',
-                  ),
-                  expiryDate: expiryDate, cardHolderName: cardHolderName,
-                  cardNumber: cardNumber, cvvCode: cvvCode,
+                CreditCard(
+                  cardNumber: cardNumber,
+                  cardExpiry: expiryDate,
+                  cardHolderName: cardHolderName,
+                  cvv: cvv,
+                  bankName: 'Axis Bank',
+                  showBackSide: showBack,
+                  frontBackground: CardBackgrounds.black,
+                  backBackground: CardBackgrounds.white,
+                  showShadow: true,
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 40,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('اقلب البطاقة'),
-                    SizedBox(
-                      width: 10,
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: 20,
+                      ),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                            hintText: 'رقم البطاقة',
+                            focusColor: Color(Constants.mainColor)),
+                        maxLength: 16,
+                        onChanged: (value) {
+                          setState(() {
+                            cardNumber = value;
+                          });
+                        },
+                      ),
                     ),
-                    FlutterSwitch(
-                      width: 55,
-                      height: 32,
-                      toggleSize: 28.0,
-                      value: notificationsBool,
-                      borderRadius: 30.0,
-                      padding: 0,
-                      inactiveToggleColor: Color(Constants.mainColor),
-                      activeToggleColor: Color(0xff748A9D),
-                      activeSwitchBorder: Border.all(
-                        color: Color(0xFF00D2B8),
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: 20,
                       ),
-                      inactiveSwitchBorder: Border.all(
-                        color: Color(Constants.mainColor),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                            hintText: 'تاريخ الانتهاء',
+                            focusColor: Color(Constants.mainColor)),
+                        maxLength: 5,
+                        onChanged: (value) {
+                          setState(() {
+                            expiryDate = value;
+                          });
+                        },
                       ),
-                      inactiveColor: Colors.white,
-                      activeColor: Colors.white,
-                      inactiveIcon: Icon(
-                        Icons.check,
-                        color: Colors.white,
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: 20,
                       ),
-                      activeIcon: Icon(
-                        Icons.close,
-                        color: Colors.white,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                            hintText: 'اسم حامل البطاقة',
+                            focusColor: Color(Constants.mainColor)),
+                        onChanged: (value) {
+                          setState(() {
+                            cardHolderName = value;
+                          });
+                        },
                       ),
-                      onToggle: (val) {
-                        setState(() {
-                          notificationsBool = val;
-                        });
-                      },
+                    ),
+                    Container(
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                            hintText: 'CVV',
+                            focusColor: Color(Constants.mainColor)),
+                        maxLength: 3,
+                        onChanged: (value) {
+                          setState(() {
+                            cvv = value;
+                          });
+                        },
+                        focusNode: _focusNode,
+                      ),
                     ),
                   ],
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                BuildIndigoButton(title: 'الاستمرار', function: () {})
+                )
               ],
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }

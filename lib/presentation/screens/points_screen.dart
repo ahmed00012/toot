@@ -9,7 +9,12 @@ import 'package:toot/presentation/widgets/customised_appbar.dart';
 
 import '../../constants.dart';
 
-class PointsScreen extends StatelessWidget {
+class PointsScreen extends StatefulWidget {
+  @override
+  State<PointsScreen> createState() => _PointsScreenState();
+}
+
+class _PointsScreenState extends State<PointsScreen> {
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<CartCubit>(context).fetchMyPoints();
@@ -56,16 +61,18 @@ class PointsScreen extends StatelessWidget {
                             width: 0.41.sw,
                             height: 40,
                             child: ElevatedButton(
-                              onPressed: points.totalPoints! >
-                                      points.pointsLimit!
-                                  ? () {
-                                      BlocProvider.of<CartCubit>(context)
-                                          .covertPoints()
-                                          .then((value) => Fluttertoast.showToast(
-                                              msg:
-                                                  "اضعط مرتين للخروج من التطبيق"));
-                                    }
-                                  : null,
+                              onPressed:
+                                  points.totalPoints! > points.pointsLimit!
+                                      ? () {
+                                          BlocProvider.of<CartCubit>(context)
+                                              .covertPoints()
+                                              .then((value) {
+                                            Fluttertoast.showToast(
+                                                msg: "تم تحويل النقاط بنجاح");
+                                            setState(() {});
+                                          });
+                                        }
+                                      : null,
                               child: Text(
                                 'استخدام نقاطي',
                                 textAlign: TextAlign.center,

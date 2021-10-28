@@ -60,6 +60,8 @@ class AuthWebServices {
       Response response = await dio.post('auth/verify', data: formData);
       print(response.data.toString());
       if (response.data['success'] == '1') {
+        print('bearer token');
+        print(response.data['access_token']);
         return response.data['access_token'];
       } else {
         throw response.data['message'];

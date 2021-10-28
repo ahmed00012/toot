@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:lottie/lottie.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 import 'package:toot/cubits/favorites_cubit/favorites_cubit.dart';
 import 'package:toot/data/local_storage.dart';
@@ -166,12 +167,25 @@ class _ItemsScreenState extends State<ItemsScreen>
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2, childAspectRatio: 0.575),
                   builderDelegate: PagedChildBuilderDelegate<dynamic>(
+                    firstPageProgressIndicatorBuilder: (_) {
+                      return Container(
+                        height: 0.8.sh,
+                        child: Center(
+                            child: Container(
+                          height: 120,
+                          width: 120,
+                          child:
+                              Lottie.asset('assets/images/lf20_j1klguuo.json'),
+                        )),
+                      );
+                    },
                     noItemsFoundIndicatorBuilder: (_) => Container(
                       height: 0.8.sh,
                       child: Center(
-                          child: Text(
-                        'لا يوجد تنبيهات حتي الان',
-                        style: TextStyle(fontSize: 20),
+                          child: Container(
+                        height: 120,
+                        width: 120,
+                        child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
                       )),
                     ),
                     itemBuilder: (context, item, index) => BuildItem(

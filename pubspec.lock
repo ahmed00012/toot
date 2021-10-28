@@ -43,6 +43,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0-nullsafety.0"
+  awesome_card:
+    dependency: "direct main"
+    description:
+      name: awesome_card
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.5"
   bloc:
     dependency: "direct main"
     description:
@@ -300,13 +307,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.2"
-  flutter_credit_card:
-    dependency: "direct main"
-    description:
-      name: flutter_credit_card
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.1"
   flutter_html:
     dependency: "direct main"
     description:
