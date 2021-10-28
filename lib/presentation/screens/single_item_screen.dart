@@ -237,7 +237,9 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                               padding: EdgeInsets.only(
                                   bottom: 0.03.sh, top: 0.05.sh),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisAlignment: price == 0.00
+                                    ? MainAxisAlignment.center
+                                    : MainAxisAlignment.end,
                                 children: [
                                   Column(
                                     crossAxisAlignment:
@@ -247,7 +249,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                           ? Text(
                                               'السعر يعتمد علي اختياراتك',
                                               style: TextStyle(
-                                                  fontSize: 22.sp,
+                                                  fontSize: 20,
                                                   fontWeight: FontWeight.bold,
                                                   color: Color(0xff4A4B4D)),
                                             )

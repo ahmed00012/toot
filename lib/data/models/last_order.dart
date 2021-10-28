@@ -144,7 +144,6 @@ class Cart {
         couponId: json["coupon_id"],
         addressId: json["address_id"],
         paymentType: json["payment_type"],
-        deliveryDate: DateTime.parse(json["delivery_date"]),
         timeId: json["time_id"],
         points: json["points"],
         comment: json["comment"],

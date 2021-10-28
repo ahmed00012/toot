@@ -86,7 +86,8 @@ class _CartScreenState extends State<CartScreen> {
                           return CartItem(
                             title: cartDetails.data!.items![index].productName,
                             image: cartDetails.data!.items![index].productImage,
-                            price: cartDetails.data!.items![index].price,
+                            price: cartDetails.data!.items![index].total
+                                .toString(),
                             quantity: cartDetails.data!.items![index].count,
                             id: cartDetails.data!.items![index].productId,
                             shopId: cartDetails.data!.items![index].vendorId,

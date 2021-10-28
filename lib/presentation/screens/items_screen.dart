@@ -165,10 +165,12 @@ class _ItemsScreenState extends State<ItemsScreen>
                   shrinkWrap: true,
                   physics: ClampingScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, childAspectRatio: 0.575),
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 6,
+                      mainAxisSpacing: 6,
+                      childAspectRatio: 0.575),
                   builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                    firstPageProgressIndicatorBuilder: (_) {
-                      return Container(
+                    noItemsFoundIndicatorBuilder: (_) => Container(
                         height: 0.8.sh,
                         child: Center(
                             child: Container(
@@ -176,18 +178,7 @@ class _ItemsScreenState extends State<ItemsScreen>
                           width: 120,
                           child:
                               Lottie.asset('assets/images/lf20_j1klguuo.json'),
-                        )),
-                      );
-                    },
-                    noItemsFoundIndicatorBuilder: (_) => Container(
-                      height: 0.8.sh,
-                      child: Center(
-                          child: Container(
-                        height: 120,
-                        width: 120,
-                        child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
-                      )),
-                    ),
+                        ))),
                     itemBuilder: (context, item, index) => BuildItem(
                       title: item.name,
                       image: item.image,
@@ -263,116 +254,119 @@ class BuildItem extends StatelessWidget {
               ),
             ));
           },
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8), color: Colors.white),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Stack(
-                    alignment: AlignmentDirectional.topEnd,
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        height: 0.26.sh,
-                        child: image != null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  image!,
-                                  fit: BoxFit.fill,
-                                ))
-                            : Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.image_not_supported_outlined,
-                                    size: 80,
-                                  ),
-                                  SizedBox(
-                                    height: 8,
-                                  ),
-                                  Text(
-                                    'لا يتوفر صورة لهذا المنتج',
-                                    style: TextStyle(fontSize: 13),
-                                  )
-                                ],
-                              ),
-                      ),
-                      Container(
-                        height: 0.09.sw,
-                        width: 0.09.sw,
-                        margin: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                            color: Colors.black12,
-                            borderRadius: BorderRadius.circular(5)),
-                        child: IconButton(
-                          onPressed: () async {
-                            if (LocalStorage.getData(key: 'token') == null) {
-                              _showDialog(context,
-                                  'لا يمكن الاضافه الي المفضلة يجب عليك التسجيل اولا');
-                            } else {
-                              BlocProvider.of<FavoritesCubit>(context)
-                                  .toggleFavoriteStatus(itemId: itemId)
-                                  .then((value) => setState(() {
-                                        favStatus = !favStatus;
-                                      }));
-                            }
-                          },
-                          icon: Icon(
-                            favStatus
-                                ? Icons.favorite
-                                : Icons.favorite_border_outlined,
-                            color: Colors.red,
-                            size: 18,
-                          ),
-                          splashRadius: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        'RS $price',
-                        style: TextStyle(
-                            color: Color(Constants.mainColor), fontSize: 16.sp),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      beforeDiscount != "0.00"
-                          ? Text(
-                              'RS $beforeDiscount',
-                              style: TextStyle(
-                                  color: Colors.grey.shade400,
-                                  fontSize: 12,
-                                  decoration: TextDecoration.lineThrough),
-                            )
-                          : Container()
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5.0),
-                    child: Text(
-                      title,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          color: Colors.grey.shade400, fontSize: 15.sp),
+          child: Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8), color: Colors.white),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Stack(
+                  alignment: AlignmentDirectional.topEnd,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      height: 0.26.sh,
+                      child: image != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                image!,
+                                fit: BoxFit.fill,
+                              ))
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.image_not_supported_outlined,
+                                  size: 80,
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                Text(
+                                  'لا يتوفر صورة لهذا المنتج',
+                                  style: TextStyle(fontSize: 13),
+                                )
+                              ],
+                            ),
                     ),
+                    Container(
+                      height: 0.09.sw,
+                      width: 0.09.sw,
+                      margin: EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.circular(5)),
+                      child: IconButton(
+                        onPressed: () async {
+                          if (LocalStorage.getData(key: 'token') == null) {
+                            _showDialog(context,
+                                'لا يمكن الاضافه الي المفضلة يجب عليك التسجيل اولا');
+                          } else {
+                            BlocProvider.of<FavoritesCubit>(context)
+                                .toggleFavoriteStatus(itemId: itemId)
+                                .then((value) => setState(() {
+                                      favStatus = !favStatus;
+                                    }));
+                          }
+                        },
+                        icon: Icon(
+                          favStatus
+                              ? Icons.favorite
+                              : Icons.favorite_border_outlined,
+                          color: Colors.red,
+                          size: 18,
+                        ),
+                        splashRadius: 1,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                Row(
+                  children: [
+                    double.parse(price) == 0.0
+                        ? Text(
+                            'السعر يعتمد علي اختياراتك',
+                            style: TextStyle(
+                                fontSize: 12, color: Color(0xff4A4B4D)),
+                          )
+                        : Text(
+                            price.toString() + " RS ",
+                            style: TextStyle(
+                                fontSize: 14, color: Color(0xff4A4B4D)),
+                          ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    beforeDiscount != "0.00"
+                        ? Text(
+                            'RS $beforeDiscount',
+                            style: TextStyle(
+                                color: Colors.grey.shade400,
+                                fontSize: 12,
+                                decoration: TextDecoration.lineThrough),
+                          )
+                        : Container()
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+                  child: Text(
+                    title,
+                    overflow: TextOverflow.ellipsis,
+                    style:
+                        TextStyle(color: Colors.grey.shade400, fontSize: 15.sp),
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                ],
-              ),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+              ],
             ),
           ),
         );

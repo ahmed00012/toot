@@ -194,12 +194,13 @@ class CartCubit extends Cubit<CartState> {
 
   Future<void> fetchLastOrders() async {
     emit(LastOrdersLoading());
-    cartRepository
-        .fetchLastOrders()
-        .then((orders) => emit(LastOrdersLoaded(orders: orders)))
-        .catchError((e) {
-      emit(CartError(error: e.toString()));
-    });
+
+    var orders = await cartRepository.fetchLastOrders();
+    emit(LastOrdersLoaded(orders: orders));
+    //     .then((orders) => emit(LastOrdersLoaded(orders: orders)))
+    //     .catchError((e) {
+    //   emit(CartError(error: e.toString()));
+    // });
   }
 
   Future<void> fetchMyPoints() async {

@@ -40,7 +40,12 @@ class CartWebServices {
 
   Future<dynamic> addToCart(FormData formData) async {
     try {
-      Response response = await dio.post('cart/add_product', data: formData);
+      Response response =
+          await Dio().post('https://toot.work/api/cart/add_product',
+              data: formData,
+              options: Options(headers: {
+                "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+              }));
       print(response.data);
       return response.data;
     } on DioError catch (e) {
@@ -51,10 +56,15 @@ class CartWebServices {
 
   Future removeFromCart(int? id, String? cardToken, bool? lastItem) async {
     try {
-      Response response = await dio.post('cart/remove_product', data: {
-        "product_id": "$id",
-        "cart_token": "$cardToken",
-      });
+      Response response =
+          await dio.post('https://toot.work/api/cart/remove_product',
+              data: {
+                "product_id": "$id",
+                "cart_token": "$cardToken",
+              },
+              options: Options(headers: {
+                "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+              }));
       if (lastItem!) LocalStorage.removeData(key: 'cart_token');
     } on DioError catch (e) {
       print(e.response!.data);
@@ -68,8 +78,11 @@ class CartWebServices {
     String? token = LocalStorage.getData(key: 'token');
     print("cartToken  => $cartToken");
     print("Token  => $token");
-    Response response = await dio
-        .get('cart/get_cart/${LocalStorage.getData(key: 'cart_token')}');
+    Response response = await Dio().get(
+        'https://toot.work/api/cart/get_cart/${LocalStorage.getData(key: 'cart_token')}',
+        options: Options(headers: {
+          "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+        }));
     print(response.data);
     return response.data;
     //     throw response.data['message'];
@@ -86,7 +99,11 @@ class CartWebServices {
   Future<dynamic> fetchAddress() async {
     try {
       print(dio.options.headers);
-      Response response = await dio.get('customer/addresses');
+      Response response =
+          await Dio().get('https://toot.work/api/customer/addresses',
+              options: Options(headers: {
+                "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+              }));
       print(response.data);
       return response.data;
     } on DioError catch (e) {
@@ -97,7 +114,12 @@ class CartWebServices {
 
   Future<dynamic> addAddress(FormData formData) async {
     try {
-      Response response = await dio.post('cart/add_address', data: formData);
+      Response response =
+          await Dio().post('https://toot.work/api/cart/add_address',
+              data: formData,
+              options: Options(headers: {
+                "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+              }));
       print(response.data);
       return response.data;
     } on DioError catch (e) {
@@ -108,7 +130,12 @@ class CartWebServices {
 
   Future<dynamic> selectAddress(FormData formData) async {
     try {
-      Response response = await dio.post('cart/choose_address', data: formData);
+      Response response =
+          await Dio().post('https://toot.work/api/cart/choose_address',
+              data: formData,
+              options: Options(headers: {
+                "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+              }));
       print(response.data);
       return response.data;
     } on DioError catch (e) {
@@ -118,41 +145,44 @@ class CartWebServices {
   }
 
   Future<dynamic> fetchPayments() async {
-    try {
-      Response response = await dio.get('cart/payment_method');
-      print(response.data);
-      return response.data;
-    } on DioError catch (e) {
-      print(e.response!.data);
-      throw e.response!.data;
-    }
+    Response response =
+        await Dio().get('https://toot.work/api/cart/payment_method',
+            options: Options(headers: {
+              "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+            }));
+    print(response.data);
+    return response.data;
   }
 
   Future<dynamic> selectPayment(FormData formData) async {
-    try {
-      Response response = await dio.post('cart/add_payment', data: formData);
-      print(response.data);
-      return response.data;
-    } on DioError catch (e) {
-      print(e.response!.data);
-      throw e.response!.data;
-    }
+    Response response =
+        await Dio().post('https://toot.work/api/cart/add_payment',
+            data: formData,
+            options: Options(headers: {
+              "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+            }));
+    print(response.data);
+    return response.data;
   }
 
   Future<dynamic> confirmOrder(FormData formData) async {
-    try {
-      Response response = await dio.post('cart/confirm', data: formData);
-      print(response.data);
-      return response.data;
-    } on DioError catch (e) {
-      print(e.response!.data);
-      throw e.response!.data;
-    }
+    Response response = await Dio().post('https://toot.work/api/cart/confirm',
+        data: formData,
+        options: Options(headers: {
+          "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+        }));
+    print(response.data);
+    return response.data;
   }
 
   Future<dynamic> promoCode(FormData formData) async {
     try {
-      Response response = await dio.post('cart/add_coupon', data: formData);
+      Response response =
+          await Dio().post('https://toot.work/api/cart/add_coupon',
+              data: formData,
+              options: Options(headers: {
+                "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+              }));
       print(response.data);
       return response.data;
     } on DioError catch (e) {
@@ -163,7 +193,11 @@ class CartWebServices {
 
   Future<dynamic> fetchDatesAndTimes({int? id}) async {
     try {
-      Response response = await dio.get('cart/dates_times/$id');
+      Response response =
+          await Dio().get('https://toot.work/api/cart/dates_times/$id',
+              options: Options(headers: {
+                "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+              }));
       print(response.data);
       return response.data;
     } on DioError catch (e) {
@@ -175,7 +209,11 @@ class CartWebServices {
   Future<dynamic> confirmInfoDateAndTime(FormData formData) async {
     try {
       Response response =
-          await dio.post('cart/add_delivery_date', data: formData);
+          await Dio().post('https://toot.work/api/cart/add_delivery_date',
+              data: formData,
+              options: Options(headers: {
+                "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+              }));
       print(response.data);
       return response.data;
     } on DioError catch (e) {
@@ -186,7 +224,11 @@ class CartWebServices {
 
   Future<dynamic> orderStatus(int id) async {
     try {
-      Response response = await dio.get('orders/$id/details');
+      Response response =
+          await Dio().get('https://toot.work/api/orders/$id/details',
+              options: Options(headers: {
+                "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+              }));
       return response.data;
     } on DioError catch (e) {
       print(e.response!.data);
@@ -195,19 +237,21 @@ class CartWebServices {
   }
 
   Future<dynamic> fetchLastOrders() async {
-    try {
-      Response response = await dio.get('customer/orders');
-      print(response.data);
-      return response.data;
-    } on DioError catch (e) {
-      print(e.response!.data);
-      throw e.response!.data;
-    }
+    Response response = await Dio().get('https://toot.work/api/customer/orders',
+        options: Options(headers: {
+          "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+        }));
+    print('ldkjfndlkjfn ' + response.data.toString());
+    return response.data;
   }
 
   Future<dynamic> fetchMyPoints() async {
     try {
-      Response response = await dio.get('customer/points');
+      Response response =
+          await Dio().get('https://toot.work/api/customer/points',
+              options: Options(headers: {
+                "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+              }));
       print(response.data);
       return response.data;
     } on DioError catch (e) {
@@ -218,7 +262,11 @@ class CartWebServices {
 
   Future<dynamic> covertPoints() async {
     try {
-      Response response = await dio.get('customer/convert-points');
+      Response response =
+          await Dio().get('https://toot.work/api/customer/convert-points',
+              options: Options(headers: {
+                "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+              }));
       print(response.data);
       return response.data['balance'];
     } on DioError catch (e) {
