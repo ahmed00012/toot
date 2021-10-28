@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:toot/presentation/screens/home_screen.dart';
 import 'package:toot/presentation/screens/orders_details_screen.dart';
 import 'package:toot/presentation/screens/orders_screen.dart';
 import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
@@ -16,7 +15,7 @@ class OrderConfirmationScreen extends StatelessWidget {
     return WillPopScope(
       onWillPop: () {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+            context, MaterialPageRoute(builder: (context) => BottomNavBar()));
         return Future.value(false);
       },
       child: Scaffold(
@@ -50,7 +49,7 @@ class OrderConfirmationScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'رقم الطلب ' + num.toString(),
+                      'رقم الطلب # ' + num.toString(),
                       style: TextStyle(
                         fontSize: 20,
                         color: Color(Constants.mainColor),

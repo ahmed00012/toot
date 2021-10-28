@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
-import 'package:toot/presentation/widgets/indigo_elevated_button.dart';
 
 import '../../constants.dart';
 
@@ -52,9 +52,30 @@ class PointsScreen extends StatelessWidget {
                             title: 'النقاط المتبقية :',
                             number: points.balance.toString(),
                           ),
-                          BuildElevatedButton(
-                            title: 'استخدام نقاطي',
-                            function: () {},
+                          SizedBox(
+                            width: 0.41.sw,
+                            height: 40,
+                            child: ElevatedButton(
+                              onPressed: points.totalPoints! >
+                                      points.pointsLimit!
+                                  ? () {
+                                      BlocProvider.of<CartCubit>(context)
+                                          .covertPoints()
+                                          .then((value) => Fluttertoast.showToast(
+                                              msg:
+                                                  "اضعط مرتين للخروج من التطبيق"));
+                                    }
+                                  : null,
+                              child: Text(
+                                'استخدام نقاطي',
+                                textAlign: TextAlign.center,
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                primary: Color(Constants.mainColor),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                              ),
+                            ),
                           )
                         ],
                       ),

@@ -66,3 +66,10 @@ class MyPointsLoaded extends CartState {
   final Points points;
   MyPointsLoaded({required this.points});
 }
+
+class NewBalancedLoading extends CartState {}
+
+class NewBalancedFetched extends CartState {
+  final String newBalance;
+  NewBalancedFetched({required this.newBalance});
+}

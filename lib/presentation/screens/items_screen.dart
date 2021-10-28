@@ -166,21 +166,13 @@ class _ItemsScreenState extends State<ItemsScreen>
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2, childAspectRatio: 0.575),
                   builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                    noItemsFoundIndicatorBuilder: (_) => AlertDialog(
-                      backgroundColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)),
-                      elevation: 0,
-                      content: Center(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: Image.asset(
-                            'assets/images/loading.gif',
-                            height: 0.4.sw,
-                            width: 0.4.sw,
-                          ),
-                        ),
-                      ),
+                    noItemsFoundIndicatorBuilder: (_) => Container(
+                      height: 0.8.sh,
+                      child: Center(
+                          child: Text(
+                        'لا يوجد تنبيهات حتي الان',
+                        style: TextStyle(fontSize: 20),
+                      )),
                     ),
                     itemBuilder: (context, item, index) => BuildItem(
                       title: item.name,
