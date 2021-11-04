@@ -4,7 +4,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:toot/cubits/favorites_cubit/favorites_cubit.dart';
@@ -17,37 +16,37 @@ import 'cubits/bloc_observer.dart';
 import 'cubits/cart_cubit/cart_cubit.dart';
 import 'data/local_storage.dart';
 
-const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'high_importance_channel', // id
-    'High Importance Notifications',
-    description: // title
-        'This channel is used for important notifications.', // description
-    importance: Importance.high,
-    playSound: true);
-
-/// This is called on the beginning of main() to ensure when app is closed
-/// user receives the notifications. Then it's called also in the build method of MyApp
-/// so user receives foreground notifications.
-Future<void> showNotification(RemoteMessage message) async {
-  RemoteNotification? notification = message.notification;
-  AndroidNotification? android = message.notification?.android;
-
-  if (notification != null && android != null) {
-    localNotifications.show(
-      notification.hashCode,
-      notification.title,
-      notification.body,
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          channel.id,
-          channel.name,
-          channelDescription: channel.description,
-          icon: android.smallIcon,
-        ),
-      ),
-    );
-  }
-}
+// const AndroidNotificationChannel channel = AndroidNotificationChannel(
+//     'high_importance_channel', // id
+//     'High Importance Notifications',
+//     description: // title
+//         'This channel is used for important notifications.', // description
+//     importance: Importance.high,
+//     playSound: true);
+//
+// /// This is called on the beginning of main() to ensure when app is closed
+// /// user receives the notifications. Then it's called also in the build method of MyApp
+// /// so user receives foreground notifications.
+// Future<void> showNotification(RemoteMessage message) async {
+//   RemoteNotification? notification = message.notification;
+//   AndroidNotification? android = message.notification?.android;
+//
+//   if (notification != null && android != null) {
+//     localNotifications.show(
+//       notification.hashCode,
+//       notification.title,
+//       notification.body,
+//       NotificationDetails(
+//         android: AndroidNotificationDetails(
+//           channel.id,
+//           channel.name,
+//           channelDescription: channel.description,
+//           icon: android.smallIcon,
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 /// This is called when user clicks on the notification
 // Future<void> onNotificationClick(RemoteMessage? message) async {
@@ -84,8 +83,8 @@ Future<void> showNotification(RemoteMessage message) async {
 //   }
 // }
 
-final FlutterLocalNotificationsPlugin localNotifications =
-    FlutterLocalNotificationsPlugin();
+// final FlutterLocalNotificationsPlugin localNotifications =
+//     FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -94,35 +93,35 @@ Future<void> main() async {
   await LocalStorage.init();
   await Firebase.initializeApp();
 
-  await localNotifications
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
+  // await localNotifications
+  //     .resolvePlatformSpecificImplementation<
+  //         AndroidFlutterLocalNotificationsPlugin>()
+  //     ?.createNotificationChannel(channel);
 
   // Permissions for background notifications
-  await FirebaseMessaging.instance.requestPermission(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
-
-  // Permissions for foreground notifications
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
-  var initializationSettingsAndroid =
-      new AndroidInitializationSettings('@mipmap/ic_launcher');
-  // Local notification settings, which allows to make foreground notifications
-  await localNotifications.initialize(InitializationSettings(
-    android: initializationSettingsAndroid,
-    iOS: IOSInitializationSettings(),
-  ));
-
-  // FirebaseMessaging.onMessageOpenedApp.listen(onNotificationClick);
-  // FirebaseMessaging.instance.getInitialMessage().then(onNotificationClick);
-  FirebaseMessaging.onBackgroundMessage(showNotification);
+  // await FirebaseMessaging.instance.requestPermission(
+  //   alert: true,
+  //   badge: true,
+  //   sound: true,
+  // );
+  //
+  // // Permissions for foreground notifications
+  // await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+  //   alert: true,
+  //   badge: true,
+  //   sound: true,
+  // );
+  // var initializationSettingsAndroid =
+  //     new AndroidInitializationSettings('@mipmap/ic_launcher');
+  // // Local notification settings, which allows to make foreground notifications
+  // await localNotifications.initialize(InitializationSettings(
+  //   android: initializationSettingsAndroid,
+  //   iOS: IOSInitializationSettings(),
+  // ));
+  //
+  // // FirebaseMessaging.onMessageOpenedApp.listen(onNotificationClick);
+  // // FirebaseMessaging.instance.getInitialMessage().then(onNotificationClick);
+  // FirebaseMessaging.onBackgroundMessage(showNotification);
 
   runApp(EasyLocalization(
     child: MyApp(),
@@ -142,15 +141,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  getToken() async {
-    String? token = await FirebaseMessaging.instance.getToken();
-    print(token);
-    LocalStorage.saveData(key: 'token_fcm', value: token);
-  }
-
   @override
   void initState() {
-    getToken();
+    FirebaseMessaging.instance.getToken().then((token) {
+      LocalStorage.saveData(key: 'token_fcm', value: token);
+    });
     super.initState();
   }
 
@@ -158,7 +153,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-    FirebaseMessaging.onMessage.listen(showNotification);
+    // FirebaseMessaging.onMessage.listen(showNotification);
     // FirebaseMessaging.onMessageOpenedApp.listen(onNotificationClick);
     // FirebaseMessaging.instance.getInitialMessage().then(onNotificationClick);
     return ScreenUtilInit(
@@ -188,6 +183,7 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
               primarySwatch: Colors.indigo,
               canvasColor: Colors.grey.shade50,
+              toggleableActiveColor: Color(0xff7C39CB),
               fontFamily: 'Tajawal'),
           home: SplashScreen(),
           routes: <String, WidgetBuilder>{

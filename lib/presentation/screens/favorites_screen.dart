@@ -31,21 +31,39 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           builder: (context, state) {
             if (state is FavoritesLoaded) {
               final fav = state.favorites;
-              return ListView.builder(
-                padding: EdgeInsets.symmetric(
-                    vertical: 0.01.sh, horizontal: 0.05.sw),
-                physics: BouncingScrollPhysics(),
-                shrinkWrap: true,
-                itemBuilder: (context, index) => FavoriteItem(
-                  name: fav[index].product!.name!,
-                  image: fav[index].product!.imageOne,
-                  price: fav[index].product!.price!,
-                  id: fav[index].productId!,
-                  shopId: fav[index].vendorId!,
-                  isFav: fav[index].product!.inFavourite == 1 ? true : false,
-                ),
-                itemCount: fav.length,
-              );
+              if (fav.isEmpty)
+                return Column(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.15,
+                    ),
+                    Center(
+                      child: Lottie.asset(
+                          'assets/images/78022-no-favorite-icon.json',
+                          height: 200),
+                    ),
+                    Text(
+                      'المفضلة فارغة',
+                      style: TextStyle(fontSize: 24.sp),
+                    ),
+                  ],
+                );
+              else
+                return ListView.builder(
+                  padding: EdgeInsets.symmetric(
+                      vertical: 0.01.sh, horizontal: 0.05.sw),
+                  physics: BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) => FavoriteItem(
+                    name: fav[index].product!.name!,
+                    image: fav[index].product!.imageOne,
+                    price: fav[index].product!.price!,
+                    id: fav[index].productId!,
+                    shopId: fav[index].vendorId!,
+                    isFav: fav[index].product!.inFavourite == 1 ? true : false,
+                  ),
+                  itemCount: fav.length,
+                );
             } else {
               return Center(
                   child: Container(

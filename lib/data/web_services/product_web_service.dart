@@ -54,6 +54,7 @@ class ProductWebServices {
   Future<List<ItemDetails>> fetchBanner() async {
     Response response = await dio.get('sliders');
     var body = response.data;
+    print(response.data);
     List<ItemDetails> items = [];
     for (int i = 0; i < body['data'].length; i++)
       items.add(ItemDetails.fromJson2(body['data'][i]));
@@ -70,13 +71,15 @@ class ProductWebServices {
     }
   }
 
-  Future<dynamic> fetchItems({int? shopId, int? catId, int? page}) async {
+  Future<dynamic> fetchItems(
+      {int? shopId, int? catId, int? page, String? filter}) async {
     try {
       print(shopId);
       print(catId);
-      Response response = await dio.get('vendors/$shopId/$catId/products',
+      Response response = await dio.get(
+          'vendors/$shopId/$catId/products?filter=$filter',
           queryParameters: {'page': page});
-      print(dio.options.headers);
+
       return response.data['data'];
     } on DioError catch (e) {
       print(e.response!.data);

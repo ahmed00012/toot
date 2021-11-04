@@ -1,17 +1,19 @@
 class Category {
   Category({
     this.categoryName,
+    this.image,
     this.markets,
   });
 
   String? categoryName;
   List<Market>? markets;
+  String? image;
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
-        categoryName: json["category_name"],
-        markets:
-            List<Market>.from(json["markets"].map((x) => Market.fromJson(x))),
-      );
+      categoryName: json["category_name"],
+      markets:
+          List<Market>.from(json["markets"].map((x) => Market.fromJson(x))),
+      image: json["image"]);
 }
 
 class Market {

@@ -86,6 +86,35 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          'تسجيل الدخول',
+          style: TextStyle(color: Colors.indigo),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        toolbarHeight: 90,
+        leading: Padding(
+          padding: const EdgeInsets.only(right: 10, bottom: 10),
+          child: InkWell(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => BottomNavBar()));
+            },
+            child: Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.indigo,
+              ),
+              child: Icon(Icons.arrow_back),
+            ),
+          ),
+        ),
+      ),
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthError) {
@@ -131,13 +160,9 @@ class _AuthScreenState extends State<AuthScreen> {
                       SizedBox(
                         height: 10,
                       ),
-                      Text(
-                        _authMode != AuthMode.Signup ? 'تسجيل دخول' : 'تسجيل',
-                        style: TextStyle(
-                            fontSize: 19.sp, color: Color(Constants.mainColor)),
-                      ),
+
                       SizedBox(
-                        height: 12,
+                        height: 15,
                       ),
                       if (_authMode == AuthMode.Signup)
                         BuildTextField(
@@ -145,7 +170,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           hint: 'الاسم',
                           validator: (String? val) {
                             if (val!.isEmpty || val.length <= 6) {
-                              return 'الاسم غير صالح !';
+                              return 'الاسم قصير جدا !';
                             }
                           },
                           onSaved: (val) {
@@ -221,7 +246,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               isDense: true,
                               filled: true,
                               fillColor: Color(0xffF0F4F8),
-                              suffixIcon: GestureDetector(
+                              suffixIcon: InkWell(
                                 onTap: () {
                                   // Update the state i.e. toogle the state of passwordVisible variable
                                   setState(() {
@@ -235,7 +260,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                   color: Colors.grey,
                                 ),
                               ),
-                              icon: Image.asset(
+                              prefixIcon: Image.asset(
                                 'assets/images/icon-padlock.png',
                                 height: 50,
                                 width: 50,
@@ -249,6 +274,8 @@ class _AuthScreenState extends State<AuthScreen> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'كلمة المرور مطلوبة';
+                            } else if (value.length < 9) {
+                              return 'كلمة المرور قصيرة';
                             }
                             return null;
                           },
@@ -269,7 +296,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                 isDense: true,
                                 filled: true,
                                 fillColor: Color(0xffF0F4F8),
-                                suffixIcon: GestureDetector(
+                                suffixIcon: InkWell(
                                   onTap: () {
                                     // Update the state i.e. toogle the state of passwordVisible variable
                                     setState(() {
@@ -283,7 +310,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                     color: Colors.grey,
                                   ),
                                 ),
-                                icon: Image.asset(
+                                prefixIcon: Image.asset(
                                   'assets/images/icon-padlock.png',
                                   height: 50,
                                   width: 50,
@@ -312,14 +339,24 @@ class _AuthScreenState extends State<AuthScreen> {
                                     builder: (context) => ForgetPassword()));
                           }),
                       SizedBox(
-                        width: 0.90.sw,
+                        width: 0.75.sw,
+                        height: 50,
                         child: ElevatedButton(
                           onPressed: () {
                             return _submit();
                           },
-                          child: Text(_authMode == AuthMode.Login
-                              ? 'تسجيل الدخول'
-                              : 'سجل'),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(_authMode == AuthMode.Login
+                                  ? 'تسجيل الدخول'
+                                  : 'سجل'),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Icon(Icons.arrow_forward)
+                            ],
+                          ),
                           style: ElevatedButton.styleFrom(
                             primary: Color(Constants.mainColor),
                             shape: RoundedRectangleBorder(

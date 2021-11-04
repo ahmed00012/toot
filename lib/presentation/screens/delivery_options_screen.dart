@@ -286,7 +286,7 @@ class BuildDayItem extends StatelessWidget {
           width: 0.24.sw,
           decoration: BoxDecoration(
               color: choicesList[index] == true
-                  ? Colors.greenAccent.shade400
+                  ? Colors.green[400]
                   : Color(0xffF0F4F8),
               borderRadius: BorderRadius.circular(15)),
           child: Center(

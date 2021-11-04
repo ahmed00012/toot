@@ -74,13 +74,14 @@ class ProductCubit extends Cubit<ProductState> {
 
   Future<dynamic> fetchItemDetails(int itemId) async {
     emit(ItemDetailsLoading());
-    productRepository
-        .fetchItemDetails(itemId)
-        .then(
-            (itemDetails) => emit(ItemDetailsLoaded(itemDetails: itemDetails)))
-        .catchError((e) {
-      emit(ErrorOccur(error: e.toString()));
-    });
+    var itemDetails = await productRepository.fetchItemDetails(itemId);
+    if (itemDetails.options.isNotEmpty)
+      emit(ItemDetailsLoaded(
+          itemDetails: itemDetails,
+          price: double.parse(itemDetails.options[0].price)));
+    else
+      emit(ItemDetailsLoaded(
+          itemDetails: itemDetails, price: double.parse(itemDetails.price)));
   }
 
   // Future<dynamic> fetchOffers(int pageNum) async {

@@ -35,7 +35,7 @@ class OrderConfirmationScreen extends StatelessWidget {
                   height: 0.07.sh,
                 ),
                 Text(
-                  ' تم تنفيذ طلبك بنجاح',
+                  ' تم ارسال طلبك بنجاح',
                   style:
                       TextStyle(fontSize: 24.sp, color: Colors.grey.shade600),
                 ),

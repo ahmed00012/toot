@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:toot/constants.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
@@ -81,23 +80,17 @@ class CartItem extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8)),
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                padding: EdgeInsets.symmetric(vertical: 12),
                 child: Row(
                   children: [
                     Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Container(
-                          width: 0.25.sw,
-                          child: Text(
-                            title ?? 'منتج',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                overflow: TextOverflow.ellipsis,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w300),
-                          ),
-                        ),
+                      child: Text(
+                        title ?? 'منتج',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w300),
                       ),
                     ),
                     Image.network(
@@ -187,7 +180,7 @@ class CartItem extends StatelessWidget {
                           : Column(
                               children: addons!
                                   .map((e) => Text(
-                                        e.addon!.nameAr,
+                                        e.addon!.nameAr ?? '',
                                         style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold),
@@ -207,7 +200,7 @@ class CartItem extends StatelessWidget {
                       Text('الاجمالي', style: TextStyle(fontSize: 16)),
                       Spacer(),
                       Text(
-                        price.toString(),
+                        price.toString() + ' RS',
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.bold),
                       )

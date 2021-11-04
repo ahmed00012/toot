@@ -42,16 +42,21 @@ class AuthCubit extends Cubit<AuthState> {
     });
   }
 
-  Future<dynamic> login({String? phone, String? password}) async {
+  login({String? phone, String? password}) async {
     emit(AuthLoading());
+    print(LocalStorage.getData(key: 'token_fcm'));
+
     await authRepository
         .login(
-            password: password,
-            phone: phone,
-            fcmToken: LocalStorage.getData(key: 'token_fcm'))
-        .then((token) async {
-      LocalStorage.saveData(key: 'token', value: token);
+      password: password,
+      phone: phone,
+    )
+        .then((data) async {
+      LocalStorage.saveData(key: 'token', value: data['access_token']);
       LocalStorage.saveData(key: 'isLogin', value: true);
+      LocalStorage.saveData(key: 'phone', value: data['phone']);
+      LocalStorage.saveData(key: 'name', value: data['name']);
+      LocalStorage.saveData(key: 'counter', value: 0);
       emit(AuthLoaded());
     }).catchError((e) {
       emit(AuthError(error: e.toString()));
@@ -67,7 +72,7 @@ class AuthCubit extends Cubit<AuthState> {
     });
   }
 
-  Future<dynamic> otp({
+  otp({
     String? phone,
     String? otp,
     String? name,
@@ -82,12 +87,13 @@ class AuthCubit extends Cubit<AuthState> {
             email: email,
             name: name,
             fcmToken: LocalStorage.getData(key: 'token_fcm'))
-        .then((token) async {
-      LocalStorage.saveData(key: 'token', value: token);
+        .then((data) async {
+      LocalStorage.saveData(key: 'token', value: data['access_token']);
       LocalStorage.saveData(key: 'isLogin', value: true);
+      LocalStorage.saveData(key: 'phone', value: data['phone']);
+      LocalStorage.saveData(key: 'name', value: data['name']);
+      LocalStorage.saveData(key: 'counter', value: 0);
       emit(OtpSuccess());
-    }).catchError((e) {
-      emit(AuthError(error: e.toString()));
     });
   }
 

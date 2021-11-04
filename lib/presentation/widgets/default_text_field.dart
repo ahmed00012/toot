@@ -34,7 +34,7 @@ class BuildTextField extends StatelessWidget {
               filled: true,
               fillColor: Color(0xffF0F4F8),
               hintText: hint,
-              icon: Image.asset(
+              prefixIcon: Image.asset(
                 icon,
                 height: 50,
                 width: 50,

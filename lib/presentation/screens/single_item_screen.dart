@@ -7,7 +7,6 @@ import 'package:lottie/lottie.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
 import 'package:toot/cubits/product_cubit/product_cubit.dart';
 import 'package:toot/data/models/check_box_state.dart';
-import 'package:toot/presentation/screens/cart_screen.dart';
 import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 
 import '../../constants.dart';
@@ -41,22 +40,24 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
   int quantity = 1;
   int? selectedId;
   String? dropdownPriceValue = '';
-  List prices = [];
+  // List prices = [];
   List extra = [];
   List chosenExtra = [];
   final _formKey = GlobalKey<FormState>();
   List<String> images = [];
   double price = 0.00;
   int current = 0;
+  bool isChanged = false;
 
-  addExtrasPrice(double extraPrice, bool incremental, int chosenId) {
+  addExtrasPrice(double extraPrice1, bool incremental, int chosenId) {
     if (incremental) {
       setState(() {
-        this.price = this.price + extraPrice;
+        this.price = this.price + extraPrice1;
+        isChanged = true;
       });
     } else {
       setState(() {
-        this.price = this.price - extraPrice;
+        this.price = this.price - extraPrice1;
       });
     }
     if (chosenExtra.contains(chosenId)) {
@@ -153,11 +154,12 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
             BlocBuilder<ProductCubit, ProductState>(builder: (context, state) {
           if (state is ItemDetailsLoaded) {
             final item = state.itemDetails;
+
             if (item.options!.isNotEmpty) {
               dropdownPriceValue = item.options![0].price ?? '';
               selectedId = item.options![0].id ?? 0;
+              // weightPrice = double.parse(item.options![0].price!);
             }
-
             extra = state.itemDetails.addon!
                 .map((extra) => CheckBoxState(
                     name: '${extra.nameAr}   + ${extra.price}  RS ',
@@ -254,8 +256,13 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                                   color: Color(0xff4A4B4D)),
                                             )
                                           : Text(
-                                              (price * quantity).toString() +
-                                                  " RS ",
+                                              isChanged
+                                                  ? (price * quantity)
+                                                          .toStringAsFixed(2) +
+                                                      " RS "
+                                                  : (state.price! * quantity)
+                                                          .toString() +
+                                                      " RS ",
                                               style: TextStyle(
                                                   fontSize: 26.sp,
                                                   fontWeight: FontWeight.bold,
@@ -324,6 +331,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                   onChanged: (String? newValue) {
                                     setState(() {
                                       price = double.parse(newValue!);
+                                      isChanged = true;
                                     });
                                   },
                                   items: item.options!
@@ -337,7 +345,9 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                         print(selectedId);
                                       },
                                       child: Text(
-                                          '${value.textAr}  ${value.price} RS '),
+                                        '${value.textAr}  ${value.price} RS ',
+                                        style: TextStyle(fontFamily: 'Tajawal'),
+                                      ),
                                     );
                                   }).toList(),
                                 ),
@@ -442,31 +452,13 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                                 options: [selectedId],
                                                 extras: chosenExtra)
                                             .then((value) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                            backgroundColor:
-                                                Color(Constants.mainColor),
-                                            content: Text(
-                                              widget.isEditable!
-                                                  ? 'تم تعديل المنتح بنجاح.'
-                                                  : 'تم اضافة المنتج الي السلة بنجاح.',
-                                              style: TextStyle(fontSize: 14),
-                                            ),
-                                            action: SnackBarAction(
-                                              label: 'الذهاب الي السلة',
-                                              textColor: Colors.white,
-                                              onPressed: () {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            CartScreen()));
-                                              },
-                                            ),
-                                          ));
+                                          Navigator.pop(context, true);
+
                                           if (widget.isEditable!) {
                                             Navigator.of(context).pop();
                                           }
                                         });
+                                        // Navigator.pop(context);
                                       },
                                       style: ElevatedButton.styleFrom(
                                         primary: Color(Constants.mainColor),

@@ -10,6 +10,7 @@ import 'package:toot/presentation/widgets/default_indigo_button.dart';
 import 'package:toot/presentation/widgets/delivery_app_bar.dart';
 import 'package:toot/presentation/widgets/single_choice_item.dart';
 
+import 'cart_screen.dart';
 import 'delivery_options_screen.dart';
 
 class DeliveryAddressesScreen extends StatefulWidget {
@@ -53,12 +54,11 @@ class _DeliveryAddressesScreenState extends State<DeliveryAddressesScreen> {
     return WillPopScope(
       onWillPop: () {
         if (widget.added != null) {
-          int count = 0;
-          Navigator.popUntil(context, (route) {
-            return count++ == 2;
-          });
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => CartScreen()));
         } else
           Navigator.pop(context);
+
         return Future.value(true);
       },
       child: Scaffold(

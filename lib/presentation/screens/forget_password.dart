@@ -13,6 +13,34 @@ class ForgetPassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          'استعادة كلمة المرور',
+          style: TextStyle(color: Colors.indigo),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        toolbarHeight: 90,
+        leading: Padding(
+          padding: const EdgeInsets.only(right: 10, bottom: 10),
+          child: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.indigo,
+              ),
+              child: Icon(Icons.arrow_back),
+            ),
+          ),
+        ),
+      ),
       body: BlocBuilder<AuthCubit, AuthState>(
         builder: (context, state) {
           return Form(

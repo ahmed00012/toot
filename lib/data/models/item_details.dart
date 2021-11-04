@@ -48,11 +48,11 @@ class ItemDetails {
         name: json["name"],
         // description: json["description"],
         imageOne: json["image_one"],
-        vendorID: json['vendor_id'],
+        // vendorID: json['vendor_id'],
 
         // imageTwo: json["image_two"],
         // imageThree: json["image_three"],
-        price: json["price"],
+        // price: json["price"],
         // beforeDiscount: json["before_discount"],
         // inFavourite: json["in_favourite"],
         // unit: json["unit"],

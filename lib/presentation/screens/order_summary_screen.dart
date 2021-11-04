@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
 import 'package:toot/data/local_storage.dart';
 import 'package:toot/presentation/widgets/cart_item.dart';
@@ -184,8 +185,12 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     BuildIndigoButton(
                         title: 'تأكيد الطلب',
                         function: () {
-                          BlocProvider.of<CartCubit>(context).confirmOrder();
-                          LocalStorage.saveData(key: 'cart_token', value: '');
+                          if (cartDetails.data!.deliveryFee.toString() == '0')
+                            displayToastMessage('مكان التوصيل بعيد عنا');
+                          else {
+                            BlocProvider.of<CartCubit>(context).confirmOrder();
+                            LocalStorage.saveData(key: 'cart_token', value: '');
+                          }
                         }),
                     SizedBox(
                       height: 0.05.sh,
@@ -221,5 +226,31 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
         },
       ),
     );
+  }
+
+  void displayToastMessage(var toastMessage) {
+    // Fluttertoast.showToast(
+    //     msg: toastMessage.toString(),
+    //     toastLength: Toast.LENGTH_SHORT,
+    //     gravity: ToastGravity.BOTTOM,
+    //     textColor: Colors.white,
+    //     fontSize: 16.0);
+    showSimpleNotification(
+        Container(
+          height: 50,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              toastMessage,
+              style: TextStyle(
+                  color: Color(Constants.mainColor),
+                  fontSize: 18,
+                  fontFamily: 'Tajawal',
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        duration: Duration(seconds: 3),
+        background: Colors.white);
   }
 }

@@ -37,7 +37,7 @@ dependencies:
   bloc: ^7.1.0
   flutter_bloc: ^7.2.0
   pin_code_fields: ^7.3.0
-  geolocator: 7.6.2
+  geolocator: ^7.7.1
   dio: ^4.0.0
   shared_preferences: ^2.0.6
   email_validator: ^2.0.1
@@ -46,7 +46,7 @@ dependencies:
   skeleton_text: ^3.0.0
   infinite_scroll_pagination: ^3.1.0
   after_layout: ^1.1.0
-  flutter_html: ^2.1.4
+  flutter_html: ^2.1.5
   lottie: ^1.0.1
   overlay_support: ^1.2.1
   firebase_messaging: ^10.0.9
@@ -55,6 +55,14 @@ dependencies:
   fcm_config: ^3.1.2
   cloud_firestore: ^2.5.4
   awesome_card: ^1.1.5
+  flutter_rating_bar: ^4.0.0
+  badges: ^2.0.1
+  google_maps_flutter: ^2.1.0
+  app_settings:
+  android_intent:
+  share: ^2.0.4
+
+
 
 
 

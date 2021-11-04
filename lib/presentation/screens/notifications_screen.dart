@@ -28,10 +28,10 @@ class _NotificationScreenState extends State<NotificationScreen>
       print(newItems.length);
       final isLastPage = newItems.length < NotificationScreen._pageSize;
       if (isLastPage) {
-        _pagingController.appendLastPage(newItems);
+        _pagingController.appendLastPage(newItems, 'no');
       } else {
         final nextPageKey = pageKey + 1;
-        _pagingController.appendPage(newItems, nextPageKey);
+        _pagingController.appendPage(newItems, nextPageKey, 'no');
       }
     } catch (error) {
       _pagingController.error = error;
@@ -52,14 +52,28 @@ class _NotificationScreenState extends State<NotificationScreen>
         appBar: BuildAppBar(
           title: 'تنبيهات',
         ),
-        body: PagedGridView<int, dynamic>(
+        body:
+            // ? Column(
+            //     children: [
+            //       Center(
+            //         child: Lottie.asset('assets/images/78616-notification.json',
+            //             height: 500),
+            //       ),
+            //       Text(
+            //         'لا يوجد تنبيهات',
+            //         style: TextStyle(fontSize: 24.sp),
+            //       ),
+            //     ],
+            //   )
+            PagedGridView<int, dynamic>(
           // showNewPageProgressIndicatorAsGridChild: false,
           // showNewPageErrorIndicatorAsGridChild: false,
           showNoMoreItemsIndicatorAsGridChild: false,
           pagingController: _pagingController,
-          padding: EdgeInsets.symmetric(vertical: 0.02.sh, horizontal: 0.05.sw),
+          padding: EdgeInsets.fromLTRB(15, 0, 15, 70),
           shrinkWrap: true,
           physics: ClampingScrollPhysics(),
+
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 1, childAspectRatio: 1.3),
           builderDelegate: PagedChildBuilderDelegate<dynamic>(
@@ -75,20 +89,32 @@ class _NotificationScreenState extends State<NotificationScreen>
                 );
               },
               noItemsFoundIndicatorBuilder: (_) {
-                return Container(
-                  height: 0.8.sh,
-                  child: Center(
-                      child: Text(
-                    'لا يوجد تنبيهات حتي الان',
-                    style: TextStyle(fontSize: 20),
-                  )),
+                return Column(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.15,
+                    ),
+                    Center(
+                      child: Lottie.asset(
+                          'assets/images/78616-notification.json',
+                          height: 200),
+                    ),
+                    Text(
+                      'لا يوجد تنبيهات',
+                      style: TextStyle(fontSize: 24.sp),
+                    ),
+                  ],
                 );
               },
-              itemBuilder: (context, item, index) => BuildNotificationItem(
-                    title: item.title,
-                    image: item.image,
-                    details: item.description,
-                    id: item.id,
+              itemBuilder: (context, item, index) => Column(
+                    children: [
+                      BuildNotificationItem(
+                        title: item.title,
+                        image: item.image,
+                        details: item.description ?? '',
+                        id: item.id,
+                      ),
+                    ],
                   )),
         ));
   }
@@ -135,7 +161,7 @@ class BuildNotificationItem extends StatelessWidget {
                       child: Image.network(
                         image,
                         width: 1.sw,
-                        height: 0.4.sh,
+                        height: 200,
                         fit: BoxFit.cover,
                       ))
                   : Column(
@@ -155,26 +181,28 @@ class BuildNotificationItem extends StatelessWidget {
                       ],
                     ),
             ),
-            Padding(
-              padding:
-                  EdgeInsets.symmetric(vertical: 0.02.sh, horizontal: 0.03.sw),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                        color: Color(Constants.mainColor),
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w100),
-                  ),
-                  Text(
-                    details,
-                    style: TextStyle(color: Colors.grey.shade500),
-                  )
-                ],
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  title,
+                  style: TextStyle(
+                      color: Color(Constants.mainColor),
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w100),
+                ),
+                SizedBox(
+                  height: 3,
+                ),
+                Text(
+                  details,
+                  style: TextStyle(color: Colors.grey.shade500),
+                ),
+              ],
             ),
           ],
         ),

@@ -1,11 +1,15 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:toot/cubits/product_cubit/product_cubit.dart';
+import 'package:toot/data/local_storage.dart';
 import 'package:toot/presentation/screens/items_screen.dart';
+import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 
 import '../../constants.dart';
+import 'cart_screen.dart';
 
 class CategoriesScreen extends StatefulWidget {
   final int shopId;
@@ -34,128 +38,144 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       onTap: () {
         FocusScope.of(context).unfocus();
       },
-      child: Scaffold(
-        backgroundColor: Colors.grey.shade100,
-        appBar: AppBar(
-          title: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.arrow_back,
-                      size: 25,
-                      color: Color(Constants.mainColor),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  Center(
-                    child: Text(
-                      widget.shopName,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w400,
+      child: WillPopScope(
+        onWillPop: () {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => BottomNavBar()));
+          return Future.value(true);
+        },
+        child: Scaffold(
+          backgroundColor: Colors.grey.shade100,
+          appBar: AppBar(
+            title: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        size: 25,
                         color: Color(Constants.mainColor),
                       ),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BottomNavBar()));
+                      },
                     ),
-                  ),
-                  SizedBox(
-                    width: 0.1.sw,
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextField(
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  isDense: true,
-                  contentPadding: EdgeInsets.zero,
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Color(Constants.mainColor),
-                    size: 25,
-                  ),
-                  hintText: 'بحث سريع',
-                  hintStyle: TextStyle(
-                      color: Color(Constants.mainColor), fontSize: 18.sp),
-                  filled: true,
-                  fillColor: Colors.grey.shade100,
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+                    Center(
+                      child: Text(
+                        widget.shopName,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
+                          color: Color(Constants.mainColor),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 0.1.sw,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CartScreen()));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 9.0, left: 9),
+                        child: Badge(
+                            position: BadgePosition.topStart(),
+                            elevation: 5,
+                            badgeColor: Colors.white,
+                            badgeContent: Padding(
+                              padding: const EdgeInsets.only(top: 3.0),
+                              child: Text(
+                                LocalStorage.getData(key: 'counter').toString(),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green[400]),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 15.0, left: 2, right: 2),
+                              child: Icon(
+                                Icons.shopping_cart,
+                                size: 28,
+                                color: Colors.green[400],
+                              ),
+                            )),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              )
-            ],
+              ],
+            ),
+            automaticallyImplyLeading: false,
+            centerTitle: true,
+            backgroundColor: Colors.white,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(25))),
           ),
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          toolbarHeight: 0.18.sh,
-          backgroundColor: Colors.white,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(25))),
-        ),
-        body: BlocBuilder<ProductCubit, ProductState>(
-          builder: (context, state) {
-            if (state is ShopCategoriesLoaded) {
-              final shopCat = state.shopCategories;
-              return GridView.builder(
-                itemCount: shopCat.length,
-                padding: EdgeInsets.only(
-                  top: 0.03.sh,
-                  right: 0.05.sw,
-                  left: 0.05.sw,
-                ),
-                shrinkWrap: true,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 2 / 2.5,
-                ),
-                itemBuilder: (context, index) => CategoryItem(
-                  image: shopCat[index].image,
-                  title: shopCat[index].name,
-                  shopId: widget.shopId,
-                  categoryId: shopCat[index].id,
-                  categories: shopCat,
-                  function: getShopCat,
-                  index: index,
-                ),
-              );
-            } else {
-              return Center(
-                  child: Container(
-                height: 120,
-                width: 120,
-                child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
-              ));
-              // return AlertDialog(
-              //   backgroundColor: Colors.transparent,
-              //   shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.circular(15)),
-              //   elevation: 0,
-              //   content: Center(
-              //     child: ClipRRect(
-              //       borderRadius: BorderRadius.circular(15),
-              //       child: Image.asset(
-              //         'assets/images/loading.gif',
-              //         height: 0.4.sw,
-              //         width: 0.4.sw,
-              //       ),
-              //     ),
-              //   ),
-              // );
-            }
-          },
+          body: BlocBuilder<ProductCubit, ProductState>(
+            builder: (context, state) {
+              if (state is ShopCategoriesLoaded) {
+                final shopCat = state.shopCategories;
+                return GridView.builder(
+                  itemCount: shopCat.length,
+                  padding: EdgeInsets.only(
+                    top: 0.03.sh,
+                    right: 0.05.sw,
+                    left: 0.05.sw,
+                  ),
+                  shrinkWrap: true,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 2 / 2.5,
+                  ),
+                  itemBuilder: (context, index) => CategoryItem(
+                    image: shopCat[index].image,
+                    title: shopCat[index].name,
+                    shopId: widget.shopId,
+                    categoryId: shopCat[index].id,
+                    categories: shopCat,
+                    function: getShopCat,
+                    index: index,
+                  ),
+                );
+              } else {
+                return Center(
+                    child: Container(
+                  height: 120,
+                  width: 120,
+                  child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
+                ));
+                // return AlertDialog(
+                //   backgroundColor: Colors.transparent,
+                //   shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(15)),
+                //   elevation: 0,
+                //   content: Center(
+                //     child: ClipRRect(
+                //       borderRadius: BorderRadius.circular(15),
+                //       child: Image.asset(
+                //         'assets/images/loading.gif',
+                //         height: 0.4.sw,
+                //         width: 0.4.sw,
+                //       ),
+                //     ),
+                //   ),
+                // );
+              }
+            },
+          ),
         ),
       ),
     );
@@ -205,12 +225,19 @@ class CategoryItem extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                image,
-                height: 0.2.sh,
-                width: 0.3.sw,
-                fit: BoxFit.contain,
-              ),
+              child: image != null
+                  ? Image.network(
+                      image,
+                      height: 0.2.sh,
+                      width: 0.3.sw,
+                      fit: BoxFit.contain,
+                    )
+                  : Image.asset(
+                      'assets/images/دون صوره.png',
+                      height: 0.2.sh,
+                      width: 0.3.sw,
+                      fit: BoxFit.contain,
+                    ),
             ),
             Text(
               title,

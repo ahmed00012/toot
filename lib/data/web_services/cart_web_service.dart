@@ -82,6 +82,7 @@ class CartWebServices {
         'https://toot.work/api/cart/get_cart/${LocalStorage.getData(key: 'cart_token')}',
         options: Options(headers: {
           "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+          "Content-Language": 'ar',
         }));
     print(response.data);
     return response.data;
@@ -197,6 +198,7 @@ class CartWebServices {
           await Dio().get('https://toot.work/api/cart/dates_times/$id',
               options: Options(headers: {
                 "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+                "Content-Language": 'ar'
               }));
       print(response.data);
       return response.data;
@@ -240,6 +242,7 @@ class CartWebServices {
     Response response = await Dio().get('https://toot.work/api/customer/orders',
         options: Options(headers: {
           "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+          // 'Content-Language': 'ar',
         }));
     print('ldkjfndlkjfn ' + response.data.toString());
     return response.data;

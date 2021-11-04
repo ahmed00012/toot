@@ -2,19 +2,25 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:fcm_config/fcm_config.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 import 'package:toot/constants.dart';
 import 'package:toot/cubits/product_cubit/product_cubit.dart';
 import 'package:toot/data/local_storage.dart';
-import 'package:toot/presentation/screens/single_item_screen.dart';
+import 'package:toot/presentation/screens/review.dart';
+import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
 
 import 'categories_screen.dart';
+import 'notifications_screen.dart';
+import 'orders_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -24,15 +30,108 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int current = 0;
   DateTime? currentBackPressTime;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      new FlutterLocalNotificationsPlugin();
 
   getLocalStorage() async {
     await LocalStorage.init();
     print('home storage init');
   }
 
+  fcmNotification() async {
+    //FCM
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage? message) {
+      if (message != null) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => BottomNavBar()));
+      }
+    });
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    await messaging.setForegroundNotificationPresentationOptions(
+      alert: true, // Required to display a heads up notification
+      badge: true,
+      sound: true,
+    );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification notification = message.notification!;
+      AndroidNotification? android = message.notification!.android;
+      print('efweferw' + message.data.toString());
+      if (notification != null && android != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                notification.title!,
+                notification.body!,
+                // TODO add a proper drawable resource to android, for now using
+                //      one that already exists in example app.
+                icon: 'app_icon',
+              ),
+            ));
+        if (message.notification!.title == "تقيم الخدمة") {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Review(
+                        vendorID: message.data['vendor_id'],
+                        token: LocalStorage.getData(key: 'token'),
+                        orderId: message.data['type_id'],
+                      )));
+        }
+      }
+    });
+
+    //ديه بتفتح التطبيق وتقيم الخدمة
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      final order =
+          message.notification!.body!.replaceAll(RegExp('[^0-9]'), '');
+      print(
+          'A new onMessageOpenedApp event was published Message ${message.notification!.title} ');
+      if (message.notification!.title == "تقيم الخدمة") {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Review(
+                      vendorID: message.data['vendor_id'],
+                      token: LocalStorage.getData(key: 'token'),
+                      orderId: message.data['type_id'],
+                    )));
+      } else if (message.notification!.title == "تغير حالة الطلب") {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => OrdersDetailsScreen(
+                      id: int.parse(order),
+                    )));
+      } else
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => NotificationScreen()));
+    });
+
+    FirebaseMessaging.instance.getToken().then((value) {
+      print("FIREBASE TOKEN $value");
+    });
+  }
+
   @override
   void initState() {
     getLocalStorage();
+    fcmNotification();
     BlocProvider.of<ProductCubit>(context).fetchCategories();
     super.initState();
   }
@@ -62,23 +161,30 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(
-                                builder: (_) => SingleItemScreen(
-                                      id: state.items![current].id!,
-                                      title: state.items![current].name,
-                                      price: double.parse(
-                                          state.items![current].price!),
-                                      shopId: state.items![current].vendorID,
-                                      // isFav: state.items[current].inFavourite == 1
-                                      //     ? true
-                                      //     : false,
-                                      fromPanner: true,
-                                    )))
-                            .then((value) =>
-                                BlocProvider.of<ProductCubit>(context).emit(
-                                    CategoriesLoaded(
-                                        categories: state.items!)));
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => CategoriesScreen(
+                                shopId: state.items![current].id!,
+                                shopName: state.items![current].name!),
+                          ),
+                        );
+                        // Navigator.of(context)
+                        //     .push(MaterialPageRoute(
+                        //         builder: (_) => SingleItemScreen(
+                        //               id: state.items![current].id!,
+                        //               title: state.items![current].name,
+                        //               price: double.parse(
+                        //                   state.items![current].price!),
+                        //               shopId: state.items![current].vendorID,
+                        //               // isFav: state.items[current].inFavourite == 1
+                        //               //     ? true
+                        //               //     : false,
+                        //               fromPanner: true,
+                        //             )))
+                        //     .then((value) =>
+                        //         BlocProvider.of<ProductCubit>(context).emit(
+                        //             CategoriesLoaded(
+                        //                 categories: state.items!)));
                       },
                       child: Center(
                         child: CarouselSlider.builder(
@@ -94,15 +200,20 @@ class _HomeScreenState extends State<HomeScreen> {
                               }),
                           itemBuilder: (ctx, index, _) {
                             return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              padding: const EdgeInsets.all(15),
                               child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8.0),
-                                  child: Image.network(
-                                    state.items![index].imageOne!,
-                                    fit: BoxFit.contain,
-                                    width: 0.8.sw,
-                                  )),
+                                  child: state.items![index].imageOne != null
+                                      ? Image.network(
+                                          state.items![index].imageOne!,
+                                          fit: BoxFit.fill,
+                                          width: 0.8.sw,
+                                        )
+                                      : Image.asset(
+                                          'assets/images/00vv63.jpg',
+                                          fit: BoxFit.fill,
+                                          width: 0.8.sw,
+                                        )),
                             );
                           },
                         ),
@@ -157,12 +268,30 @@ class ShopsListView extends StatelessWidget {
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
-                  child: Text(
-                    categories[index].categoryName ?? '',
-                    style: TextStyle(
-                        color: Color(Constants.mainColor),
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: categories[index].image != null
+                            ? Image.network(
+                                categories[index].image,
+                                height: 30,
+                                width: 30,
+                              )
+                            : Image.asset(
+                                'assets/images/logo.png',
+                                height: 30,
+                                width: 30,
+                              ),
+                      ),
+                      Text(
+                        categories[index].categoryName ?? '',
+                        style: TextStyle(
+                            color: Color(Constants.mainColor),
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.bold),
+                      )
+                    ],
                   ),
                 ),
                 Expanded(
@@ -259,7 +388,7 @@ class ShopsListView extends StatelessWidget {
                                         ),
                                       )
                                     : Image.asset(
-                                        'assets/images/eCommerce-Shop.png',
+                                        'assets/images/00vv63.jpg',
                                         fit: BoxFit.cover,
                                       )),
                           ),

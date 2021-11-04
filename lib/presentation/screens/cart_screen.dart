@@ -62,6 +62,7 @@ class _CartScreenState extends State<CartScreen> {
             //     ),
             //   );
             // } else
+
             return Padding(
               padding:
                   EdgeInsets.only(right: 0.06.sw, left: 0.06.sw, top: 0.02.sh),
@@ -242,9 +243,14 @@ class _CartScreenState extends State<CartScreen> {
             // );
           } else {
             return Center(
-              child: Text(
-                'السلة فارغة',
-                style: TextStyle(fontSize: 24.sp),
+              child: Column(
+                children: [
+                  Lottie.asset('assets/images/lf20_feqy40fb.json', height: 500),
+                  Text(
+                    'السلة فارغة',
+                    style: TextStyle(fontSize: 24.sp),
+                  ),
+                ],
               ),
             );
           }

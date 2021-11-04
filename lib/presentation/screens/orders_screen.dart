@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
-import 'package:toot/constants.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
 import 'package:toot/data/models/last_order.dart';
-import 'package:toot/presentation/screens/orders_details_screen.dart';
+import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
+
+import 'orders_details_screen.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({Key? key}) : super(key: key);
@@ -19,36 +20,43 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<CartCubit>(context).fetchLastOrders();
-    return Scaffold(
-      appBar: BuildAppBar(
-        title: 'طلباتك',
-        isBack: false,
-      ),
-      body: BlocBuilder<CartCubit, CartState>(
-        builder: (context, state) {
-          if (state is LastOrdersLoaded) {
-            final orders = state.orders;
-            return ListView.builder(
-                itemCount: orders.length,
-                shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
-                itemBuilder: (context, index) => OrderItem(
-                      id: orders[index].id!,
-                      cart: orders[index].cart!,
-                      cartStatus: orders[index].status!.name!,
-                      function: () async {
-                        setState(() {});
-                      },
-                    ));
-          } else {
-            return Center(
-                child: Container(
-              height: 120,
-              width: 120,
-              child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
-            ));
-          }
-        },
+    return WillPopScope(
+      onWillPop: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => BottomNavBar()));
+        return Future.value(false);
+      },
+      child: Scaffold(
+        appBar: BuildAppBar(
+          title: 'طلباتك',
+          isBack: false,
+        ),
+        body: BlocBuilder<CartCubit, CartState>(
+          builder: (context, state) {
+            if (state is LastOrdersLoaded) {
+              final orders = state.orders;
+              return ListView.builder(
+                  itemCount: orders.length,
+                  shrinkWrap: true,
+                  physics: ClampingScrollPhysics(),
+                  itemBuilder: (context, index) => OrderItem(
+                        id: orders[index].id!,
+                        cart: orders[index].cart!,
+                        cartStatus: orders[index].status!.name!,
+                        function: () async {
+                          setState(() {});
+                        },
+                      ));
+            } else {
+              return Center(
+                  child: Container(
+                height: 120,
+                width: 120,
+                child: Lottie.asset('assets/images/lf20_j1klguuo.json'),
+              ));
+            }
+          },
+        ),
       ),
     );
   }
@@ -108,148 +116,129 @@ class _OrderItemState extends State<OrderItem> {
                 ],
               ),
               isExtended
-                  ? Column(
-                      children: [
-                        SizedBox(
-                          height: 10,
-                        ),
-                        ...widget.cart.items!
-                            .map((e) => Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0, vertical: 10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        e.productName!,
-                                        style: TextStyle(
-                                            fontSize: 16.sp,
-                                            color: Colors.grey.shade600,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        'SR ${e.price}',
-                                        style: TextStyle(
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.grey.shade600),
-                                      ),
-                                    ],
-                                  ),
-                                ))
-                            .toList(),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          textDirection: TextDirection.ltr,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.of(context)
-                                    .push(
-                                  MaterialPageRoute(
-                                    builder: (context) => OrdersDetailsScreen(
-                                      id: widget.id,
+                  ? InkWell(
+                      onTap: () {
+                        Navigator.of(context)
+                            .push(
+                          MaterialPageRoute(
+                            builder: (context) => OrdersDetailsScreen(
+                              id: widget.id,
+                            ),
+                          ),
+                        )
+                            .then((value) {
+                          return widget.function();
+                        });
+                      },
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          ...widget.cart.items!
+                              .map((e) => Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            e.productName ?? '',
+                                            style: TextStyle(
+                                                fontSize: 16.sp,
+                                                color: Colors.grey.shade600,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        Text(
+                                          '${e.price}' + ' RS',
+                                          style: TextStyle(
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey.shade600),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                )
-                                    .then((value) {
-                                  return widget.function();
-                                });
-                              },
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                  ))
+                              .toList(),
+                          Divider(),
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    widget.cartStatus,
-                                    style: TextStyle(
-                                        decoration: TextDecoration.underline,
-                                        color: Colors.lightGreen,
-                                        fontSize: 15.sp),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Container(
-                                    height: 0.08.sw,
-                                    width: 0.08.sw,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Color(Constants.mainColor)),
-                                    child: Icon(
-                                      Icons.check,
-                                      color: Colors.white,
-                                      size: 20,
+                                  Expanded(
+                                    child: Text(
+                                      'قيمة التوصيل',
+                                      style: TextStyle(
+                                          color: Colors.grey.shade400,
+                                          fontSize: 18),
                                     ),
+                                  ),
+                                  Text(
+                                    '${widget.cart.deliveryFee}' + ' RS',
+                                    style: TextStyle(
+                                        color: Colors.grey.shade700,
+                                        fontSize: 18),
                                   ),
                                 ],
                               ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      'SR  ${widget.cart.deliveryFee}',
-                                      style: TextStyle(
-                                          color: Colors.grey.shade700,
-                                          fontSize: 20.sp),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      'Delivery',
+                              Divider(),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'الاجمالي',
                                       style: TextStyle(
                                           color: Colors.grey.shade400,
-                                          fontSize: 20.sp),
+                                          fontSize: 18),
                                     ),
-                                    SizedBox(
-                                      height: 8,
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      'SR ${widget.cart.total}',
-                                      style: TextStyle(
-                                          color: Colors.grey.shade700,
-                                          fontSize: 20.sp),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      'Total',
-                                      style: TextStyle(
-                                          color: Colors.grey.shade400,
-                                          fontSize: 20.sp),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        )
-                      ],
+                                  ),
+                                  Text(
+                                    '${widget.cart.total}' + ' RS',
+                                    style: TextStyle(
+                                        color: Colors.grey.shade700,
+                                        fontSize: 18),
+                                  ),
+                                ],
+                              ),
+                              Divider(),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                      child: Text(
+                                    'حالة الطلب',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.grey.shade400),
+                                  )),
+                                  Text(
+                                    widget.cartStatus,
+                                    style: TextStyle(fontSize: 15.sp),
+                                  ),
+                                  // SizedBox(
+                                  //   width: 10,
+                                  // ),
+                                  // Container(
+                                  //   height: 25,
+                                  //   width: 25,
+                                  //   decoration: BoxDecoration(
+                                  //       shape: BoxShape.circle,
+                                  //       color: Color(Constants.mainColor)),
+                                  //   child: Icon(
+                                  //     Icons.check,
+                                  //     color: Colors.white,
+                                  //     size: 20,
+                                  //   ),
+                                  // ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     )
                   : SizedBox(),
             ],

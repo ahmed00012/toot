@@ -36,7 +36,6 @@ class CartCubit extends Cubit<CartState> {
       List? extras}) async {
     print("card ${LocalStorage.getData(key: 'cart_token')}");
     emit(CartLoading());
-
     var value = await cartRepository.addToCart(
         productId: productId,
         quantity: quantity,
@@ -45,8 +44,8 @@ class CartCubit extends Cubit<CartState> {
         extras: extras,
         options: options);
     print(value['cart']['token']);
-    await LocalStorage.saveData(
-        key: 'cart_token', value: value['cart']['token']);
+    LocalStorage.saveData(key: 'cart_token', value: value['cart']['token']);
+    LocalStorage.saveData(key: 'counter', value: value['cart']['items_count']);
     print("card ${LocalStorage.getData(key: 'cart_token')}");
     emit(AddedToCart());
   }
@@ -57,6 +56,10 @@ class CartCubit extends Cubit<CartState> {
         productId: productId,
         cartToken: LocalStorage.getData(key: 'cart_token'),
         lastItem: lastItem);
+
+    LocalStorage.saveData(
+        key: 'counter', value: LocalStorage.getData(key: 'counter') - 1);
+
     fetchCart();
     //     .then((value) async {
     //
@@ -98,10 +101,9 @@ class CartCubit extends Cubit<CartState> {
     emit(AddressesLoaded(addresses: addresses));
   }
 
-  Future<dynamic> addAddress({String? address, String? district}) async {
+  Future<dynamic> addAddress(
+      {String? address, String? district, double? lat, double? long}) async {
     print("card ${LocalStorage.getData(key: 'cart_token')}");
-    final long = LocalStorage.getData(key: 'long');
-    final lat = LocalStorage.getData(key: 'lat');
     await cartRepository.addAddress(
       address: address,
       district: district,
@@ -150,7 +152,9 @@ class CartCubit extends Cubit<CartState> {
     var value = await cartRepository.confirmOrder(
         cartToken: LocalStorage.getData(key: 'cart_token'));
     emit(OrderConfirmed(num: value['order']['id']));
+
     LocalStorage.saveData(key: 'cart_token', value: '');
+    LocalStorage.saveData(key: 'counter', value: 0);
   }
 
   Future<dynamic> promoCode({String? code}) async {

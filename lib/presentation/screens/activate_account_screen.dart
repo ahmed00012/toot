@@ -55,6 +55,34 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
     return WillPopScope(
       onWillPop: _willPopCallback,
       child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text(
+            'تأكيد رقم الهاتف',
+            style: TextStyle(color: Colors.indigo),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          elevation: 0.0,
+          toolbarHeight: 90,
+          leading: Padding(
+            padding: const EdgeInsets.only(right: 10, bottom: 10),
+            child: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.indigo,
+                ),
+                child: Icon(Icons.arrow_back),
+              ),
+            ),
+          ),
+        ),
         body: BlocListener<AuthCubit, AuthState>(
           listener: (BuildContext context, state) {
             if (state is OtpSuccess) {
@@ -117,7 +145,7 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
                           obscuringWidget: Center(
                             child: Icon(
                               FontAwesomeIcons.starOfLife,
-                              color: Colors.black45,
+                              color: Colors.indigo,
                             ),
                           ),
                           blinkWhenObscuring: true,
@@ -129,11 +157,11 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
                             fieldHeight: 55.w,
                             fieldWidth: 55.w,
                             activeColor: Colors.indigo.shade400,
-                            inactiveColor: Colors.indigo.shade200,
+                            inactiveColor: Colors.indigo.shade500,
                             selectedColor: Colors.indigo.shade500,
                             selectedFillColor: Colors.white,
-                            inactiveFillColor: Color(Constants.mainColor),
-                            activeFillColor: Color(Constants.mainColor),
+                            inactiveFillColor: Colors.white,
+                            activeFillColor: Colors.white,
                           ),
                           cursorColor: Color(Constants.mainColor),
                           animationDuration: Duration(milliseconds: 200),

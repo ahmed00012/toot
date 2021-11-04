@@ -35,11 +35,11 @@ class AuthWebServices {
     }
   }
 
-  Future<dynamic> login(FormData formData) async {
+  login(FormData formData) async {
     try {
       Response response = await dio.post('auth/login', data: formData);
       print(response.data.toString());
-      return response.data['access_token'];
+      return response.data;
     } on DioError catch (e) {
       print(e.response!.data);
       throw e.response!.data['message'];
@@ -55,14 +55,14 @@ class AuthWebServices {
     }
   }
 
-  Future<dynamic> otp(FormData formData) async {
+  otp(FormData formData) async {
     try {
       Response response = await dio.post('auth/verify', data: formData);
       print(response.data.toString());
       if (response.data['success'] == '1') {
         print('bearer token');
         print(response.data['access_token']);
-        return response.data['access_token'];
+        return response.data;
       } else {
         throw response.data['message'];
       }

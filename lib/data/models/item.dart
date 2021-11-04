@@ -5,14 +5,16 @@ class Item {
       this.image,
       this.price,
       this.inFavourite,
-      this.beforeDiscount});
+      this.beforeDiscount,
+      this.inCart});
 
   int? id;
   String? name;
   String? image;
   String? price;
   String? beforeDiscount;
-  int? inFavourite;
+  bool? inFavourite;
+  bool? inCart;
 
   factory Item.fromJson(Map<String, dynamic> json) => Item(
         id: json["id"],
@@ -20,7 +22,8 @@ class Item {
         image: json["image"],
         beforeDiscount: json["before_discount"],
         price: json["price"],
-        inFavourite: json["in_favourite"],
+        inFavourite: json["in_favourite"] == 1 ? true : false,
+        inCart: json["in_cart"] == 1 ? true : false,
       );
 
   Map<String, dynamic> toJson() => {

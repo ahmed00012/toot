@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:toot/data/local_storage.dart';
 import 'package:toot/data/web_services/auth_web_service.dart';
 
 class AuthRepository {
@@ -17,10 +18,12 @@ class AuthRepository {
     return await authWebServices.register(formData);
   }
 
-  Future<String> login(
-      {String? phone, String? password, String? fcmToken}) async {
-    FormData formData = FormData.fromMap(
-        {'phone': phone, 'password': password, 'device_id': fcmToken});
+  login({String? phone, String? password}) async {
+    FormData formData = FormData.fromMap({
+      'phone': phone,
+      'password': password,
+      'device_id': LocalStorage.getData(key: 'token_fcm')
+    });
     return await authWebServices.login(formData);
   }
 
@@ -29,7 +32,7 @@ class AuthRepository {
     return rawData.map((element) => element['img_url']).toList();
   }
 
-  Future<String> otp(
+  otp(
       {String? phone,
       String? otp,
       String? name,
@@ -42,7 +45,7 @@ class AuthRepository {
       'name': name,
       'password': password,
       'email': email,
-      'device_id': fcmToken
+      'device_id': LocalStorage.getData(key: 'token_fcm')
     });
     return await authWebServices.otp(formData);
   }

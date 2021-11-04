@@ -93,7 +93,7 @@ class _ImagesSliderState extends State<ImagesSlider> {
                         },
                         child: Text('تسجيل الدخول'),
                         style: ElevatedButton.styleFrom(
-                            primary: Colors.black.withOpacity(0.6),
+                            primary: Colors.indigo.withOpacity(0.8),
                             shape: RoundedRectangleBorder(
                                 side: BorderSide.none,
                                 borderRadius: BorderRadius.circular(8))),
@@ -111,7 +111,7 @@ class _ImagesSliderState extends State<ImagesSlider> {
                         },
                         child: Text('تخطي'),
                         style: ElevatedButton.styleFrom(
-                            primary: Colors.black.withOpacity(0.6),
+                            primary: Colors.indigo.withOpacity(0.8),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8))),
                       ),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:share/share.dart';
 import 'package:toot/data/local_storage.dart';
 import 'package:toot/presentation/screens/auth_screen.dart';
-import 'package:toot/presentation/screens/chat_screen.dart';
+import 'package:toot/presentation/screens/contact_us.dart';
 import 'package:toot/presentation/screens/orders_screen.dart';
 import 'package:toot/presentation/screens/points_screen.dart';
-import 'package:toot/presentation/screens/profile_screen.dart';
+import 'package:toot/presentation/screens/terms_and_conditions.dart';
 import 'package:toot/presentation/widgets/blurry_dialog.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
 
@@ -28,6 +29,9 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String? name = LocalStorage.getData(key: 'name');
+    String? phone = LocalStorage.getData(key: 'phone');
+    bool? login = LocalStorage.getData(key: 'isLogin') ?? false;
     return Scaffold(
       appBar: BuildAppBar(
         title: 'الاعدادات',
@@ -40,65 +44,141 @@ class SettingsScreen extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              SettingsItem(
-                title: 'حسابي',
-                image: 'assets/images/icon-account.png',
-                function: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => ProfileScreen()));
-                },
+              // SettingsItem(
+              //   title: 'حسابي',
+              //   image: 'assets/images/icon-account.png',
+              //   function: () {
+              //     Navigator.of(context)
+              //         .push(MaterialPageRoute(builder: (_) => ProfileScreen()));
+              //   },
+              // ),
+
+              Container(
+                height: 70,
+                width: double.infinity,
+                alignment: Alignment.center,
+                child: Row(
+                  children: [
+                    Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(width: 1, color: Colors.indigo)),
+                        child: Icon(
+                          Icons.person,
+                          size: 35,
+                          color: Colors.indigo,
+                        )
+
+                        // Image.asset(
+                        //   "assets/images/user.png",
+                        // ) ,
+                        ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 25,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name == '' || name == null ? '' : name,
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Tajawal'),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          phone == '' || phone == null
+                              ? ''
+                              : phone.substring(5),
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                              fontFamily: 'Tajawal'),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
-              SettingsItem(
-                title: 'طلباتي',
-                image: 'assets/images/icon-cart.png',
-                function: () {
-                  if ((LocalStorage.getData(key: 'token') == '' ||
-                      LocalStorage.getData(key: 'token') == null)) {
-                    _showDialog(
-                        context, 'لا يمكن عرض المفضلة يجب عليك التسجيل اولا');
-                  } else {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => OrdersScreen()));
-                  }
-                },
-              ),
+              login!
+                  ? SettingsItem(
+                      title: 'طلباتي',
+                      image: 'assets/images/icon-cart.png',
+                      function: () {
+                        if ((LocalStorage.getData(key: 'token') == '' ||
+                            LocalStorage.getData(key: 'token') == null)) {
+                          _showDialog(context,
+                              'لا يمكن عرض المفضلة يجب عليك التسجيل اولا');
+                        } else {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => OrdersScreen()));
+                        }
+                      },
+                    )
+                  : Container(),
               SettingsItem(
                 title: 'نشر التطبيق',
                 image: 'assets/images/icon-share.png',
-              ),
-              SettingsItem(
-                title: 'انضم الينا',
-                image: 'assets/images/icon-mail.png',
-              ),
-              SettingsItem(
-                title: 'محادثات',
-                image: 'assets/images/add card  (4).png',
                 function: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => ChatScreen()));
+                  Share.share('قم بتحميل ابلكيشن توت واطلب كل ما يلزمك',
+                      subject: 'قم بتحميل ابلكيشن توت واطلب كل ما يلزمك');
                 },
               ),
-              SettingsItem(
-                title: 'نقاطي',
-                image: 'assets/images/cdf.png',
-                function: () {
-                  print(LocalStorage.getData(key: 'token'));
-                  if ((LocalStorage.getData(key: 'token') == '' ||
-                      LocalStorage.getData(key: 'token') == null)) {
-                    _showDialog(
-                        context, 'لا يمكن عرض المفضلة يجب عليك التسجيل اولا');
-                  } else {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => PointsScreen()));
-                  }
-                },
-              ),
+              // SettingsItem(
+              //   title: 'انضم الينا',
+              //   image: 'assets/images/icon-mail.png',
+              // ),
+              // login
+              //     ? SettingsItem(
+              //         title: 'محادثات',
+              //         image: 'assets/images/add card  (4).png',
+              //         function: () {
+              //           Navigator.of(context).push(
+              //               MaterialPageRoute(builder: (_) => ChatScreen()));
+              //         },
+              //       )
+              //     : Container(),
+              login
+                  ? SettingsItem(
+                      title: 'نقاطي',
+                      image: 'assets/images/cdf.png',
+                      function: () {
+                        print(LocalStorage.getData(key: 'token'));
+                        if ((LocalStorage.getData(key: 'token') == '' ||
+                            LocalStorage.getData(key: 'token') == null)) {
+                          _showDialog(context,
+                              'لا يمكن عرض المفضلة يجب عليك التسجيل اولا');
+                        } else {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => PointsScreen()));
+                        }
+                      },
+                    )
+                  : Container(),
               SettingsItem(
                 title: 'اتصل بنا',
                 image: 'assets/images/Group 1302.png',
+                function: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (_) => Comment()));
+                },
               ),
-              LocalStorage.getData(key: 'isLogin') != null &&
-                      LocalStorage.getData(key: 'isLogin')
+              SettingsItem(
+                title: 'الشروط والاحكام',
+                image: 'assets/images/icon-account.png',
+                function: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => ConditionsAndRules()));
+                },
+              ),
+              login
                   ? SettingsItem(
                       title: 'تسجيل الخروج',
                       image: 'assets/images/icon-sign-out.png',
@@ -124,6 +204,9 @@ class SettingsScreen extends StatelessWidget {
                             (Route<dynamic> route) => false);
                       },
                     ),
+              SizedBox(
+                height: 100,
+              )
             ],
           ),
         ),

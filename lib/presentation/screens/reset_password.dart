@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:toot/cubits/auth_cubit/auth_cubit.dart';
 import 'package:toot/presentation/widgets/blurry_dialog.dart';
-import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 
 import '../../constants.dart';
 import 'auth_screen.dart';
@@ -44,6 +43,34 @@ class _ResetPasswordState extends State<ResetPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          'استعادة كلمة المرور',
+          style: TextStyle(color: Colors.indigo),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        toolbarHeight: 90,
+        leading: Padding(
+          padding: const EdgeInsets.only(right: 10, bottom: 10),
+          child: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.indigo,
+              ),
+              child: Icon(Icons.arrow_back),
+            ),
+          ),
+        ),
+      ),
       body: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
             if (state is AuthError) {
@@ -94,7 +121,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                   isDense: true,
                                   filled: true,
                                   fillColor: Color(0xffF0F4F8),
-                                  suffixIcon: GestureDetector(
+                                  suffixIcon: InkWell(
                                     onTap: () {
                                       // Update the state i.e. toogle the state of passwordVisible variable
                                       setState(() {
@@ -108,7 +135,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                       color: Colors.grey,
                                     ),
                                   ),
-                                  icon: Image.asset(
+                                  prefixIcon: Image.asset(
                                     'assets/images/icon-padlock.png',
                                     height: 50,
                                     width: 50,
@@ -123,6 +150,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'كلمة المرور مطلوبة';
+                                } else if (value.length < 9) {
+                                  return 'كلمة المرور قصيرة';
                                 }
                                 return null;
                               },
@@ -138,7 +167,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                   isDense: true,
                                   filled: true,
                                   fillColor: Color(0xffF0F4F8),
-                                  suffixIcon: GestureDetector(
+                                  suffixIcon: InkWell(
                                     onTap: () {
                                       // Update the state i.e. toogle the state of passwordVisible variable
                                       setState(() {
@@ -152,7 +181,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                       color: Colors.grey,
                                     ),
                                   ),
-                                  icon: Image.asset(
+                                  prefixIcon: Image.asset(
                                     'assets/images/icon-padlock.png',
                                     height: 50,
                                     width: 50,

@@ -104,10 +104,10 @@ class Cart {
   int? userId;
   int? vendorId;
   int? statusId;
-  int? subTotal;
+  String? subTotal;
   dynamic discount;
-  double? tax;
-  double? total;
+  String? tax;
+  String? total;
   int? quantity;
   dynamic couponId;
   int? addressId;
@@ -136,10 +136,10 @@ class Cart {
         userId: json["user_id"],
         vendorId: json["vendor_id"],
         statusId: json["status_id"],
-        subTotal: json["sub_total"],
+        subTotal: json["sub_total"].toString(),
         discount: json["discount"],
-        tax: json["tax"].toDouble(),
-        total: json["total"].toDouble(),
+        tax: json["tax"].toString(),
+        total: json["total"].toString(),
         quantity: json["quantity"],
         couponId: json["coupon_id"],
         addressId: json["address_id"],
@@ -242,8 +242,8 @@ class Item {
         productId: json["product_id"],
         hasGiftCard: json["has_gift_card"],
         hasPersonalName: json["has_personal_name"],
-        subTotal: json["sub_total"],
-        total: json["total"],
+        subTotal: json["sub_total"].toInt(),
+        total: json["total"].toInt(),
         count: json["count"],
         weightId: json["weight_id"],
         createdAt: json["created_at"],

@@ -10,6 +10,7 @@ import 'orders_screen.dart';
 
 class OrdersDetailsScreen extends StatefulWidget {
   final int id;
+
   OrdersDetailsScreen({required this.id});
 
   @override
@@ -20,6 +21,7 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
   @override
   void initState() {
     BlocProvider.of<CartCubit>(context).fetchOrderStatus(widget.id);
+
     super.initState();
   }
 
@@ -60,7 +62,9 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
           if (state is OrderStatusLoaded) {
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: 0.04.sw),
-              child: Column(
+              child: ListView(
+                shrinkWrap: true,
+                physics: const AlwaysScrollableScrollPhysics(),
                 children: [
                   Center(
                       child: Image.asset(
@@ -71,85 +75,78 @@ class _OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                   SizedBox(
                     height: 20,
                   ),
-                  ListView(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Column(
-                        children: [
-                          state.order.expectedTime.toString() != "null"
-                              ? Text(
-                                  'الوقت المتوقع لاستلام الطلب : ' +
-                                      state.order.expectedTime.toString() +
-                                      ' ' +
-                                      'دقيقة',
-                                  style: TextStyle(fontSize: 16),
-                                )
-                              : Container(),
-                          Text(
-                            'رقم الطلب' + ' ' + widget.id.toString(),
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: state.order.statusHistories!.length,
-                              padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
-                              itemBuilder: (BuildContext context, int index) {
-                                return Container(
-                                  alignment: Alignment.center,
-                                  margin: EdgeInsets.all(
-                                    20,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: SizedBox(),
-                                        flex: 2,
-                                      ),
-                                      Container(
-                                        width: 50,
-                                        child: Image.network(
-                                          '${state.order.statusHistories![index].status!.image}',
-                                          fit: BoxFit.contain,
-                                          height: 35,
-                                          width: 35,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 5,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "${state.order.statusHistories![index].status!.name}",
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            Text(
-                                              "${state.order.statusHistories![index].status!.createdAt}",
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: SizedBox(),
-                                        flex: 2,
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }),
-                        ],
-                      )
-                    ],
+                  SizedBox(
+                    height: 5,
                   ),
+                  Column(
+                    children: [
+                      state.order.expectedTime.toString() != "null"
+                          ? Text(
+                              'الوقت المتوقع لاستلام الطلب : ' +
+                                  state.order.expectedTime.toString() +
+                                  ' ' +
+                                  'دقيقة',
+                              style: TextStyle(fontSize: 16),
+                            )
+                          : Container(),
+                      Text(
+                        'رقم الطلب' + ' ' + widget.id.toString(),
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      ListView.builder(
+                          shrinkWrap: true,
+                          physics: ScrollPhysics(),
+                          itemCount: state.order.statusHistories!.length,
+                          padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                          itemBuilder: (BuildContext context, int index) {
+                            return Container(
+                              alignment: Alignment.center,
+                              margin: EdgeInsets.all(
+                                20,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: SizedBox(),
+                                    flex: 2,
+                                  ),
+                                  Container(
+                                    width: 50,
+                                    child: Image.network(
+                                      '${state.order.statusHistories![index].status!.image}',
+                                      fit: BoxFit.contain,
+                                      height: 35,
+                                      width: 35,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 5,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "${state.order.statusHistories![index].status!.name}",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        Text(
+                                          "${state.order.statusHistories![index].status!.createdAt}",
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: SizedBox(),
+                                    flex: 2,
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                    ],
+                  )
                 ],
               ),
             );
