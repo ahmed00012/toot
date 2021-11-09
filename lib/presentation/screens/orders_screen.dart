@@ -35,18 +35,35 @@ class _OrdersScreenState extends State<OrdersScreen> {
           builder: (context, state) {
             if (state is LastOrdersLoaded) {
               final orders = state.orders;
-              return ListView.builder(
-                  itemCount: orders.length,
-                  shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
-                  itemBuilder: (context, index) => OrderItem(
-                        id: orders[index].id!,
-                        cart: orders[index].cart!,
-                        cartStatus: orders[index].status!.name!,
-                        function: () async {
-                          setState(() {});
-                        },
-                      ));
+              if (orders.isEmpty)
+                return Column(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.1,
+                    ),
+                    Center(
+                      child: Container(
+                        height: 220,
+                        width: 220,
+                        child: Lottie.asset('assets/images/lf20_vnha5z2s.json'),
+                      ),
+                    ),
+                    Text('قائمة طلباتك فارغة قم بالطلب الان ')
+                  ],
+                );
+              else
+                return ListView.builder(
+                    itemCount: orders.length,
+                    shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
+                    itemBuilder: (context, index) => OrderItem(
+                          id: orders[index].id!,
+                          cart: orders[index].cart!,
+                          cartStatus: orders[index].status!.name!,
+                          function: () async {
+                            setState(() {});
+                          },
+                        ));
             } else {
               return Center(
                   child: Container(

@@ -128,8 +128,48 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  _checkInternet() async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {}
+    } on SocketException catch (_) {
+      return showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Center(
+                child: const Text(
+                  'عفوا',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+              content: Text(
+                'لا يوجد اتصال بالانترنت',
+                textAlign: TextAlign.center,
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'حسنا',
+                    style: TextStyle(color: Color(0xff7C39CB)),
+                  ),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => BottomNavBar()));
+                  },
+                ),
+              ],
+            );
+          });
+    }
+  }
+
   @override
   void initState() {
+    _checkInternet();
     getLocalStorage();
     fcmNotification();
     BlocProvider.of<ProductCubit>(context).fetchCategories();
@@ -279,7 +319,7 @@ class ShopsListView extends StatelessWidget {
                                 width: 30,
                               )
                             : Image.asset(
-                                'assets/images/logo.png',
+                                'assets/images/1024.png',
                                 height: 30,
                                 width: 30,
                               ),

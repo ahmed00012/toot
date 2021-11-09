@@ -1,5 +1,6 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toot/data/local_storage.dart';
@@ -114,10 +115,9 @@ class _BottomNavBarState extends State<BottomNavBar>
           child: FloatingActionButton(
             elevation: 0,
             backgroundColor: Color(Constants.mainColor),
-            child: Icon(
+            child:  Icon(
               Icons.shopping_cart,
-              color: Colors.white,
-              size: 25,
+              size: 28,
             ),
             onPressed: () async {
               Navigator.of(context).push(

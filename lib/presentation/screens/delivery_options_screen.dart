@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
-import 'package:toot/presentation/screens/payment_screen.dart';
+import 'package:toot/presentation/screens/order_summary_screen.dart';
 import 'package:toot/presentation/widgets/default_indigo_button.dart';
 import 'package:toot/presentation/widgets/delivery_app_bar.dart';
 import 'package:toot/presentation/widgets/single_choice_delivery.dart';
@@ -87,7 +87,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                               isExpanded = false;
                             });
                           },
-                          title: "توصيل الان",
+                          title: "التوصيل السريع ( 5-60 دقيقة )",
                         ),
                         SingleChoiceDelivery(
                           selectionFunction: singleSelection,
@@ -187,7 +187,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
                             if (deliverySelections[0]) {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(
-                                      builder: (_) => PaymentScreen()))
+                                      builder: (_) => OrderSummaryScreen()))
                                   .then((value) =>
                                       BlocProvider.of<CartCubit>(context)
                                           .emit(InfoLoaded(info: info)));
@@ -199,7 +199,7 @@ class _DeliveryOptionsScreenState extends State<DeliveryOptionsScreen> {
 
                               Navigator.of(context)
                                   .push(MaterialPageRoute(
-                                      builder: (_) => PaymentScreen()))
+                                      builder: (_) => OrderSummaryScreen()))
                                   .then((value) =>
                                       BlocProvider.of<CartCubit>(context)
                                           .emit(InfoLoaded(info: info)));

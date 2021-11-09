@@ -10,6 +10,7 @@ import 'package:toot/data/models/check_box_state.dart';
 import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 
 import '../../constants.dart';
+import 'cart_screen.dart';
 
 class SingleItemScreen extends StatefulWidget {
   final int id;
@@ -452,11 +453,14 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                                 options: [selectedId],
                                                 extras: chosenExtra)
                                             .then((value) {
-                                          Navigator.pop(context, true);
-
-                                          if (widget.isEditable!) {
-                                            Navigator.of(context).pop();
-                                          }
+                                          if (widget.isEditable!)
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        CartScreen()));
+                                          else
+                                            Navigator.pop(context, true);
                                         });
                                         // Navigator.pop(context);
                                       },

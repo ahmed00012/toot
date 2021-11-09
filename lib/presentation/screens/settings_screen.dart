@@ -192,6 +192,9 @@ class SettingsScreen extends StatelessWidget {
                         LocalStorage.saveData(key: 'isLogin', value: false);
                         LocalStorage.saveData(key: 'token', value: '');
                         LocalStorage.saveData(key: 'cart_token', value: '');
+                        LocalStorage.saveData(key: 'phone', value: '');
+                        LocalStorage.saveData(key: 'name', value: '');
+                        LocalStorage.saveData(key: 'counter', value: 0);
                       },
                     )
                   : SettingsItem(

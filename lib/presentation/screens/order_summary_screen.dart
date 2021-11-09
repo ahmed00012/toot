@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
-import 'package:toot/data/local_storage.dart';
+import 'package:toot/presentation/screens/add_visa_screen.dart';
+import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 import 'package:toot/presentation/widgets/cart_item.dart';
-import 'package:toot/presentation/widgets/default_indigo_button.dart';
 import 'package:toot/presentation/widgets/delivery_app_bar.dart';
 import 'package:toot/presentation/widgets/discount_modal_bottom_sheet.dart';
 
@@ -19,9 +20,13 @@ class OrderSummaryScreen extends StatefulWidget {
 }
 
 class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
+  List<bool> selections = List<bool>.filled(2, false, growable: false);
+  String selectionMethod = '';
+  bool done = false;
   @override
   void initState() {
     BlocProvider.of<CartCubit>(context).fetchCart();
+
     super.initState();
   }
 
@@ -49,11 +54,13 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
         builder: (_, state) {
           if (state is CartLoaded) {
             final cartDetails = state.cartDetails;
+            final paymentsMethods = state.payments;
             return SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.only(
                     right: 0.06.sw, left: 0.06.sw, top: 0.02.sh),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ListView.builder(
                       shrinkWrap: true,
@@ -71,44 +78,135 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       ),
                     ),
                     SizedBox(
-                      height:
-                          cartDetails.data!.items!.length < 3 ? 0.21.sh : 18,
+                      height: 20,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('احصل علي خصم مع طلبك'),
-                          Container(
-                            width: 0.35.sw,
-                            height: 0.042.sh,
-                            child: ElevatedButton(
-                              onPressed: () =>
-                                  discountModalBottomSheetMenu(context),
-                              child: Text(
-                                'اضافة رمز ترويجي',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 13),
-                                textAlign: TextAlign.center,
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                  primary: Color(Constants.mainColor)),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: 10,
                             ),
-                          )
-                        ],
-                      ),
+                            ListView.builder(
+                              itemCount: 2,
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      selections = [false, false];
+                                      selections[index] = !selections[index];
+                                      selectionMethod =
+                                          paymentsMethods![index].code;
+                                    });
+                                    if (selectionMethod == 'cash')
+                                      BlocProvider.of<CartCubit>(context)
+                                          .selectPayment(
+                                              method: selectionMethod);
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.symmetric(vertical: 7),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 5),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: !selections[index]
+                                                ? Colors.black
+                                                : Color(Constants.mainColor),
+                                            width: 1),
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          height: 0.1.sw,
+                                          width: 0.1.sw,
+                                          child: Image.network(
+                                            paymentsMethods![index].image,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 15,
+                                        ),
+                                        Text(
+                                          paymentsMethods[index].titleAr,
+                                          style: TextStyle(
+                                            color: selections[index]
+                                                ? Color(Constants.mainColor)
+                                                : Colors.grey.shade600,
+                                            fontSize: 18.sp,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Center(
+                                            child: Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: selections[index]
+                                              ? Icon(
+                                                  FontAwesomeIcons
+                                                      .solidCheckCircle,
+                                                  size: 25.0,
+                                                  color: Color(
+                                                      Constants.mainColor),
+                                                )
+                                              : Icon(
+                                                  FontAwesomeIcons.solidCircle,
+                                                  size: 25.0,
+                                                  color: Colors.grey.shade300,
+                                                ),
+                                        )),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          ],
+                        ),
+                      ],
                     ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    cartDetails.data!.discount != null
+                        ? Container()
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('احصل علي خصم مع طلبك'),
+                                Container(
+                                  width: 0.35.sw,
+                                  height: 0.042.sh,
+                                  child: ElevatedButton(
+                                    onPressed: () =>
+                                        discountModalBottomSheetMenu(context),
+                                    child: Text(
+                                      'اضافة رمز ترويجي',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 13),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Color(Constants.mainColor)),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
                     SizedBox(
                       height: 10,
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'المجموع الفرعي',
+                            'قيمة المنتجات',
                             style: TextStyle(
                                 fontSize: 16.sp,
                                 color: Colors.blueGrey.shade400),
@@ -122,7 +220,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -141,7 +239,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -159,21 +257,50 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         ],
                       ),
                     ),
+                    cartDetails.data!.discount == null
+                        ? Container()
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'كوبون الخصم/نقاط الخصم',
+                                  style: TextStyle(
+                                      fontSize: 16.sp,
+                                      color: Colors.blueGrey.shade400),
+                                ),
+                                cartDetails.data!.discount <=
+                                        cartDetails.data!.total
+                                    ? Text('SR ${cartDetails.data!.discount}',
+                                        style: TextStyle(
+                                            fontSize: 16.sp,
+                                            color: Colors.blueGrey.shade400,
+                                            fontWeight: FontWeight.w600))
+                                    : Text(
+                                        'SR ${cartDetails.data!.subTotal + cartDetails.data!.tax + int.parse(cartDetails.data!.deliveryFee!)}',
+                                        style: TextStyle(
+                                            fontSize: 16.sp,
+                                            color: Colors.blueGrey.shade400,
+                                            fontWeight: FontWeight.w600))
+                              ],
+                            ),
+                          ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             'المجموع',
                             style: TextStyle(
-                              fontSize: 22.sp,
+                              fontSize: 20,
                               color: Color(Constants.mainColor),
                             ),
                           ),
                           Text('SR ${cartDetails.data!.total}',
                               style: TextStyle(
-                                  fontSize: 22.sp,
+                                  fontSize: 20,
                                   color: Color(Constants.mainColor),
                                   fontWeight: FontWeight.w800)),
                         ],
@@ -182,16 +309,104 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     SizedBox(
                       height: 0.05.sh,
                     ),
-                    BuildIndigoButton(
-                        title: 'تأكيد الطلب',
-                        function: () {
-                          if (cartDetails.data!.deliveryFee.toString() == '0')
-                            displayToastMessage('مكان التوصيل بعيد عنا');
-                          else {
-                            BlocProvider.of<CartCubit>(context).confirmOrder();
-                            LocalStorage.saveData(key: 'cart_token', value: '');
-                          }
-                        }),
+
+                    Container(
+                      height: 0.06.sh,
+                      width: 0.85.sw,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: Color(Constants.mainColor)),
+                      child: InkWell(
+                        onTap: () {
+                          print(selectionMethod);
+                          if (selectionMethod != '') {
+                            if (selectionMethod == 'card')
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          AddVisaScreen())).then((value) =>
+                                  BlocProvider.of<CartCubit>(context)
+                                      .fetchCart());
+                            else {
+                              BlocProvider.of<CartCubit>(context)
+                                  .confirmOrder();
+                            }
+                          } else
+                            showSimpleNotification(
+                                Container(
+                                  height: 55,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: Text(
+                                      'من فضلك اختر طريقة الدفع المناسبة لك',
+                                      style: TextStyle(
+                                          color: Colors.indigo,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                duration: Duration(seconds: 3),
+                                background: Colors.white);
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.arrow_forward,
+                              size: 20,
+                              color: Colors.white,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              'تأكيد الطلب',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.sp,
+                                  color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    // BuildIndigoButton(
+                    //     title: 'تأكيد الطلب',
+                    //     function: () {
+                    //       if (selectionMethod != '') {
+                    //         if (selectionMethod == 'card')
+                    //           Navigator.push(
+                    //               context,
+                    //               MaterialPageRoute(
+                    //                   builder: (context) => AddVisaScreen()));
+                    //         else
+                    //           BlocProvider.of<CartCubit>(context)
+                    //               .selectPayment(method: selectionMethod)
+                    //               .then((value) =>
+                    //                   BlocProvider.of<CartCubit>(context)
+                    //                       .confirmOrder());
+                    //       } else
+                    //         showSimpleNotification(
+                    //             Container(
+                    //               height: 55,
+                    //               child: Padding(
+                    //                 padding: const EdgeInsets.only(top: 8.0),
+                    //                 child: Text(
+                    //                   'من فضلك اختر طريقة الدفع المناسبة لك',
+                    //                   style: TextStyle(
+                    //                       color: Colors.indigo,
+                    //                       fontSize: 18,
+                    //                       fontWeight: FontWeight.bold),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //             duration: Duration(seconds: 3),
+                    //             background: Colors.white);
+                    //     }
+                    //     // }
+                    //     ),
                     SizedBox(
                       height: 0.05.sh,
                     ),
@@ -228,29 +443,36 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
     );
   }
 
-  void displayToastMessage(var toastMessage) {
-    // Fluttertoast.showToast(
-    //     msg: toastMessage.toString(),
-    //     toastLength: Toast.LENGTH_SHORT,
-    //     gravity: ToastGravity.BOTTOM,
-    //     textColor: Colors.white,
-    //     fontSize: 16.0);
-    showSimpleNotification(
-        Container(
-          height: 50,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              toastMessage,
-              style: TextStyle(
-                  color: Color(Constants.mainColor),
-                  fontSize: 18,
-                  fontFamily: 'Tajawal',
-                  fontWeight: FontWeight.bold),
+  displayToastMessage(var toastMessage) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(
+            child: const Text(
+              'عفوا',
+              style: TextStyle(color: Colors.red),
             ),
           ),
-        ),
-        duration: Duration(seconds: 3),
-        background: Colors.white);
+          content: Text(
+            toastMessage,
+            textAlign: TextAlign.center,
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                'حسنا',
+                style: TextStyle(color: Color(0xff7C39CB)),
+              ),
+              onPressed: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => BottomNavBar()));
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

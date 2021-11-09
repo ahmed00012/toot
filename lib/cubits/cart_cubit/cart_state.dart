@@ -11,7 +11,8 @@ class AddedToCart extends CartState {}
 
 class CartLoaded extends CartState {
   final CartItem cartDetails;
-  CartLoaded({required this.cartDetails});
+  List? payments;
+  CartLoaded({required this.cartDetails, this.payments});
 }
 
 class CartEmpty extends CartState {}

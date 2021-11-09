@@ -8,6 +8,7 @@ class SingleChoiceItem extends StatefulWidget {
   final int index;
   final Function function;
   final int id;
+  final String subtitle;
   final List<bool> choicesList;
 
   SingleChoiceItem(
@@ -15,6 +16,7 @@ class SingleChoiceItem extends StatefulWidget {
       required this.index,
       required this.function,
       required this.choicesList,
+      required this.subtitle,
       required this.id});
 
   @override
@@ -45,14 +47,38 @@ class _SingleChoiceItemState extends State<SingleChoiceItem> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              widget.title,
-              style: TextStyle(
-                color: widget.choicesList[widget.index] == true
-                    ? Colors.white
-                    : Colors.grey.shade600,
-                fontSize: 18.sp,
-              ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.title,
+                  style: TextStyle(
+                    color: widget.choicesList[widget.index] == true
+                        ? Colors.white
+                        : Colors.grey.shade600,
+                    fontSize: 18.sp,
+                  ),
+                ),
+                SizedBox(
+                  height: 2,
+                ),
+                widget.subtitle != "null"
+                    ? Container(
+                        width: 150,
+                        child: Text(
+                          widget.subtitle,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: widget.choicesList[widget.index] == true
+                                ? Colors.white
+                                : Colors.black38,
+                            fontSize: 14,
+                          ),
+                        ),
+                      )
+                    : Container(),
+              ],
             ),
             Center(
                 child: Padding(

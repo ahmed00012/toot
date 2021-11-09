@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -6,6 +7,7 @@ import 'package:toot/constants.dart';
 import 'package:toot/data/models/offer.dart';
 import 'package:toot/data/web_services/product_web_service.dart';
 import 'package:toot/presentation/screens/single_notification_screen.dart';
+import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -134,77 +136,80 @@ class BuildNotificationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => SingleNotificationScreen(
-                  id: id,
-                  details: details,
-                  title: title,
-                  image: image,
-                )));
+    return WillPopScope(
+      onWillPop: () {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BottomNavBar()));
+        return Future.value(true);
       },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: Colors.grey.shade100),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: image != ""
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(15),
-                          topLeft: Radius.circular(15)),
-                      child: Image.network(
-                        image,
-                        width: 1.sw,
-                        height: 200,
-                        fit: BoxFit.cover,
-                      ))
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.image_not_supported_outlined,
-                          size: 150,
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Text(
-                          'لا يتوفر صورة لهذا المنتج',
-                          style: TextStyle(fontSize: 13),
-                        )
-                      ],
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => SingleNotificationScreen(
+                    id: id,
+                    details: details,
+                    title: title,
+                    image: image,
+                  )));
+        },
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: Colors.grey.shade100),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: image != ""
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(15),
+                            topLeft: Radius.circular(15)),
+                        child: Image.network(
+                          image,
+                          width: 1.sw,
+                          height: 200,
+                          fit: BoxFit.fill,
+                        ))
+                    : ClipRRect(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(15),
+                            topLeft: Radius.circular(15)),
+                        child: Image.asset(
+                          "assets/images/دون صوره.png",
+                          width: 1.sw,
+                          height: 200,
+                          fit: BoxFit.fill,
+                        )),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                          color: Color(Constants.mainColor),
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w100),
                     ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  title,
-                  style: TextStyle(
-                      color: Color(Constants.mainColor),
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w100),
-                ),
-                SizedBox(
-                  height: 3,
-                ),
-                Text(
-                  details,
-                  style: TextStyle(color: Colors.grey.shade500),
-                ),
-              ],
-            ),
-          ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(5, 2, 10, 5),
+                    child: Text(
+                      details,
+                      maxLines: 1,
+                      style:
+                          TextStyle(color: Colors.grey.shade500, fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -80,24 +80,29 @@ class CartItem extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8)),
-                padding: EdgeInsets.symmetric(vertical: 12),
+                padding: EdgeInsets.symmetric(vertical: 4),
                 child: Row(
                   children: [
                     Expanded(
                       child: Text(
                         title ?? 'منتج',
-                        textAlign: TextAlign.center,
                         style: TextStyle(
                             overflow: TextOverflow.ellipsis,
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: FontWeight.w300),
                       ),
                     ),
-                    Image.network(
-                      image!,
-                      width: 50,
-                      height: 50,
-                    ),
+                    image == null
+                        ? Image.asset(
+                            'assets/images/دون صوره.png',
+                            width: 50,
+                            height: 50,
+                          )
+                        : Image.network(
+                            image!,
+                            width: 50,
+                            height: 50,
+                          ),
                   ],
                 ),
                 // Column(
@@ -137,19 +142,15 @@ class CartItem extends StatelessWidget {
                 Divider(
                   color: Colors.black26,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Row(
-                    children: [
-                      Text('الوزن', style: TextStyle(fontSize: 16)),
-                      Spacer(),
-                      extra.toString() == "[]"
-                          ? Text(
-                              'لا يوجد',
-                              style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.bold),
-                            )
-                          : Column(
+                extra.toString() == "[]"
+                    ? Container()
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Row(
+                          children: [
+                            Text('الخيارات', style: TextStyle(fontSize: 16)),
+                            Spacer(),
+                            Column(
                               children: extra!
                                   .map((e) => Text(
                                         e.optionvalue.nameAr,
@@ -159,25 +160,23 @@ class CartItem extends StatelessWidget {
                                       ))
                                   .toList(),
                             )
-                    ],
-                  ),
-                ),
-                Divider(
-                  color: Colors.black26,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Row(
-                    children: [
-                      Text('الاضافات', style: TextStyle(fontSize: 16)),
-                      Spacer(),
-                      addons.toString() == "[]"
-                          ? Text(
-                              'لا يوجد',
-                              style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.bold),
-                            )
-                          : Column(
+                          ],
+                        ),
+                      ),
+                addons.toString() == "[]"
+                    ? Container()
+                    : Divider(
+                        color: Colors.black26,
+                      ),
+                addons.toString() == "[]"
+                    ? Container()
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Row(
+                          children: [
+                            Text('الاضافات', style: TextStyle(fontSize: 16)),
+                            Spacer(),
+                            Column(
                               children: addons!
                                   .map((e) => Text(
                                         e.addon!.nameAr ?? '',
@@ -187,12 +186,14 @@ class CartItem extends StatelessWidget {
                                       ))
                                   .toList(),
                             ),
-                    ],
-                  ),
-                ),
-                Divider(
-                  color: Colors.black26,
-                ),
+                          ],
+                        ),
+                      ),
+                addons.toString() == "[]"
+                    ? Container()
+                    : Divider(
+                        color: Colors.black26,
+                      ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Row(
@@ -200,7 +201,7 @@ class CartItem extends StatelessWidget {
                       Text('الاجمالي', style: TextStyle(fontSize: 16)),
                       Spacer(),
                       Text(
-                        price.toString() + ' RS',
+                        price.toString() + ' SR',
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.bold),
                       )

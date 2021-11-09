@@ -53,17 +53,14 @@ class _ItemsScreenState extends State<ItemsScreen>
       newItems = rawData.map((item) => Item.fromJson(item)).toList();
       rawData = [];
 
-      print(newItems.length);
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems, 'no');
         newItems = [];
-        print('osama2' + newItems.toString());
       } else {
         final nextPageKey = pageKey + 1;
         _pagingController.appendPage(newItems, nextPageKey, 'no');
         newItems = [];
-        print('osama3' + newItems.toString());
       }
     } catch (error) {
       _pagingController.error = error;
@@ -114,21 +111,14 @@ class _ItemsScreenState extends State<ItemsScreen>
       rawData = await ProductWebServices().fetchItems(
           shopId: widget.shopId, catId: catId, page: pageKey, filter: filter);
       newItems = rawData.map((item) => Item.fromJson(item)).toList();
-      rawData = [];
-
-      print('osama' + rawData.toString());
-      print('osama1' + newItems.toString());
-      print(newItems.length);
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems, 'yes');
         newItems = [];
-        print('osama2' + newItems.toString());
       } else {
         final nextPageKey = pageKey + 1;
         _pagingController.appendPage(newItems, nextPageKey, 'yes');
         newItems = [];
-        print('osama3' + newItems.toString());
       }
     } catch (error) {
       _pagingController.error = error;
@@ -393,7 +383,7 @@ class _ItemsScreenState extends State<ItemsScreen>
                                         backgroundColor:
                                             Color(Constants.mainColor),
                                         content: Text(
-                                          'تم اضافة المنتج الي السلة بنجاح.',
+                                          'تم اضافة المنتج بنجاح.',
                                           style: TextStyle(
                                               fontSize: 14,
                                               fontFamily: 'Tajawal'),
@@ -495,9 +485,9 @@ class _ItemsScreenState extends State<ItemsScreen>
                                                               Color(Constants
                                                                   .mainColor),
                                                           content: Text(
-                                                            'تم اضافة المنتج الي السلة بنجاح.',
+                                                            'تم اضافة المنتج بنجاح.',
                                                             style: TextStyle(
-                                                                fontSize: 14,
+                                                                fontSize: 12,
                                                                 fontFamily:
                                                                     'Tajawal'),
                                                           ),
@@ -544,7 +534,7 @@ class _ItemsScreenState extends State<ItemsScreen>
                                                               Color(Constants
                                                                   .mainColor),
                                                           content: Text(
-                                                            'تم حذف المنتج من السلة بنجاح.',
+                                                            'تم حذف المنتج بنجاح.',
                                                             style: TextStyle(
                                                                 fontSize: 14,
                                                                 fontFamily:
@@ -651,8 +641,7 @@ class _ItemsScreenState extends State<ItemsScreen>
                                               ? Text(
                                                   'RS ${item.beforeDiscount}',
                                                   style: TextStyle(
-                                                      color:
-                                                          Colors.grey.shade400,
+                                                      color: Colors.red,
                                                       fontSize: 12,
                                                       decoration: TextDecoration
                                                           .lineThrough),

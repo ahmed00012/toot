@@ -59,7 +59,7 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
         appBar: AppBar(
           title: Text(
             'تأكيد رقم الهاتف',
-            style: TextStyle(color: Colors.indigo),
+            style: TextStyle(color: Color(Constants.mainColor)),
           ),
           centerTitle: true,
           backgroundColor: Colors.white,
@@ -76,7 +76,7 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
                 width: 50,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.indigo,
+                  color: Color(Constants.mainColor),
                 ),
                 child: Icon(Icons.arrow_back),
               ),
@@ -145,7 +145,7 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
                           obscuringWidget: Center(
                             child: Icon(
                               FontAwesomeIcons.starOfLife,
-                              color: Colors.indigo,
+                              color: Color(Constants.mainColor),
                             ),
                           ),
                           blinkWhenObscuring: true,

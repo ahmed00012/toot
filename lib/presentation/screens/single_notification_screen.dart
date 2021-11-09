@@ -28,16 +28,27 @@ class SingleNotificationScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15)),
-                    child: Image.network(
-                      image,
-                      width: 1.sw,
-                      height: 0.3.sh,
-                      fit: BoxFit.cover,
-                    )),
+                child: image != ""
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(15),
+                            topLeft: Radius.circular(15)),
+                        child: Image.network(
+                          image,
+                          width: 1.sw,
+                          height: 0.3.sh,
+                          fit: BoxFit.cover,
+                        ))
+                    : ClipRRect(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(15),
+                            topLeft: Radius.circular(15)),
+                        child: Image.asset(
+                          "assets/images/دون صوره.png",
+                          width: 1.sw,
+                          height: 200,
+                          fit: BoxFit.fill,
+                        )),
               ),
               SizedBox(
                 height: 10,

@@ -15,6 +15,7 @@ class ProductRepository {
 
   Future<List<ItemDetails>> fetchBanner() async {
     final rawData = await productWebServices.fetchBanner();
+
     return rawData;
   }
 

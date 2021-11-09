@@ -90,7 +90,7 @@ class _AuthScreenState extends State<AuthScreen> {
       appBar: AppBar(
         title: Text(
           'تسجيل الدخول',
-          style: TextStyle(color: Colors.indigo),
+          style: TextStyle(color: Color(Constants.mainColor)),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -108,7 +108,7 @@ class _AuthScreenState extends State<AuthScreen> {
               width: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.indigo,
+                color: Color(Constants.mainColor),
               ),
               child: Icon(Icons.arrow_back),
             ),

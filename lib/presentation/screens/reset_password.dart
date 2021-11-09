@@ -47,7 +47,7 @@ class _ResetPasswordState extends State<ResetPassword> {
       appBar: AppBar(
         title: Text(
           'استعادة كلمة المرور',
-          style: TextStyle(color: Colors.indigo),
+          style: TextStyle(color: Color(Constants.mainColor)),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -64,7 +64,7 @@ class _ResetPasswordState extends State<ResetPassword> {
               width: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.indigo,
+                color: Color(Constants.mainColor),
               ),
               child: Icon(Icons.arrow_back),
             ),

@@ -26,7 +26,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
   TextEditingController district = TextEditingController();
   GoogleMapController? mapController;
   bool markerTapped = false;
-
+  final _formKey = GlobalKey<FormState>();
   Marker? marker;
   double? lat;
   double? lng;
@@ -130,7 +130,6 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();

@@ -53,7 +53,7 @@ class _CartScreenState extends State<CartScreen> {
         builder: (context, state) {
           if (state is CartLoaded) {
             final cartDetails = state.cartDetails;
-            print(cartDetails.data);
+
             // if (state.cartDetails.data == null) {
             //   return Center(
             //     child: Text(
@@ -112,15 +112,15 @@ class _CartScreenState extends State<CartScreen> {
                         }),
                   ),
                   SizedBox(
-                    height: 18,
+                    height: 15,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'المجموع الفرعي',
+                          "قيمة المنتجات",
                           style: TextStyle(
                               fontSize: 16.sp, color: Colors.blueGrey.shade400),
                         ),
@@ -133,7 +133,7 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -150,26 +150,26 @@ class _CartScreenState extends State<CartScreen> {
                       ],
                     ),
                   ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(vertical: 3.0),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: [
+                  //       Text(
+                  //         'التوصيل',
+                  //         style: TextStyle(
+                  //             fontSize: 16.sp, color: Colors.blueGrey.shade400),
+                  //       ),
+                  //       Text('SR ${cartDetails.data!.deliveryFee}',
+                  //           style: TextStyle(
+                  //               fontSize: 16.sp,
+                  //               color: Colors.blueGrey.shade400,
+                  //               fontWeight: FontWeight.w600))
+                  //     ],
+                  //   ),
+                  // ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'التوصيل',
-                          style: TextStyle(
-                              fontSize: 16.sp, color: Colors.blueGrey.shade400),
-                        ),
-                        Text('SR ${cartDetails.data!.deliveryFee}',
-                            style: TextStyle(
-                                fontSize: 16.sp,
-                                color: Colors.blueGrey.shade400,
-                                fontWeight: FontWeight.w600))
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -192,7 +192,7 @@ class _CartScreenState extends State<CartScreen> {
                     height: 0.05.sh,
                   ),
                   BuildIndigoButton(
-                      title: 'الدفع',
+                      title: 'استكمال الطلب',
                       function: () async {
                         if (LocalStorage.getData(key: 'token') == null) {
                           _showDialog(context,

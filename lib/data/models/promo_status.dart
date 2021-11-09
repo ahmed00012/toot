@@ -15,6 +15,11 @@ class PromoStatus {
         cart: PricesAfterPromo.fromJson(json["cart"]),
       );
 
+  factory PromoStatus.fromJson1(Map<String, dynamic> json) => PromoStatus(
+        success: json["success"],
+        message: json["message"],
+        // cart: PricesAfterPromo.fromJson(json["cart"]),
+      );
   Map<String, dynamic> toJson() => {
         "success": success,
         "message": message,

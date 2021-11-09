@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -52,7 +53,7 @@ class ProductWebServices {
   }
 
   Future<List<ItemDetails>> fetchBanner() async {
-    Response response = await dio.get('sliders');
+    Response response = await dio.get('sliders?limit=10');
     var body = response.data;
     print(response.data);
     List<ItemDetails> items = [];
@@ -74,12 +75,10 @@ class ProductWebServices {
   Future<dynamic> fetchItems(
       {int? shopId, int? catId, int? page, String? filter}) async {
     try {
-      print(shopId);
-      print(catId);
       Response response = await dio.get(
           'vendors/$shopId/$catId/products?filter=$filter',
           queryParameters: {'page': page});
-
+      log(response.data['data'].toString());
       return response.data['data'];
     } on DioError catch (e) {
       print(e.response!.data);

@@ -5,27 +5,60 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
 
 import '../../constants.dart';
-import 'blurry_dialog.dart';
 
 void discountModalBottomSheetMenu(context) {
   TextEditingController textEditingController = TextEditingController();
 
   _showDialog(BuildContext context, BuildContext builder, String title) {
-    VoidCallback continueCallBack = () {
-      Navigator.of(context).pop();
-      Navigator.of(builder).pop();
-      BlocProvider.of<CartCubit>(context).fetchCart();
-    };
-    BlurryDialog alert =
-        BlurryDialog('حالة كوبون الخصم', title, continueCallBack);
-
-    showDialog(
+    return showDialog<void>(
       context: context,
+      barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return alert;
+        return AlertDialog(
+          title: Center(
+            child: const Text(
+              'حالة كوبون الخصم',
+              style: TextStyle(color: Colors.green),
+            ),
+          ),
+          content: Text(
+            title,
+            textAlign: TextAlign.center,
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                'حسنا',
+                style: TextStyle(color: Color(0xff7C39CB)),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(builder).pop();
+                BlocProvider.of<CartCubit>(context).fetchCart();
+              },
+            ),
+          ],
+        );
       },
     );
   }
+
+  // _showDialog(BuildContext context, BuildContext builder, String title) {
+  //   VoidCallback continueCallBack = () {
+  //     Navigator.of(context).pop();
+  //     Navigator.of(builder).pop();
+  //     BlocProvider.of<CartCubit>(context).fetchCart();
+  //   };
+  //   BlurryDialog alert =
+  //       BlurryDialog('حالة كوبون الخصم', title, continueCallBack,);
+  //
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return alert;
+  //     },
+  //   );
+  // }
 
   showModalBottomSheet(
       context: context,

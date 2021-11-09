@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:toot/data/local_storage.dart';
 import 'package:toot/data/models/address.dart';
 import 'package:toot/data/models/cart_item.dart';
 import 'package:toot/data/models/info.dart';
@@ -43,9 +44,12 @@ class CartRepository {
   Future<dynamic> fetchCart() async {
     final rawData = await cartWebServices.fetchCart();
     print("rawData $rawData");
-    if (rawData != null && rawData['success'] != "0")
+    if (rawData != null && rawData['success'] != "0") {
+      print(rawData['data']['token'].toString() + 'dfkdgiy');
+      LocalStorage.saveData(
+          key: 'cart_token', value: rawData['data']['token'].toString());
       return CartItem.fromJson(rawData);
-    else
+    } else
       return "Empty";
   }
 
@@ -99,7 +103,10 @@ class CartRepository {
     FormData formData =
         FormData.fromMap({'cart_token': cartToken, 'code': code});
     final rawData = await cartWebServices.promoCode(formData);
-    return PromoStatus.fromJson(rawData);
+    if (rawData["success"].toString() == "0")
+      return PromoStatus.fromJson1(rawData);
+    else
+      return PromoStatus.fromJson(rawData);
   }
 
   Future<dynamic> fetchDatesAndTimes({int? id}) async {

@@ -27,83 +27,103 @@ class _PointsScreenState extends State<PointsScreen> {
         builder: (context, state) {
           if (state is MyPointsLoaded) {
             final points = state.points;
-            return SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 0.04.sh,
+            if (points.points!.isEmpty)
+              return Column(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.1,
+                  ),
+                  Center(
+                    child: Container(
+                      height: 320,
+                      width: 320,
+                      child: Lottie.asset('assets/images/lf20_jipdhgss.json'),
                     ),
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-                      height: 0.304.sh,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border:
-                              Border.all(color: Color(Constants.mainColor))),
-                      child: Column(
-                        children: [
-                          BuildPointsDetailsRow(
-                            title: 'مجموع النقاط المكتسبة:',
-                            number: points.totalPoints.toString(),
-                          ),
-                          BuildPointsDetailsRow(
-                            title: 'الحد الادني لتحويل النقاط :',
-                            number: points.pointsLimit.toString(),
-                          ),
-                          BuildPointsDetailsRow(
-                            title: 'النقاط المتبقية :',
-                            number: points.balance.toString(),
-                          ),
-                          SizedBox(
-                            width: 0.41.sw,
-                            height: 40,
-                            child: ElevatedButton(
-                              onPressed:
-                                  points.totalPoints! > points.pointsLimit!
-                                      ? () {
-                                          BlocProvider.of<CartCubit>(context)
-                                              .covertPoints()
-                                              .then((value) {
-                                            Fluttertoast.showToast(
-                                                msg: "تم تحويل النقاط بنجاح");
-                                            setState(() {});
-                                          });
-                                        }
-                                      : null,
-                              child: Text(
-                                'استخدام نقاطي',
-                                textAlign: TextAlign.center,
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                primary: Color(Constants.mainColor),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8)),
-                              ),
+                  ),
+                  Text('قم بالطلب الان للحصول على نقاط الخصم ')
+                ],
+              );
+            else
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 0.04.sh,
+                      ),
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 15),
+                        height: 220,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border:
+                                Border.all(color: Color(Constants.mainColor))),
+                        child: Column(
+                          children: [
+                            BuildPointsDetailsRow(
+                              title: 'مجموع النقاط المكتسبة:',
+                              number: points.totalPoints.toString(),
                             ),
-                          )
-                        ],
+                            BuildPointsDetailsRow(
+                              title: 'الحد الادني لتحويل النقاط :',
+                              number: points.pointsLimit.toString(),
+                            ),
+                            BuildPointsDetailsRow(
+                              title: 'النقاط المتبقية :',
+                              number: points.balance.toString(),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            SizedBox(
+                              width: 0.41.sw,
+                              height: 40,
+                              child: ElevatedButton(
+                                onPressed:
+                                    points.totalPoints! > points.pointsLimit!
+                                        ? () {
+                                            BlocProvider.of<CartCubit>(context)
+                                                .covertPoints()
+                                                .then((value) {
+                                              Fluttertoast.showToast(
+                                                  msg: "تم تحويل النقاط بنجاح");
+                                              setState(() {});
+                                            });
+                                          }
+                                        : null,
+                                child: Text(
+                                  'استخدام نقاطي',
+                                  textAlign: TextAlign.center,
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Color(Constants.mainColor),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    ListView.builder(
-                      itemCount: points.points!.length,
-                      shrinkWrap: true,
-                      physics: ClampingScrollPhysics(),
-                      itemBuilder: (context, index) => BuildItemDetailsCard(
-                        converted: points.points![index].converted!,
-                        orderId: points.points![index].orderId!,
-                        points: points.points![index].points!,
+                      SizedBox(
+                        height: 10,
                       ),
-                    )
-                  ],
+                      ListView.builder(
+                        itemCount: points.points!.length,
+                        shrinkWrap: true,
+                        physics: ClampingScrollPhysics(),
+                        itemBuilder: (context, index) => BuildItemDetailsCard(
+                          converted: points.points![index].converted!,
+                          orderId: points.points![index].orderId!,
+                          points: points.points![index].points!,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            );
+              );
           } else {
             return Center(
                 child: Container(
@@ -170,12 +190,24 @@ class BuildItemDetailsCard extends StatelessWidget {
               decoration: BoxDecoration(
                   shape: BoxShape.circle, color: Color(Constants.mainColor)),
               child: Center(
-                  child: Text(
-                '$pointsنقطة ',
-                style: TextStyle(
-                    fontSize: 18.sp,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800),
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '$points',
+                    style: TextStyle(
+                        fontSize: 18.sp,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800),
+                  ),
+                  Text(
+                    'نقطة ',
+                    style: TextStyle(
+                        fontSize: 18.sp,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800),
+                  )
+                ],
               )),
             )
           ],
@@ -201,14 +233,14 @@ class BuildPointsDetailsRow extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-                fontSize: 22.sp,
+                fontSize: 18,
                 color: Color(Constants.mainColor),
                 fontWeight: FontWeight.w800),
           ),
           Text(
             number,
             style: TextStyle(
-                fontSize: 22.sp,
+                fontSize: 18,
                 color: Color(Constants.mainColor),
                 fontWeight: FontWeight.w800),
           ),

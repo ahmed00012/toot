@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -74,9 +75,9 @@ class CartWebServices {
 
   Future<dynamic> fetchCart() async {
     // try {
-    String? cartToken = LocalStorage.getData(key: 'cart_token');
+    // String? cartToken = LocalStorage.getData(key: 'cart_token');
     String? token = LocalStorage.getData(key: 'token');
-    print("cartToken  => $cartToken");
+    // print("cartToken  => $cartToken");
     print("Token  => $token");
     Response response = await Dio().get(
         'https://toot.work/api/cart/get_cart/${LocalStorage.getData(key: 'cart_token')}',
@@ -84,7 +85,7 @@ class CartWebServices {
           "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
           "Content-Language": 'ar',
         }));
-    print(response.data);
+    log(response.data.toString());
     return response.data;
     //     throw response.data['message'];
     //   } else {
@@ -177,19 +178,14 @@ class CartWebServices {
   }
 
   Future<dynamic> promoCode(FormData formData) async {
-    try {
-      Response response =
-          await Dio().post('https://toot.work/api/cart/add_coupon',
-              data: formData,
-              options: Options(headers: {
-                "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
-              }));
-      print(response.data);
-      return response.data;
-    } on DioError catch (e) {
-      print(e.response!.data);
-      throw e.response!.data;
-    }
+    Response response =
+        await Dio().post('https://toot.work/api/cart/add_coupon',
+            data: formData,
+            options: Options(headers: {
+              "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+            }));
+    print(response.data);
+    return response.data;
   }
 
   Future<dynamic> fetchDatesAndTimes({int? id}) async {
