@@ -10,14 +10,14 @@ class Points {
   String? success;
   int? totalPoints;
   int? pointsLimit;
-  String? balance;
+  int? balance;
   List<Point>? points;
 
   factory Points.fromJson(Map<String, dynamic> json) => Points(
         success: json["success"],
         totalPoints: json["total_points"],
         pointsLimit: json["points_limit"],
-        balance: json["balance"],
+        balance: json["points_to_cash"],
         points: List<Point>.from(json["points"].map((x) => Point.fromJson(x))),
       );
 

@@ -30,7 +30,7 @@ class Data {
 
   int? id;
   var subTotal;
-  dynamic discount;
+  int? discount;
   var tax;
   var total;
   int? quantity;

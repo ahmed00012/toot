@@ -44,10 +44,10 @@ class ProductCubit extends Cubit<ProductState> {
     emit(CategoriesLoading());
     getLocation();
     List<ItemDetails> items = await productRepository.fetchBanner();
-    LocalStorage.saveData(key: 'counter', value: 0);
     var categories = await productRepository.fetchCategories(
         long: LocalStorage.getData(key: 'long'),
         lat: LocalStorage.getData(key: 'lat'));
+
     emit(
       CategoriesLoaded(categories: categories, items: items),
     );
@@ -79,7 +79,8 @@ class ProductCubit extends Cubit<ProductState> {
     if (itemDetails.options.isNotEmpty)
       emit(ItemDetailsLoaded(
           itemDetails: itemDetails,
-          price: double.parse(itemDetails.options[0].price)));
+          price: double.parse(itemDetails.options[0].price),
+          optionId: itemDetails.options[0].id));
     else
       emit(ItemDetailsLoaded(
           itemDetails: itemDetails, price: double.parse(itemDetails.price)));

@@ -250,7 +250,7 @@ class Item {
         updatedAt: json["updated_at"],
         note: json["note"],
         vendorId: json["vendor_id"],
-        price: json["price"],
+        price: json["price"].toString(),
         productName: json["product_name"],
         productImage: json["product_image"],
         weight: json["weight"],

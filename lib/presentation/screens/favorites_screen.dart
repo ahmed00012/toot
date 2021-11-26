@@ -8,6 +8,7 @@ import 'package:toot/presentation/screens/single_item_screen.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
 
 import '../../constants.dart';
+import 'cart_screen.dart';
 
 class FavoritesScreen extends StatefulWidget {
   @override
@@ -137,9 +138,8 @@ class _FavoriteItemState extends State<FavoriteItem> {
                       width: 0.2.sw,
                     ),
                   )
-                : Icon(
-                    Icons.image_not_supported_outlined,
-                    size: 40,
+                : Image.asset(
+                    'assets/images/دون صوره.png',
                   ),
             SizedBox(
               width: 0.08.sw,
@@ -169,14 +169,35 @@ class _FavoriteItemState extends State<FavoriteItem> {
                   height: 0.042.sh,
                   child: TextButton.icon(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => SingleItemScreen(
-                                id: widget.id,
-                                title: widget.name,
-                                price: double.parse(widget.price),
-                                removeFav: true,
-                                shopId: widget.shopId,
-                                isFav: widget.isFav)));
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(
+                                builder: (_) => SingleItemScreen(
+                                    id: widget.id,
+                                    title: widget.name,
+                                    price: double.parse(widget.price),
+                                    removeFav: true,
+                                    shopId: widget.shopId,
+                                    isFav: true)))
+                            .then((value) {
+                          if (value != null) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor: Color(Constants.mainColor),
+                              content: Text(
+                                'تم اضافة المنتج بنجاح.',
+                                style: TextStyle(
+                                    fontSize: 14, fontFamily: 'Tajawal'),
+                              ),
+                              action: SnackBarAction(
+                                label: 'الذهاب الي السلة',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (_) => CartScreen()));
+                                },
+                              ),
+                            ));
+                          }
+                        });
                       },
                       icon: Icon(
                         Icons.add_shopping_cart,

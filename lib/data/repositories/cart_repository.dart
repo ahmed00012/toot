@@ -75,9 +75,7 @@ class CartRepository {
   }
 
   Future<dynamic> selectAddress({String? cartToken, int? addressId}) async {
-    FormData formData =
-        FormData.fromMap({'cart_token': cartToken, 'address_id': addressId});
-    return await cartWebServices.selectAddress(formData);
+    return await cartWebServices.selectAddress(addressId);
   }
 
   Future<dynamic> fetchPayments() async {

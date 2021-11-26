@@ -26,12 +26,13 @@ class AuthCubit extends Cubit<AuthState> {
       String? email,
       String? phone,
       String? password,
+      String? identityNo,
       String? confirmPassword}) async {
     emit(AuthLoading());
     await authRepository
         .register(
       name: name,
-      email: email,
+      identityNo: identityNo,
       password: password,
       phone: phone,
     )
@@ -45,7 +46,7 @@ class AuthCubit extends Cubit<AuthState> {
   login({String? phone, String? password}) async {
     emit(AuthLoading());
     print(LocalStorage.getData(key: 'token_fcm'));
-
+    LocalStorage.saveData(key: 'counter', value: 0);
     await authRepository
         .login(
       password: password,

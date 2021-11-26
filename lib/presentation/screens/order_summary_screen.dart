@@ -5,8 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
-import 'package:toot/presentation/screens/add_visa_screen.dart';
-import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
+import 'package:toot/presentation/screens/telr-web_view.dart';
 import 'package:toot/presentation/widgets/cart_item.dart';
 import 'package:toot/presentation/widgets/delivery_app_bar.dart';
 import 'package:toot/presentation/widgets/discount_modal_bottom_sheet.dart';
@@ -23,10 +22,10 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   List<bool> selections = List<bool>.filled(2, false, growable: false);
   String selectionMethod = '';
   bool done = false;
+  String? url;
   @override
   void initState() {
     BlocProvider.of<CartCubit>(context).fetchCart();
-
     super.initState();
   }
 
@@ -50,6 +49,22 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         )),
                 (Route route) => false);
           }
+          if (state is PaymentAdded) {
+            setState(() {
+              url = state.url;
+            });
+            if (url != '') {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => TelrWebView(
+                            url: url,
+                          ))).then((value) {});
+              BlocProvider.of<CartCubit>(context).fetchCart();
+            } else
+              BlocProvider.of<CartCubit>(context).confirmOrder();
+          }
+          ;
         },
         builder: (_, state) {
           if (state is CartLoaded) {
@@ -69,7 +84,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       itemBuilder: (context, index) => CartItem(
                         title: cartDetails.data!.items![index].productName,
                         image: cartDetails.data!.items![index].productImage,
-                        price: cartDetails.data!.items![index].price,
+                        price: cartDetails.data!.items![index].total.toString(),
                         quantity: cartDetails.data!.items![index].count,
                         id: cartDetails.data!.items![index].productId,
                         shopId: cartDetails.data!.items![index].vendorId,
@@ -94,17 +109,14 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 return InkWell(
-                                  onTap: () {
+                                  onTap: () async {
                                     setState(() {
                                       selections = [false, false];
                                       selections[index] = !selections[index];
                                       selectionMethod =
                                           paymentsMethods![index].code;
                                     });
-                                    if (selectionMethod == 'cash')
-                                      BlocProvider.of<CartCubit>(context)
-                                          .selectPayment(
-                                              method: selectionMethod);
+                                    // if (selectionMethod == 'cash')
                                   },
                                   child: Container(
                                     margin: EdgeInsets.symmetric(vertical: 7),
@@ -113,7 +125,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                             color: !selections[index]
-                                                ? Colors.black
+                                                ? Colors.black38
                                                 : Color(Constants.mainColor),
                                             width: 1),
                                         borderRadius: BorderRadius.circular(8)),
@@ -170,7 +182,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    cartDetails.data!.discount != null
+                    cartDetails.data!.discount.toString() != "null"
                         ? Container()
                         : Padding(
                             padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -257,7 +269,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         ],
                       ),
                     ),
-                    cartDetails.data!.discount == null
+                    cartDetails.data!.discount.toString() == "null"
                         ? Container()
                         : Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5.0),
@@ -270,15 +282,14 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                       fontSize: 16.sp,
                                       color: Colors.blueGrey.shade400),
                                 ),
-                                cartDetails.data!.discount <=
+                                cartDetails.data!.discount! >
                                         cartDetails.data!.total
                                     ? Text('SR ${cartDetails.data!.discount}',
                                         style: TextStyle(
                                             fontSize: 16.sp,
                                             color: Colors.blueGrey.shade400,
                                             fontWeight: FontWeight.w600))
-                                    : Text(
-                                        'SR ${cartDetails.data!.subTotal + cartDetails.data!.tax + int.parse(cartDetails.data!.deliveryFee!)}',
+                                    : Text('SR ${cartDetails.data!.total}',
                                         style: TextStyle(
                                             fontSize: 16.sp,
                                             color: Colors.blueGrey.shade400,
@@ -319,19 +330,39 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       child: InkWell(
                         onTap: () {
                           print(selectionMethod);
-                          if (selectionMethod != '') {
-                            if (selectionMethod == 'card')
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          AddVisaScreen())).then((value) =>
-                                  BlocProvider.of<CartCubit>(context)
-                                      .fetchCart());
-                            else {
+                          if (int.parse(cartDetails.data!.deliveryFee!) != 0) {
+                            if (selectionMethod != '') {
+                              // if (selectionMethod == 'card')
+                              //   Navigator.push(
+                              //       context,
+                              //       MaterialPageRoute(
+                              //           builder: (context) =>
+                              //               AddVisaScreen())).then((value) =>
+                              //       BlocProvider.of<CartCubit>(context)
+                              //           .fetchCart());
+                              // else {
+                              //   BlocProvider.of<CartCubit>(context)
+                              //       .confirmOrder();
+                              // }
                               BlocProvider.of<CartCubit>(context)
-                                  .confirmOrder();
-                            }
+                                  .selectPayment(method: selectionMethod);
+                            } else
+                              showSimpleNotification(
+                                  Container(
+                                    height: 55,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Text(
+                                        'من فضلك اختر طريقة الدفع المناسبة لك',
+                                        style: TextStyle(
+                                            color: Colors.indigo,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  duration: Duration(seconds: 3),
+                                  background: Colors.white);
                           } else
                             showSimpleNotification(
                                 Container(
@@ -339,7 +370,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                   child: Padding(
                                     padding: const EdgeInsets.only(top: 8.0),
                                     child: Text(
-                                      'من فضلك اختر طريقة الدفع المناسبة لك',
+                                      'عذرا موقعك خارج نطاق توصيل مقدم الخدمة',
                                       style: TextStyle(
                                           color: Colors.indigo,
                                           fontSize: 18,
@@ -443,36 +474,36 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
     );
   }
 
-  displayToastMessage(var toastMessage) {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Center(
-            child: const Text(
-              'عفوا',
-              style: TextStyle(color: Colors.red),
-            ),
-          ),
-          content: Text(
-            toastMessage,
-            textAlign: TextAlign.center,
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text(
-                'حسنا',
-                style: TextStyle(color: Color(0xff7C39CB)),
-              ),
-              onPressed: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => BottomNavBar()));
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // displayToastMessage(var toastMessage) {
+  //   return showDialog<void>(
+  //     context: context,
+  //     barrierDismissible: false, // user must tap button!
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Center(
+  //           child: const Text(
+  //             'عفوا',
+  //             style: TextStyle(color: Colors.red),
+  //           ),
+  //         ),
+  //         content: Text(
+  //           toastMessage,
+  //           textAlign: TextAlign.center,
+  //         ),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: const Text(
+  //               'حسنا',
+  //               style: TextStyle(color: Color(0xff7C39CB)),
+  //             ),
+  //             onPressed: () {
+  //               Navigator.pushReplacement(context,
+  //                   MaterialPageRoute(builder: (context) => BottomNavBar()));
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 }

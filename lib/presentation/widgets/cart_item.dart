@@ -16,23 +16,23 @@ class CartItem extends StatelessWidget {
   final int? shopId;
   final List? addons;
   final List? extra;
-  bool? lastItem;
-  CartItem(
-      {required this.image,
-      required this.title,
-      required this.price,
-      required this.quantity,
-      this.function,
-      required this.id,
-      required this.shopId,
-      this.extra,
-      this.addons,
-      this.lastItem});
+  final bool? lastItem;
+  bool? changed;
+  CartItem({
+    required this.image,
+    required this.title,
+    required this.price,
+    required this.quantity,
+    this.function,
+    required this.id,
+    required this.shopId,
+    this.extra,
+    this.addons,
+    this.lastItem,
+  });
 
   @override
   Widget build(BuildContext context) {
-    print(extra);
-    print(addons);
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
         child: Slidable(
@@ -163,7 +163,7 @@ class CartItem extends StatelessWidget {
                           ],
                         ),
                       ),
-                addons.toString() == "[]"
+                extra.toString() == "[]"
                     ? Container()
                     : Divider(
                         color: Colors.black26,

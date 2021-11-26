@@ -3,12 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share/share.dart';
 import 'package:toot/data/local_storage.dart';
 import 'package:toot/presentation/screens/auth_screen.dart';
-import 'package:toot/presentation/screens/contact_us.dart';
 import 'package:toot/presentation/screens/orders_screen.dart';
 import 'package:toot/presentation/screens/points_screen.dart';
 import 'package:toot/presentation/screens/terms_and_conditions.dart';
 import 'package:toot/presentation/widgets/blurry_dialog.dart';
 import 'package:toot/presentation/widgets/customised_appbar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatelessWidget {
   _showDialog(BuildContext context, String title) {
@@ -26,6 +26,11 @@ class SettingsScreen extends StatelessWidget {
       },
     );
   }
+
+  void _launchURL() async => await canLaunch(
+          "https://wa.me/+201116657728/?text=${Uri.parse('hello')}")
+      ? await launch("https://wa.me/+201116657728/?text=${Uri.parse("hello")}")
+      : throw 'Could not launch "https://wa.me/+201116657728/?text=${Uri.parse("hello")}"';
 
   @override
   Widget build(BuildContext context) {
@@ -163,11 +168,10 @@ class SettingsScreen extends StatelessWidget {
                     )
                   : Container(),
               SettingsItem(
-                title: 'اتصل بنا',
+                title: 'الدعم الفني',
                 image: 'assets/images/Group 1302.png',
                 function: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => Comment()));
+                  _launchURL();
                 },
               ),
               SettingsItem(

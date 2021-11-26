@@ -45,6 +45,7 @@ class ProductWebServices {
         'lat': lat ?? 21.543333,
         'long': long ?? 39.172779
       });
+
       return response.data;
     } on DioError catch (e) {
       print(e.toString());
@@ -91,6 +92,7 @@ class ProductWebServices {
       Response response = await dio.get(
         'products/$itemId/details',
       );
+      log(response.data.toString());
       return response.data['product'];
     } on DioError catch (e) {
       print(e.response!.data);

@@ -34,11 +34,12 @@ class CartCubit extends Cubit<CartState> {
       int? quantity,
       List? options,
       List? extras}) async {
-    print("card ${LocalStorage.getData(key: 'cart_token')}");
     emit(CartLoading());
     var value;
+    LocalStorage.saveData(key: 'vendor', value: shopId);
     if (LocalStorage.getData(key: 'cart_token') == null ||
-        LocalStorage.getData(key: 'cart_token') == '')
+        LocalStorage.getData(key: 'cart_token') == '') {
+      print(shopId);
       value = await cartRepository.addToCart(
           productId: productId,
           quantity: quantity,
@@ -46,14 +47,15 @@ class CartCubit extends Cubit<CartState> {
           // cartToken: LocalStorage.getData(key: 'cart_token'),
           extras: extras,
           options: options);
-    else
+    } else {
       value = await cartRepository.addToCart(
           productId: productId,
           quantity: quantity,
           shopId: shopId,
-          cartToken: LocalStorage.getData(key: 'cart_token'),
+          // cartToken: LocalStorage.getData(key: 'cart_token'),
           extras: extras,
           options: options);
+    }
     print(value['cart']['token']);
     LocalStorage.saveData(key: 'cart_token', value: value['cart']['token']);
     LocalStorage.saveData(key: 'counter', value: value['cart']['items_count']);
@@ -62,6 +64,11 @@ class CartCubit extends Cubit<CartState> {
   }
 
   Future<void> removeFromCart({int? productId, bool? lastItem}) async {
+    if (lastItem!) {
+      LocalStorage.removeData(
+        key: 'vendor',
+      );
+    }
     await cartRepository.removeFromCart(
         productId: productId,
         cartToken: LocalStorage.getData(key: 'cart_token'),
@@ -79,7 +86,6 @@ class CartCubit extends Cubit<CartState> {
   }
 
   Future<void> fetchCart() async {
-    print("card ${LocalStorage.getData(key: 'cart_token')}");
     emit(CartLoading());
     var payments = await cartRepository.fetchPayments();
     var cartDetails = await cartRepository.fetchCart();
@@ -142,13 +148,13 @@ class CartCubit extends Cubit<CartState> {
   //   });
   // }
 
-  Future<void> selectPayment({String? method}) async {
-    print("card ${LocalStorage.getData(key: 'cart_token')}");
+  Future<dynamic> selectPayment({String? method}) async {
+    emit(PaymentLoading());
     cartRepository
         .selectPayment(
             cartToken: LocalStorage.getData(key: 'cart_token'), method: method)
-        .catchError((e) {
-      emit(CartError(error: e.toString()));
+        .then((value) {
+      emit(PaymentAdded(method: method, url: value['url'] ?? ''));
     });
   }
 
@@ -159,6 +165,7 @@ class CartCubit extends Cubit<CartState> {
     var value = await cartRepository.confirmOrder(
         cartToken: LocalStorage.getData(key: 'cart_token'));
     LocalStorage.saveData(key: 'cart_token', value: '');
+    LocalStorage.removeData(key: 'vendor');
     emit(OrderConfirmed(num: value['order']['id']));
 
     LocalStorage.saveData(key: 'cart_token', value: '');
@@ -215,10 +222,9 @@ class CartCubit extends Cubit<CartState> {
 
   Future<void> fetchMyPoints() async {
     emit(MyPointsLoading());
-    cartRepository
-        .fetchMyPoints()
-        .then((points) => emit(MyPointsLoaded(points: points)))
-        .catchError((e) {
+    cartRepository.fetchMyPoints().then((points) {
+      emit(MyPointsLoaded(points: points));
+    }).catchError((e) {
       emit(CartError(error: e.toString()));
     });
   }

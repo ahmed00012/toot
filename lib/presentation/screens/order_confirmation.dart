@@ -9,7 +9,7 @@ import '../../constants.dart';
 
 class OrderConfirmationScreen extends StatelessWidget {
   final int? num;
-  OrderConfirmationScreen({required this.num});
+  OrderConfirmationScreen({this.num});
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

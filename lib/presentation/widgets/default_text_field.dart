@@ -38,6 +38,7 @@ class BuildTextField extends StatelessWidget {
                 icon,
                 height: 50,
                 width: 50,
+                color: Color(0xffA6BCD0),
               ),
               hintStyle: TextStyle(fontSize: 18.sp, color: Color(0xffA6BCD0)),
               border: OutlineInputBorder(

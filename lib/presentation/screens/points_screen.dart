@@ -63,16 +63,16 @@ class _PointsScreenState extends State<PointsScreen> {
                         child: Column(
                           children: [
                             BuildPointsDetailsRow(
-                              title: 'مجموع النقاط المكتسبة:',
+                              title: 'مجموع النقاط المكتسبة :',
                               number: points.totalPoints.toString(),
+                            ),
+                            BuildPointsDetailsRow(
+                              title: 'الرصيد :',
+                              number: points.balance.toString(),
                             ),
                             BuildPointsDetailsRow(
                               title: 'الحد الادني لتحويل النقاط :',
                               number: points.pointsLimit.toString(),
-                            ),
-                            BuildPointsDetailsRow(
-                              title: 'النقاط المتبقية :',
-                              number: points.balance.toString(),
                             ),
                             SizedBox(
                               height: 20,
@@ -171,7 +171,7 @@ class BuildItemDetailsCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
-                    ' نقاط الطلب$points',
+                    ' نقاط الطلب  $points',
                     style: TextStyle(fontSize: 14.sp),
                   ),
                 ),

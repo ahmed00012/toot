@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:toot/data/models/favorite.dart';
 import 'package:toot/data/repositories/favorites_repository.dart';
 import 'package:toot/data/web_services/favorites_web_service.dart';
 
@@ -22,8 +21,11 @@ class FavoritesCubit extends Cubit<FavoritesState> {
     super.onError(error, stackTrace);
   }
 
-  Future<void> toggleFavoriteStatus({required int itemId}) async {
-    favoritesRepository.toggleFavoriteStatus(itemId: itemId).then((value) {
+  Future<void> toggleFavoriteStatus(
+      {required int itemId, required int vendorId}) async {
+    favoritesRepository
+        .toggleFavoriteStatus(itemId: itemId, vendorId: vendorId)
+        .then((value) {
       if (value == true) {
         print('toggle favorite status done !');
       }

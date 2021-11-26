@@ -26,9 +26,9 @@ class _AuthScreenState extends State<AuthScreen> {
 
   Map<String, String> _authData = {
     'name': '',
-    'email': '',
     'password': '',
     'phone': '',
+    'identity_number': ''
   };
   bool seePassword = false;
   bool seePassword1 = false;
@@ -62,7 +62,7 @@ class _AuthScreenState extends State<AuthScreen> {
         ? await BlocProvider.of<AuthCubit>(context).register(
             name: _authData['name'],
             phone: _authData['phone'],
-            email: _authData['email'],
+            identityNo: _authData['identity_number'],
             password: _authData['password'],
             confirmPassword: _authData['password'])
         : await BlocProvider.of<AuthCubit>(context).login(
@@ -131,7 +131,6 @@ class _AuthScreenState extends State<AuthScreen> {
                 MaterialPageRoute(
                   builder: (_) => ActivateAccountScreen(
                     phone: _authData['phone'],
-                    email: _authData['email'],
                     name: _authData['name'],
                     password: _authData['password'],
                   ),
@@ -205,6 +204,19 @@ class _AuthScreenState extends State<AuthScreen> {
                         },
                       ),
 
+                      if (_authMode == AuthMode.Signup)
+                        BuildTextField(
+                          icon: 'assets/images/id-card(1).png',
+                          hint: 'رقم الجمعية (اختياري)',
+                          isNumeric: true,
+                          validator: (val) {
+                            return;
+                          },
+                          onSaved: (val) {
+                            print(val);
+                            _authData['identity_number'] = val!;
+                          },
+                        ),
                       // BuildTextField(
                       //
                       //   icon: 'assets/images/icon-padlock.png',

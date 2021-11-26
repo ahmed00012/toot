@@ -24,7 +24,8 @@ class ItemDetailsLoading extends ProductState {}
 class ItemDetailsLoaded extends ProductState {
   final ItemDetails itemDetails;
   double? price;
-  ItemDetailsLoaded({required this.itemDetails, this.price});
+  int? optionId;
+  ItemDetailsLoaded({required this.itemDetails, this.price, this.optionId});
 }
 
 class ErrorOccur extends ProductState {

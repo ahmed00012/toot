@@ -7,13 +7,16 @@ class AuthRepository {
   AuthRepository(this.authWebServices);
 
   Future<dynamic> register(
-      {String? name, String? email, String? phone, String? password}) async {
+      {String? name,
+      String? identityNo,
+      String? phone,
+      String? password}) async {
     FormData formData = FormData.fromMap({
       'name': name,
       'phone': phone,
       'password': password,
       'password_confirmation': password,
-      'email': email,
+      'identity_number': identityNo,
     });
     return await authWebServices.register(formData);
   }

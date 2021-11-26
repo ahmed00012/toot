@@ -146,8 +146,101 @@ class _MyAppState extends State<MyApp> {
     FirebaseMessaging.instance.getToken().then((token) {
       LocalStorage.saveData(key: 'token_fcm', value: token);
     });
+    // fcmNotification();
     super.initState();
   }
+
+  // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  //     new FlutterLocalNotificationsPlugin();
+  // fcmNotification() async {
+  //   //FCM
+  //   FirebaseMessaging.instance
+  //       .getInitialMessage()
+  //       .then((RemoteMessage? message) {
+  //     if (message != null) {
+  //       Navigator.push(
+  //           context, MaterialPageRoute(builder: (context) => BottomNavBar()));
+  //     }
+  //   });
+  //   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  //   NotificationSettings settings = await messaging.requestPermission(
+  //     alert: true,
+  //     announcement: false,
+  //     badge: true,
+  //     carPlay: false,
+  //     criticalAlert: false,
+  //     provisional: false,
+  //     sound: true,
+  //   );
+  //
+  //   await messaging.setForegroundNotificationPresentationOptions(
+  //     alert: true, // Required to display a heads up notification
+  //     badge: true,
+  //     sound: true,
+  //   );
+  //
+  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //     RemoteNotification notification = message.notification!;
+  //     AndroidNotification? android = message.notification!.android;
+  //     print('efweferw' + message.data.toString());
+  //     if (notification != null && android != null) {
+  //       flutterLocalNotificationsPlugin.show(
+  //           notification.hashCode,
+  //           notification.title,
+  //           notification.body,
+  //           NotificationDetails(
+  //             android: AndroidNotificationDetails(
+  //               notification.title!,
+  //               notification.body!,
+  //               // TODO add a proper drawable resource to android, for now using
+  //               //      one that already exists in example app.
+  //               icon: 'app_icon',
+  //             ),
+  //           ));
+  //       if (message.notification!.title == "تقيم الخدمة") {
+  //         Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //                 builder: (context) => Review(
+  //                       vendorID: message.data['vendor_id'],
+  //                       token: LocalStorage.getData(key: 'token'),
+  //                       orderId: message.data['type_id'],
+  //                     )));
+  //       }
+  //     }
+  //   });
+  //
+  //   //ديه بتفتح التطبيق وتقيم الخدمة
+  //   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+  //     final order =
+  //         message.notification!.body!.replaceAll(RegExp('[^0-9]'), '');
+  //     print(
+  //         'A new onMessageOpenedApp event was published Message ${message.notification!.title} ');
+  //     if (message.notification!.title == "تقيم الخدمة") {
+  //       Navigator.push(
+  //           context,
+  //           MaterialPageRoute(
+  //               builder: (context) => Review(
+  //                     vendorID: message.data['vendor_id'],
+  //                     token: LocalStorage.getData(key: 'token'),
+  //                     orderId: message.data['type_id'],
+  //                   )));
+  //     } else if (message.notification!.title == "تغير حالة الطلب") {
+  //       Navigator.push(
+  //           context,
+  //           MaterialPageRoute(
+  //               builder: (context) => OrdersDetailsScreen(
+  //                     id: int.parse(order),
+  //                   )));
+  //     } else
+  //       Navigator.push(context,
+  //           MaterialPageRoute(builder: (context) => NotificationScreen()));
+  //   });
+  //
+  //   FirebaseMessaging.instance.getToken().then((value) {
+  //     print("FIREBASE TOKEN $value");
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {

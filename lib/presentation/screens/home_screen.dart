@@ -11,6 +11,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:toot/constants.dart';
 import 'package:toot/cubits/product_cubit/product_cubit.dart';
 import 'package:toot/data/local_storage.dart';
@@ -70,6 +71,8 @@ class _HomeScreenState extends State<HomeScreen> {
       AndroidNotification? android = message.notification!.android;
       print('efweferw' + message.data.toString());
       if (notification != null && android != null) {
+        final order =
+            message.notification!.body!.replaceAll(RegExp('[^0-9]'), '');
         flutterLocalNotificationsPlugin.show(
             notification.hashCode,
             notification.title,
@@ -78,8 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
               android: AndroidNotificationDetails(
                 notification.title!,
                 notification.body!,
-                // TODO add a proper drawable resource to android, for now using
-                //      one that already exists in example app.
                 icon: 'app_icon',
               ),
             ));
@@ -92,7 +93,86 @@ class _HomeScreenState extends State<HomeScreen> {
                         token: LocalStorage.getData(key: 'token'),
                         orderId: message.data['type_id'],
                       )));
-        }
+        } else if (message.notification!.title == "تغير حالة الطلب") {
+          showSimpleNotification(
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => OrdersDetailsScreen(
+                              id: int.parse(order),
+                            )));
+              },
+              child: Container(
+                height: 65,
+                child: Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          message.notification!.title!,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          message.notification!.body!,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    )),
+              ),
+            ),
+            duration: Duration(seconds: 3),
+            background: Colors.green,
+          );
+        } else
+          showSimpleNotification(
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NotificationScreen()));
+              },
+              child: Container(
+                height: 65,
+                child: Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          message.notification!.title!,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          message.notification!.body!,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    )),
+              ),
+            ),
+            duration: Duration(seconds: 3),
+            background: Colors.green,
+          );
       }
     });
 
@@ -135,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
     } on SocketException catch (_) {
       return showDialog<void>(
           context: context,
-          barrierDismissible: false, // user must tap button!
+          barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
               title: Center(
@@ -344,21 +424,42 @@ class ShopsListView extends StatelessWidget {
                       itemBuilder: (context, imagesIndex) {
                         return GestureDetector(
                           onTap: () {
-                            Navigator.of(context)
-                                .push(
-                              MaterialPageRoute(
-                                builder: (_) => CategoriesScreen(
-                                    shopId: categories[index]
-                                        .markets![imagesIndex]
-                                        .id,
-                                    shopName: categories[index]
-                                        .markets![imagesIndex]
-                                        .name),
-                              ),
-                            )
-                                .then((value) {
-                              return function();
-                            });
+                            if (categories[index]
+                                    .markets[imagesIndex]
+                                    .isReciving ==
+                                1) {
+                              Navigator.of(context)
+                                  .push(
+                                MaterialPageRoute(
+                                  builder: (_) => CategoriesScreen(
+                                      shopId: categories[index]
+                                          .markets![imagesIndex]
+                                          .id,
+                                      shopName: categories[index]
+                                          .markets![imagesIndex]
+                                          .name),
+                                ),
+                              )
+                                  .then((value) {
+                                return function();
+                              });
+                            } else
+                              showSimpleNotification(
+                                  Container(
+                                    height: 55,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Text(
+                                        'عذرا هذا الفرع لا يستقبل طلبات حاليا',
+                                        style: TextStyle(
+                                            color: Colors.indigo,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  duration: Duration(seconds: 3),
+                                  background: Colors.white);
                           },
                           child: Container(
                             width: 0.8.sw,

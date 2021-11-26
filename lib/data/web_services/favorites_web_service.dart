@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -60,6 +61,7 @@ class FavoritesWebServices {
               headers: LocalStorage.getData(key: 'token') == null
                   ? getHeaderWithOutToken()
                   : getHeaderWithInToken()));
+      log(response.data.toString());
       return response.data;
     } on DioError catch (e) {
       print(e.response.toString());

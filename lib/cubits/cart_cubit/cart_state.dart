@@ -32,6 +32,14 @@ class PaymentsLoaded extends CartState {
   PaymentsLoaded({required this.payments});
 }
 
+class PaymentAdded extends CartState {
+  String? method;
+  String? url;
+  PaymentAdded({required this.method, this.url});
+}
+
+class PaymentLoading extends CartState {}
+
 class OrderConfirmed extends CartState {
   final int num;
   OrderConfirmed({required this.num});

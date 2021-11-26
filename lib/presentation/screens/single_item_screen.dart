@@ -1,11 +1,14 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:toot/cubits/cart_cubit/cart_cubit.dart';
 import 'package:toot/cubits/product_cubit/product_cubit.dart';
+import 'package:toot/data/local_storage.dart';
 import 'package:toot/data/models/check_box_state.dart';
 import 'package:toot/presentation/widgets/buttom_nav_bar.dart';
 
@@ -21,6 +24,7 @@ class SingleItemScreen extends StatefulWidget {
   final bool? isEditable;
   final bool? removeFav;
   bool? fromPanner;
+  int? count;
 
   SingleItemScreen(
       {required this.id,
@@ -30,7 +34,8 @@ class SingleItemScreen extends StatefulWidget {
       this.isFav,
       this.removeFav = false,
       this.isEditable = false,
-      this.fromPanner});
+      this.fromPanner,
+      this.count});
 
   @override
   _SingleItemScreenState createState() => _SingleItemScreenState();
@@ -39,12 +44,12 @@ class SingleItemScreen extends StatefulWidget {
 class _SingleItemScreenState extends State<SingleItemScreen> {
   late bool isFav;
   int quantity = 1;
-  int? selectedId;
+  // int? selectedId;
   String? dropdownPriceValue = '';
   // List prices = [];
   List extra = [];
   List chosenExtra = [];
-  final _formKey = GlobalKey<FormState>();
+  // final _formKey = GlobalKey<FormState>();
   List<String> images = [];
   double price = 0.00;
   int current = 0;
@@ -69,29 +74,80 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
     chosenExtra.add(chosenId);
   }
 
-  // _showDialog(BuildContext context, String title) {
-  //   VoidCallback continueCallBack = () => {
-  //         Navigator.of(context)
-  //             .push(MaterialPageRoute(builder: (_) => AuthScreen())),
-  //         // code on continue comes here
-  //       };
-  //
-  //   BlurryDialog alert = BlurryDialog('التسجيل اولا', title, continueCallBack);
-  //
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return alert;
-  //     },
-  //   );
-  // }
+  removeCart() async {
+    print(LocalStorage.getData(key: 'cart_token'));
+    var response = await Dio().post('https://toot.work/api/cart/remove',
+        data: {"cart_token": LocalStorage.getData(key: 'cart_token')},
+        options: Options(headers: {
+          "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+        }));
+    print(response.data);
+  }
+
+  Future<bool> _showAnotherVendorDialog(int id, var optionId) async {
+    return await showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context1) {
+        return AlertDialog(
+          title: Center(
+              child: const Text(
+            'خطأ',
+            style: TextStyle(color: Colors.red),
+          )),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('عذرا لا يمكنك الطلب من اكثر من فرع'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CartScreen()));
+              },
+              child: const Text(
+                'استكمال طلبك',
+                style: TextStyle(color: Color(0xff7C39CB)),
+              ),
+            ),
+            TextButton(
+              child: const Text(
+                'الغاء طلبك',
+                style: TextStyle(color: Color(0xff7C39CB)),
+              ),
+              onPressed: () async {
+                setState(() {
+                  LocalStorage.saveData(key: 'counter', value: 0);
+                  LocalStorage.saveData(key: 'cart_token', value: '');
+                  LocalStorage.saveData(key: 'vendor', value: widget.shopId);
+                });
+                await removeCart();
+
+                BlocProvider.of<CartCubit>(context).addToCart(
+                    shopId: widget.shopId,
+                    productId: id,
+                    quantity: quantity,
+                    options: optionId,
+                    extras: chosenExtra);
+
+                Navigator.of(context1).pop(true);
+              },
+            ),
+          ],
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
-    print(widget.fromPanner);
     BlocProvider.of<ProductCubit>(context).fetchItemDetails(widget.id);
     price = widget.price!;
-    //  this.isFav = widget.isFav!;
     super.initState();
   }
 
@@ -125,29 +181,6 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
             Navigator.of(context).pop();
           },
         ),
-        // actions: [
-        //   Visibility(
-        //     visible: !widget.removeFav!,
-        //     child: IconButton(
-        //       icon: Icon(
-        //         isFav ? Icons.favorite : Icons.favorite_border_outlined,
-        //         color: Colors.red,
-        //       ),
-        //       onPressed: () async {
-        //         if (LocalStorage.getData(key: 'token') == null) {
-        //           _showDialog(context,
-        //               'لا يمكن الاضافه الي المفضلة يجب عليك التسجيل اولا');
-        //         } else {
-        //           BlocProvider.of<FavoritesCubit>(context)
-        //               .toggleFavoriteStatus(itemId: widget.id)
-        //               .then((value) => setState(() {
-        //                     isFav = !isFav;
-        //                   }));
-        //         }
-        //       },
-        //     ),
-        //   )
-        // ],
       ),
       body: WillPopScope(
         onWillPop: _willPopCallback,
@@ -158,8 +191,6 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
 
             if (item.options!.isNotEmpty) {
               dropdownPriceValue = item.options![0].price ?? '';
-              selectedId = item.options![0].id ?? 0;
-              // weightPrice = double.parse(item.options![0].price!);
             }
             extra = state.itemDetails.addon!
                 .map((extra) => CheckBoxState(
@@ -177,280 +208,297 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
             if (item.imageThree != null) {
               images.add(item.imageThree!);
             }
-            return Form(
-                key: _formKey,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      images.isNotEmpty
-                          ? Center(
-                              child: CarouselSlider.builder(
-                                itemCount: images.length,
-                                options: CarouselOptions(
-                                    height: 0.4.sh,
-                                    autoPlay: true,
-                                    viewportFraction: 0.9,
-                                    autoPlayInterval: Duration(seconds: 8),
-                                    onPageChanged: (index, reason) {
-                                      setState(() {
-                                        current = index;
-                                      });
-                                    }),
-                                itemBuilder: (ctx, index, _) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12.0),
-                                    child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                        child: Image.network(
-                                          images[index],
-                                          fit: BoxFit.fitHeight,
-                                          width: 0.9.sw,
-                                        )),
-                                  );
-                                },
-                              ),
-                            )
-                          : Container(
-                              height: 0.4.sh,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  images.isNotEmpty
+                      ? Center(
+                          child: CarouselSlider.builder(
+                            itemCount: images.length,
+                            options: CarouselOptions(
+                                height: 0.4.sh,
+                                autoPlay: true,
+                                viewportFraction: 0.9,
+                                autoPlayInterval: Duration(seconds: 8),
+                                onPageChanged: (index, reason) {
+                                  setState(() {
+                                    current = index;
+                                  });
+                                }),
+                            itemBuilder: (ctx, index, _) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12.0),
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Image.network(
+                                      images[index],
+                                      fit: BoxFit.fitHeight,
+                                      width: 0.9.sw,
+                                    )),
+                              );
+                            },
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.all(15),
+                          child: ClipRRect(
+                              child: Image.asset(
+                            'assets/images/00vv63.jpg',
+                            fit: BoxFit.fill,
+                            width: 0.8.sw,
+                          )),
+                        ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 0.06.sw),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding:
+                              EdgeInsets.only(bottom: 0.03.sh, top: 0.05.sh),
+                          child: Row(
+                            mainAxisAlignment: price == 0.00
+                                ? MainAxisAlignment.center
+                                : MainAxisAlignment.end,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Icon(
-                                    Icons.image_not_supported_outlined,
-                                    size: 80,
+                                  price == 0.00
+                                      ? Text(
+                                          'السعر يعتمد علي اختياراتك',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xff4A4B4D)),
+                                        )
+                                      : Text(
+                                          isChanged
+                                              ? (price * quantity)
+                                                      .toStringAsFixed(2) +
+                                                  " RS "
+                                              : (state.price! * quantity)
+                                                      .toString() +
+                                                  " RS ",
+                                          style: TextStyle(
+                                              fontSize: 26.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xff4A4B4D)),
+                                        ),
+                                  Visibility(
+                                    visible: price != 0.00,
+                                    child: item.unit.toString() != "null"
+                                        ? Text(' لكل/ ${item.unit}',
+                                            style: TextStyle(
+                                              color: Color(0xff4A4B4D),
+                                            ))
+                                        : Text('لكل/ كيلو',
+                                            style: TextStyle(
+                                              color: Color(0xff4A4B4D),
+                                            )),
                                   ),
-                                  SizedBox(
-                                    height: 8,
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Visibility(
+                          visible: item.options!.isNotEmpty,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12.0),
+                            child: Text(
+                              ' يمكنك اختيار [ 1 اختيار ] :',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xff4A4B4D),
+                                  fontSize: 18.sp),
+                            ),
+                          ),
+                        ),
+                        Visibility(
+                          visible: item.options!.isNotEmpty,
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButtonFormField<int>(
+                              decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.only(
+                                      left: 0.06.sw, right: 0.02.sw),
+                                  filled: true,
+                                  fillColor: Color(0xffF0F4F8),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                      borderSide: BorderSide.none),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide.none)),
+                              isExpanded: true,
+                              value: state.optionId,
+                              icon: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 28,
+                                color: Color(Constants.mainColor),
+                              ),
+                              iconSize: 24,
+                              elevation: 4,
+                              style: TextStyle(
+                                  color: Color(Constants.mainColor),
+                                  fontSize: 16),
+                              onChanged: (int? newValue) {
+                                print(newValue.toString() + 'rkhbgfryuhgb');
+                                setState(() {
+                                  isChanged = true;
+                                  state.optionId = newValue;
+                                });
+                                print(state.optionId);
+                              },
+                              items: item.options!
+                                  .map<DropdownMenuItem<int>>((value) {
+                                return DropdownMenuItem<int>(
+                                  value: value.id,
+                                  onTap: () {
+                                    print(value.id.toString() + 'rkhbgfryuhgb');
+                                    setState(() {
+                                      price = double.parse(value.price!);
+                                      state.optionId = value.id!;
+                                    });
+                                    print(state.optionId);
+                                  },
+                                  child: Text(
+                                    '${value.textAr}  ${value.price} RS ',
+                                    style: TextStyle(fontFamily: 'Tajawal'),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ),
+                        Visibility(
+                          visible: extra.isNotEmpty && item.options!.isNotEmpty,
+                          child: SizedBox(
+                            height: 0.05.sh,
+                          ),
+                        ),
+                        Visibility(
+                          visible: extra.isNotEmpty,
+                          child: Text(
+                            'يمكنك الاختيار من الاضافات :',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xff4A4B4D),
+                                fontSize: 18.sp),
+                          ),
+                        ),
+                        ...extra.map((e) => BuildCheckboxListTile(
+                              checkBoxState: e,
+                              function: addExtrasPrice,
+                            )),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 0.03.sh),
+                          child: Container(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Color(0xffF0F4F8),
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  IconButton(
+                                    splashRadius: 1,
+                                    icon: Icon(
+                                      Icons.add,
+                                      size: 24,
+                                      color: Color(Constants.mainColor),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        quantity++;
+                                      });
+                                    },
                                   ),
                                   Text(
-                                    'لا يتوفر صورة لهذا المنتج',
-                                    style: TextStyle(fontSize: 13),
-                                  )
-                                ],
-                              ),
-                            ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 0.06.sw),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  bottom: 0.03.sh, top: 0.05.sh),
-                              child: Row(
-                                mainAxisAlignment: price == 0.00
-                                    ? MainAxisAlignment.center
-                                    : MainAxisAlignment.end,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      price == 0.00
-                                          ? Text(
-                                              'السعر يعتمد علي اختياراتك',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Color(0xff4A4B4D)),
-                                            )
-                                          : Text(
-                                              isChanged
-                                                  ? (price * quantity)
-                                                          .toStringAsFixed(2) +
-                                                      " RS "
-                                                  : (state.price! * quantity)
-                                                          .toString() +
-                                                      " RS ",
-                                              style: TextStyle(
-                                                  fontSize: 26.sp,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Color(0xff4A4B4D)),
-                                            ),
-                                      Visibility(
-                                        visible: price != 0.00,
-                                        child: item.unit.toString() != "null"
-                                            ? Text(' لكل/ ${item.unit}',
-                                                style: TextStyle(
-                                                  color: Color(0xff4A4B4D),
-                                                ))
-                                            : Text('لكل/ كيلو',
-                                                style: TextStyle(
-                                                  color: Color(0xff4A4B4D),
-                                                )),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Visibility(
-                              visible: item.options!.isNotEmpty,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 12.0),
-                                child: Text(
-                                  ' يمكنك اختيار [ 1 اختيار ] :',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      color: Color(0xff4A4B4D),
-                                      fontSize: 18.sp),
-                                ),
-                              ),
-                            ),
-                            Visibility(
-                              visible: item.options!.isNotEmpty,
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButtonFormField<String>(
-                                  decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.only(
-                                          left: 0.06.sw, right: 0.02.sw),
-                                      filled: true,
-                                      fillColor: Color(0xffF0F4F8),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(6),
-                                          borderSide: BorderSide.none),
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          borderSide: BorderSide.none)),
-                                  isExpanded: true,
-                                  value: dropdownPriceValue,
-                                  icon: Icon(
-                                    Icons.keyboard_arrow_down,
-                                    size: 28,
-                                    color: Color(Constants.mainColor),
-                                  ),
-                                  iconSize: 24,
-                                  elevation: 4,
-                                  style: TextStyle(
+                                    quantity.toString(),
+                                    style: TextStyle(
+                                      fontSize: 24,
                                       color: Color(Constants.mainColor),
-                                      fontSize: 16),
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      price = double.parse(newValue!);
-                                      isChanged = true;
-                                    });
-                                  },
-                                  items: item.options!
-                                      .map<DropdownMenuItem<String>>((value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value.price,
-                                      onTap: () {
-                                        setState(() {
-                                          selectedId = value.id!;
-                                        });
-                                        print(selectedId);
-                                      },
-                                      child: Text(
-                                        '${value.textAr}  ${value.price} RS ',
-                                        style: TextStyle(fontFamily: 'Tajawal'),
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ),
-                            Visibility(
-                              visible:
-                                  extra.isNotEmpty && item.options!.isNotEmpty,
-                              child: SizedBox(
-                                height: 0.05.sh,
-                              ),
-                            ),
-                            Visibility(
-                              visible: extra.isNotEmpty,
-                              child: Text(
-                                'يمكنك الاختيار من الاضافات :',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w800,
-                                    color: Color(0xff4A4B4D),
-                                    fontSize: 18.sp),
-                              ),
-                            ),
-                            ...extra.map((e) => BuildCheckboxListTile(
-                                  checkBoxState: e,
-                                  function: addExtrasPrice,
-                                )),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 0.03.sh),
-                              child: Container(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Color(0xffF0F4F8),
-                                      borderRadius: BorderRadius.circular(8)),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      IconButton(
-                                        splashRadius: 1,
-                                        icon: Icon(
-                                          Icons.add,
-                                          size: 24,
-                                          color: Color(Constants.mainColor),
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            quantity++;
-                                          });
-                                        },
-                                      ),
-                                      Text(
-                                        quantity.toString(),
-                                        style: TextStyle(
-                                          fontSize: 24,
-                                          color: Color(Constants.mainColor),
-                                        ),
-                                      ),
-                                      IconButton(
-                                        splashRadius: 1,
-                                        icon: Icon(
-                                          Icons.remove,
-                                          size: 24,
-                                          color: Color(Constants.mainColor),
-                                        ),
-                                        onPressed: () {
-                                          if (quantity == 1) {
-                                            return;
-                                          } else {
-                                            setState(() {
-                                              quantity--;
-                                            });
-                                          }
-                                        },
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                ),
+                                  IconButton(
+                                    splashRadius: 1,
+                                    icon: Icon(
+                                      Icons.remove,
+                                      size: 24,
+                                      color: Color(Constants.mainColor),
+                                    ),
+                                    onPressed: () {
+                                      if (quantity == 1) {
+                                        return;
+                                      } else {
+                                        setState(() {
+                                          quantity--;
+                                        });
+                                      }
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
-                            BlocBuilder<CartCubit, CartState>(
-                              builder: (context, cartState) {
-                                return Container(
-                                  width: 1.sw,
-                                  height: 0.07.sh,
-                                  child: ElevatedButton(
-                                      onPressed: () async {
-                                        if (widget.isEditable!) {
-                                          BlocProvider.of<CartCubit>(context)
-                                              .removeFromCart(
-                                                  productId:
-                                                      state.itemDetails.id);
-                                        }
-                                        await BlocProvider.of<CartCubit>(
-                                                context)
+                          ),
+                        ),
+                        BlocBuilder<CartCubit, CartState>(
+                          builder: (context, cartState) {
+                            return Container(
+                              width: 1.sw,
+                              height: 0.07.sh,
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    print(state.optionId);
+                                    if (widget.count == 0) {
+                                      showSimpleNotification(
+                                          Container(
+                                            height: 55,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 8.0),
+                                              child: Text(
+                                                'عذرا هذا المنتج غير متوفر حاليا',
+                                                style: TextStyle(
+                                                    color: Colors.indigo,
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          ),
+                                          duration: Duration(seconds: 3),
+                                          background: Colors.white);
+                                    } else {
+                                      if (widget.isEditable!) {
+                                        BlocProvider.of<CartCubit>(context)
+                                            .removeFromCart(
+                                                productId:
+                                                    state.itemDetails.id);
+                                      }
+                                      if (LocalStorage.getData(
+                                              key: 'counter') ==
+                                          0) {
+                                        LocalStorage.saveData(
+                                            key: 'vendor',
+                                            value: widget.shopId);
+                                      }
+                                      if (LocalStorage.getData(key: 'vendor') ==
+                                              null ||
+                                          LocalStorage.getData(key: 'vendor') ==
+                                              widget.shopId) {
+                                        BlocProvider.of<CartCubit>(context)
                                             .addToCart(
                                                 shopId: widget.shopId,
                                                 productId: state.itemDetails.id,
                                                 quantity: quantity,
-                                                options: [selectedId],
+                                                options: [state.optionId],
                                                 extras: chosenExtra)
                                             .then((value) {
                                           if (widget.isEditable!)
@@ -460,63 +508,76 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                                                     builder: (context) =>
                                                         CartScreen()));
                                           else
-                                            Navigator.pop(context, true);
+                                            Navigator.pop(context, "added");
                                         });
-                                        // Navigator.pop(context);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Color(Constants.mainColor),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                      ),
-                                      child: cartState is CartLoading
-                                          ? CircularProgressIndicator(
+                                      } else {
+                                        _showAnotherVendorDialog(
+                                                widget.id, [state.optionId])
+                                            .then((value) {
+                                          if (value)
+                                            Navigator.pop(context,
+                                                'addedAfterDeletingCart');
+                                        });
+                                      }
+                                      // Navigator.pop(context);
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Color(Constants.mainColor),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  child: cartState is CartLoading
+                                      ? CircularProgressIndicator(
+                                          color: Colors.white,
+                                        )
+                                      : Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              widget.isEditable!
+                                                  ? Icons.edit
+                                                  : Icons.add_shopping_cart,
                                               color: Colors.white,
-                                            )
-                                          : Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  widget.isEditable!
-                                                      ? Icons.edit
-                                                      : Icons.add_shopping_cart,
-                                                  color: Colors.white,
-                                                ),
-                                                SizedBox(width: 10),
-                                                Text(widget.isEditable!
-                                                    ? 'تعديل'
-                                                    : 'اضافة الي السله')
-                                              ],
-                                            )),
-                                );
-                              },
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 25.0, bottom: 12),
-                              child: Text(
-                                'الوصف',
-                                style: TextStyle(
-                                    color: Color(Constants.mainColor),
-                                    fontSize: 21.sp),
-                              ),
-                            ),
-                            Html(
-                              data: item.description!,
-                              shrinkWrap: true,
-                            ),
-                            SizedBox(
-                              height: 0.1.sh,
-                            ),
-                          ],
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text(widget.isEditable!
+                                                ? 'تعديل'
+                                                : 'اضافة الي السله')
+                                          ],
+                                        )),
+                            );
+                          },
                         ),
-                      ),
-                    ],
+                        item.description.toString() != "null"
+                            ? Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 25.0, bottom: 12),
+                                child: Text(
+                                  'الوصف',
+                                  style: TextStyle(
+                                      color: Color(Constants.mainColor),
+                                      fontSize: 21.sp),
+                                ),
+                              )
+                            : Container(),
+                        item.description.toString() != "null"
+                            ? Html(
+                                data: item.description,
+                                shrinkWrap: true,
+                              )
+                            : Container(),
+                        SizedBox(
+                          height: 0.1.sh,
+                        ),
+                      ],
+                    ),
                   ),
-                ));
+                ],
+              ),
+            );
           } else {
             return Center(
                 child: Container(

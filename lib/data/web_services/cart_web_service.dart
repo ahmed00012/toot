@@ -130,14 +130,17 @@ class CartWebServices {
     }
   }
 
-  Future<dynamic> selectAddress(FormData formData) async {
+  Future<dynamic> selectAddress(int? addressId) async {
     try {
-      Response response =
-          await Dio().post('https://toot.work/api/cart/choose_address',
-              data: formData,
-              options: Options(headers: {
-                "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
-              }));
+      Response response = await Dio().post(
+          'https://toot.work/api/cart/choose_address',
+          data: {
+            'cart_token': LocalStorage.getData(key: 'cart_token'),
+            'address_id': addressId
+          },
+          options: Options(headers: {
+            "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+          }));
       print(response.data);
       return response.data;
     } on DioError catch (e) {
@@ -173,7 +176,7 @@ class CartWebServices {
         options: Options(headers: {
           "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
         }));
-    print(response.data);
+    print(response.data.toString());
     return response.data;
   }
 
@@ -273,4 +276,15 @@ class CartWebServices {
       throw e.response!.data;
     }
   }
+
+  // removeCart() async {
+  //   Response response =
+  //       await Dio().post('http://127.0.0.1:8000/api/cart/remove',
+  //           data: {
+  //         "cart_token":LocalStorage.getData(key: 'cart_token')
+  //           },
+  //           options: Options(headers: {
+  //             "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+  //           }));
+  // }
 }

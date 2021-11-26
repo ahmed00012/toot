@@ -14,6 +14,7 @@ import 'cart_screen.dart';
 class CategoriesScreen extends StatefulWidget {
   final int shopId;
   final String shopName;
+
   CategoriesScreen({required this.shopId, required this.shopName});
 
   @override
@@ -21,13 +22,18 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
+  String? counter = "0";
   @override
   void initState() {
     getShopCat();
+    counter = LocalStorage.getData(key: 'counter').toString();
     super.initState();
   }
 
   getShopCat() {
+    setState(() {
+      counter = LocalStorage.getData(key: 'counter').toString();
+    });
     BlocProvider.of<ProductCubit>(context)
         .fetchShopCategories(shopId: widget.shopId);
   }
@@ -95,7 +101,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             badgeContent: Padding(
                               padding: const EdgeInsets.only(top: 3.0),
                               child: Text(
-                                LocalStorage.getData(key: 'counter').toString(),
+                                counter!,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.green[400]),
@@ -141,7 +147,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     childAspectRatio: 2 / 2.5,
                   ),
                   itemBuilder: (context, index) => CategoryItem(
-                    image: shopCat[index].image,
+                    image: shopCat[index].image.toString(),
                     title: shopCat[index].name,
                     shopId: widget.shopId,
                     categoryId: shopCat[index].id,
@@ -225,7 +231,7 @@ class CategoryItem extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: image != null
+              child: image.toString() != "null"
                   ? Image.network(
                       image,
                       height: 0.2.sh,

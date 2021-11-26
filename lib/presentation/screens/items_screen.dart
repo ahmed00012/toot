@@ -1,4 +1,5 @@
 import 'package:badges/badges.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -38,11 +39,83 @@ class _ItemsScreenState extends State<ItemsScreen>
   late TabController tabController;
   static const _pageSize = 5;
   late int id;
-  int? counter;
+  int? counter = 0;
   final PagingController<int, dynamic> _pagingController =
       PagingController(firstPageKey: 1);
   TextEditingController _search = TextEditingController();
   bool loading = false;
+  String cart = '';
+
+  removeCart() async {
+    print(LocalStorage.getData(key: 'cart_token'));
+    var response = await Dio().post('https://toot.work/api/cart/remove',
+        data: {"cart_token": cart},
+        options: Options(headers: {
+          "Authorization": "Bearer ${LocalStorage.getData(key: 'token')}",
+        }));
+    print(response.data);
+  }
+
+  Future<bool> _showMyDialog(int id) async {
+    return await showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context1) {
+        return AlertDialog(
+          title: Center(
+              child: const Text(
+            'خطأ',
+            style: TextStyle(color: Colors.red),
+          )),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('عذرا لا يمكنك الطلب من اكثر من فرع'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CartScreen()));
+              },
+              child: const Text(
+                'استكمال طلبك',
+                style: TextStyle(color: Color(0xff7C39CB)),
+              ),
+            ),
+            TextButton(
+              child: const Text(
+                'الغاء طلبك',
+                style: TextStyle(color: Color(0xff7C39CB)),
+              ),
+              onPressed: () async {
+                setState(() {
+                  LocalStorage.saveData(key: 'counter', value: 0);
+                  LocalStorage.saveData(key: 'cart_token', value: '');
+                  LocalStorage.saveData(key: 'vendor', value: widget.shopId);
+                  counter = 1;
+                });
+                await removeCart();
+
+                BlocProvider.of<CartCubit>(context).addToCart(
+                    shopId: widget.shopId,
+                    productId: id,
+                    quantity: 1,
+                    options: [],
+                    extras: []);
+
+                Navigator.of(context1).pop(true);
+              },
+            ),
+          ],
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+        );
+      },
+    );
+  }
 
   Future<void> _fetchPage(int pageKey, int catId, String filter) async {
     try {
@@ -81,19 +154,15 @@ class _ItemsScreenState extends State<ItemsScreen>
       newItems = rawData.map((item) => Item.fromJson(item)).toList();
       rawData = [];
 
-      print('osama' + rawData.toString());
-      print('osama1' + newItems.toString());
       print(newItems.length);
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems, 'yes');
         newItems = [];
-        print('osama2' + newItems.toString());
       } else {
         final nextPageKey = pageKey + 1;
         _pagingController.appendPage(newItems, nextPageKey, 'yes');
         newItems = [];
-        print('osama3' + newItems.toString());
       }
     } catch (error) {
       _pagingController.error = error;
@@ -132,6 +201,7 @@ class _ItemsScreenState extends State<ItemsScreen>
   @override
   void initState() {
     counter = LocalStorage.getData(key: 'counter');
+    cart = LocalStorage.getData(key: "cart_token") ?? '';
     tabController = TabController(
       vsync: this,
       length: widget.categories.length,
@@ -146,12 +216,6 @@ class _ItemsScreenState extends State<ItemsScreen>
     print(widget.shopId);
     super.initState();
   }
-
-  // @override
-  // void dispose() {
-  //   _pagingController.dispose();
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -352,6 +416,8 @@ class _ItemsScreenState extends State<ItemsScreen>
                             mainAxisSpacing: 10,
                             childAspectRatio: 0.6),
                         builderDelegate: PagedChildBuilderDelegate<dynamic>(
+                            noMoreItemsIndicatorBuilder: (_) => Container(),
+                            newPageErrorIndicatorBuilder: (_) => Container(),
                             noItemsFoundIndicatorBuilder: (_) => Container(
                                 height: 0.8.sh,
                                 child: Center(
@@ -362,7 +428,6 @@ class _ItemsScreenState extends State<ItemsScreen>
                                       'assets/images/lf20_j1klguuo.json'),
                                 ))),
                             itemBuilder: (context, item, index) {
-                              print(item.inCart);
                               return GestureDetector(
                                 onTap: () {
                                   Navigator.of(context)
@@ -374,10 +439,50 @@ class _ItemsScreenState extends State<ItemsScreen>
                                       shopId: widget.shopId,
                                       isFav:
                                           item.inFavourite == 1 ? true : false,
+                                      count: item.count,
                                     ),
                                   ))
                                       .then((value) {
-                                    if (value != null) {
+                                    if (value.toString() == 'added') {
+                                      setState(() {
+                                        item.inCart = true;
+                                        counter = LocalStorage.getData(
+                                            key: 'counter');
+                                      });
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        backgroundColor:
+                                            Color(Constants.mainColor),
+                                        content: Text(
+                                          'تم اضافة المنتج بنجاح.',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontFamily: 'Tajawal'),
+                                        ),
+                                        action: SnackBarAction(
+                                          label: 'الذهاب الي السلة',
+                                          textColor: Colors.white,
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .push(MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        CartScreen()))
+                                                .then((value) {
+                                              setState(() {
+                                                counter = LocalStorage.getData(
+                                                    key: 'counter');
+                                              });
+                                            });
+                                            ;
+                                          },
+                                        ),
+                                      ));
+                                    } else if (value.toString() ==
+                                        'addedAfterDeletingCart') {
+                                      setState(() {
+                                        item.inCart = true;
+                                        counter = 1;
+                                      });
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                         backgroundColor:
@@ -399,10 +504,6 @@ class _ItemsScreenState extends State<ItemsScreen>
                                           },
                                         ),
                                       ));
-                                      setState(() {
-                                        counter = LocalStorage.getData(
-                                            key: 'counter');
-                                      });
                                     }
                                   });
                                 },
@@ -427,23 +528,281 @@ class _ItemsScreenState extends State<ItemsScreen>
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             10),
-                                                    child: Image.network(
-                                                      item.image,
-                                                      fit: BoxFit.contain,
-                                                    ))
+                                                    child: item.count != 0
+                                                        ? Image.network(
+                                                            item.image,
+                                                            fit: BoxFit.contain,
+                                                          )
+                                                        : Stack(
+                                                            children: [
+                                                              Image.network(
+                                                                item.image,
+                                                                fit: BoxFit
+                                                                    .contain,
+                                                              ),
+                                                              Container(
+                                                                height: double
+                                                                    .infinity,
+                                                                width: double
+                                                                    .infinity,
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                child: Center(
+                                                                  child: Text(
+                                                                    'غير متوفر في الوقت الحالي',
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ))
                                                 : ClipRRect(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             10),
-                                                    child: Image.asset(
-                                                      'assets/images/دون صوره.png',
-                                                      fit: BoxFit.contain,
-                                                    )),
+                                                    child: item.count != 0
+                                                        ? Image.asset(
+                                                            'assets/images/دون صوره.png',
+                                                            fit: BoxFit.contain,
+                                                          )
+                                                        : Stack(
+                                                            children: [
+                                                              Image.asset(
+                                                                'assets/images/دون صوره.png',
+                                                                fit: BoxFit
+                                                                    .contain,
+                                                              ),
+                                                              Container(
+                                                                height: double
+                                                                    .infinity,
+                                                                width: double
+                                                                    .infinity,
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                child: Center(
+                                                                  child: Text(
+                                                                    'غير متوفر في الوقت الحالي',
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          )),
                                           ),
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
+                                              item.count != 0 &&
+                                                      double.parse(
+                                                              item.price) !=
+                                                          0.0
+                                                  ? Container(
+                                                      height: 0.09.sw,
+                                                      width: 0.09.sw,
+                                                      margin: EdgeInsets.all(6),
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.black12,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5)),
+                                                      child: IconButton(
+                                                        onPressed: () {
+                                                          if (!item.inCart) {
+                                                            if (LocalStorage.getData(
+                                                                        key:
+                                                                            'vendor') ==
+                                                                    null ||
+                                                                LocalStorage.getData(
+                                                                        key:
+                                                                            'vendor') ==
+                                                                    widget
+                                                                        .shopId) {
+                                                              setState(() {
+                                                                item.inCart =
+                                                                    true;
+                                                              });
+                                                              BlocProvider
+                                                                      .of<CartCubit>(
+                                                                          context)
+                                                                  .addToCart(
+                                                                      shopId: widget
+                                                                          .shopId,
+                                                                      productId:
+                                                                          item
+                                                                              .id,
+                                                                      quantity:
+                                                                          1,
+                                                                      options: [],
+                                                                      extras: []).then((value) {
+                                                                setState(() {
+                                                                  counter = LocalStorage
+                                                                      .getData(
+                                                                          key:
+                                                                              'counter');
+                                                                });
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(
+                                                                        SnackBar(
+                                                                  backgroundColor:
+                                                                      Color(Constants
+                                                                          .mainColor),
+                                                                  content: Text(
+                                                                    'تم اضافة المنتج بنجاح.',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontFamily:
+                                                                            'Tajawal'),
+                                                                  ),
+                                                                  action:
+                                                                      SnackBarAction(
+                                                                    label:
+                                                                        'الذهاب الي السلة',
+                                                                    textColor:
+                                                                        Colors
+                                                                            .white,
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .push(
+                                                                              MaterialPageRoute(builder: (_) => CartScreen()));
+                                                                    },
+                                                                  ),
+                                                                ));
+                                                              });
+                                                            } else {
+                                                              _showMyDialog(
+                                                                      item.id)
+                                                                  .then(
+                                                                      (value) {
+                                                                if (value) {
+                                                                  setState(() {
+                                                                    item.inCart =
+                                                                        true;
+                                                                  });
+                                                                  ScaffoldMessenger.of(
+                                                                          context)
+                                                                      .showSnackBar(
+                                                                          SnackBar(
+                                                                    backgroundColor:
+                                                                        Color(Constants
+                                                                            .mainColor),
+                                                                    content:
+                                                                        Text(
+                                                                      'تم اضافة المنتج بنجاح.',
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontFamily:
+                                                                              'Tajawal'),
+                                                                    ),
+                                                                    action:
+                                                                        SnackBarAction(
+                                                                      label:
+                                                                          'الذهاب الي السلة',
+                                                                      textColor:
+                                                                          Colors
+                                                                              .white,
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context).push(MaterialPageRoute(
+                                                                            builder: (_) =>
+                                                                                CartScreen()));
+                                                                      },
+                                                                    ),
+                                                                  ));
+                                                                }
+                                                              });
+                                                            }
+                                                          } else {
+                                                            setState(() {
+                                                              item.inCart =
+                                                                  false;
+                                                            });
+                                                            BlocProvider.of<
+                                                                        CartCubit>(
+                                                                    context)
+                                                                .removeFromCart(
+                                                                    productId:
+                                                                        item.id,
+                                                                    lastItem: counter ==
+                                                                            1
+                                                                        ? true
+                                                                        : false)
+                                                                .then((value) {
+                                                              setState(() {
+                                                                counter =
+                                                                    LocalStorage
+                                                                        .getData(
+                                                                            key:
+                                                                                'counter');
+                                                              });
+                                                              ScaffoldMessenger
+                                                                      .of(
+                                                                          context)
+                                                                  .showSnackBar(
+                                                                      SnackBar(
+                                                                backgroundColor:
+                                                                    Color(Constants
+                                                                        .mainColor),
+                                                                content: Text(
+                                                                  'تم حذف المنتج بنجاح.',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontFamily:
+                                                                          'Tajawal'),
+                                                                ),
+                                                                action:
+                                                                    SnackBarAction(
+                                                                  label:
+                                                                      'الذهاب الي السلة',
+                                                                  textColor:
+                                                                      Colors
+                                                                          .white,
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .push(MaterialPageRoute(
+                                                                            builder: (_) =>
+                                                                                CartScreen()));
+                                                                  },
+                                                                ),
+                                                              ));
+                                                            });
+                                                          }
+                                                        },
+                                                        icon: Icon(
+                                                          !item.inCart
+                                                              ? Icons
+                                                                  .add_shopping_cart
+                                                              : Icons
+                                                                  .shopping_cart,
+                                                          color: Colors.green,
+                                                          size: 22,
+                                                        ),
+                                                        splashRadius: 1,
+                                                      ),
+                                                    )
+                                                  : Container(),
                                               Container(
                                                 height: 0.09.sw,
                                                 width: 0.09.sw,
@@ -455,135 +814,12 @@ class _ItemsScreenState extends State<ItemsScreen>
                                                             5)),
                                                 child: IconButton(
                                                   onPressed: () {
-                                                    setState(() {
-                                                      item.inCart =
-                                                          !item.inCart;
-                                                    });
-                                                    if (item.inCart) {
-                                                      BlocProvider.of<
-                                                                  CartCubit>(
-                                                              context)
-                                                          .addToCart(
-                                                              shopId:
-                                                                  widget.shopId,
-                                                              productId:
-                                                                  item.id,
-                                                              quantity: 1,
-                                                              options: [],
-                                                              extras: []).then((value) {
-                                                        setState(() {
-                                                          counter = LocalStorage
-                                                              .getData(
-                                                                  key:
-                                                                      'counter');
-                                                        });
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                                SnackBar(
-                                                          backgroundColor:
-                                                              Color(Constants
-                                                                  .mainColor),
-                                                          content: Text(
-                                                            'تم اضافة المنتج بنجاح.',
-                                                            style: TextStyle(
-                                                                fontSize: 12,
-                                                                fontFamily:
-                                                                    'Tajawal'),
-                                                          ),
-                                                          action:
-                                                              SnackBarAction(
-                                                            label:
-                                                                'الذهاب الي السلة',
-                                                            textColor:
-                                                                Colors.white,
-                                                            onPressed: () {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .push(MaterialPageRoute(
-                                                                      builder:
-                                                                          (_) =>
-                                                                              CartScreen()));
-                                                            },
-                                                          ),
-                                                        ));
-                                                      });
-                                                    } else {
-                                                      BlocProvider.of<
-                                                                  CartCubit>(
-                                                              context)
-                                                          .removeFromCart(
-                                                              productId:
-                                                                  item.id,
-                                                              lastItem:
-                                                                  counter == 1
-                                                                      ? true
-                                                                      : false)
-                                                          .then((value) {
-                                                        setState(() {
-                                                          counter = LocalStorage
-                                                              .getData(
-                                                                  key:
-                                                                      'counter');
-                                                        });
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                                SnackBar(
-                                                          backgroundColor:
-                                                              Color(Constants
-                                                                  .mainColor),
-                                                          content: Text(
-                                                            'تم حذف المنتج بنجاح.',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontFamily:
-                                                                    'Tajawal'),
-                                                          ),
-                                                          action:
-                                                              SnackBarAction(
-                                                            label:
-                                                                'الذهاب الي السلة',
-                                                            textColor:
-                                                                Colors.white,
-                                                            onPressed: () {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .push(MaterialPageRoute(
-                                                                      builder:
-                                                                          (_) =>
-                                                                              CartScreen()));
-                                                            },
-                                                          ),
-                                                        ));
-                                                      });
-                                                    }
-                                                  },
-                                                  icon: Icon(
-                                                    !item.inCart
-                                                        ? Icons
-                                                            .add_shopping_cart
-                                                        : Icons.shopping_cart,
-                                                    color: Colors.green,
-                                                    size: 22,
-                                                  ),
-                                                  splashRadius: 1,
-                                                ),
-                                              ),
-                                              Container(
-                                                height: 0.09.sw,
-                                                width: 0.09.sw,
-                                                margin: EdgeInsets.all(6),
-                                                decoration: BoxDecoration(
-                                                    color: Colors.black12,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                child: IconButton(
-                                                  onPressed: () async {
                                                     if (LocalStorage.getData(
-                                                            key: 'token') ==
-                                                        null) {
+                                                                key: 'token') ==
+                                                            null &&
+                                                        LocalStorage.getData(
+                                                                key: 'token') ==
+                                                            '') {
                                                       _showDialog(context,
                                                           'لا يمكن الاضافه الي المفضلة يجب عليك التسجيل اولا');
                                                     } else {
@@ -591,7 +827,9 @@ class _ItemsScreenState extends State<ItemsScreen>
                                                                   FavoritesCubit>(
                                                               context)
                                                           .toggleFavoriteStatus(
-                                                              itemId: item.id)
+                                                              itemId: item.id,
+                                                              vendorId:
+                                                                  widget.shopId)
                                                           .then((value) =>
                                                               setState(() {
                                                                 item.inFavourite =
@@ -637,14 +875,29 @@ class _ItemsScreenState extends State<ItemsScreen>
                                           SizedBox(
                                             width: 10,
                                           ),
-                                          item.beforeDiscount != "0.00"
-                                              ? Text(
-                                                  'RS ${item.beforeDiscount}',
-                                                  style: TextStyle(
-                                                      color: Colors.red,
-                                                      fontSize: 12,
-                                                      decoration: TextDecoration
-                                                          .lineThrough),
+                                          item.beforeDiscount != "0.00" &&
+                                                  double.parse(item.price) !=
+                                                      0.0
+                                              ? Stack(
+                                                  children: [
+                                                    Text(
+                                                      'RS ${item.beforeDiscount}',
+                                                      style: TextStyle(
+                                                        color: Colors.red,
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 6),
+                                                      child: Container(
+                                                        height: 1,
+                                                        width: 45,
+                                                        color: Colors.black45,
+                                                      ),
+                                                    )
+                                                  ],
                                                 )
                                               : Container()
                                         ],
